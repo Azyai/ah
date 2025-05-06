@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>cloud_user</module>
+        <module>cloud-api-commons</module>
     </modules>
 
     <parent>
@@ -59,11 +60,19 @@
                 <version>${fastjson2.version}</version>
             </dependency>
 
+
+
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector-java}</version>
 
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
 
             <dependency>
