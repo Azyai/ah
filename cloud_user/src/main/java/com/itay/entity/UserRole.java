@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @TableName("user_role")
-public class User_Role {
+public class UserRole {
     int id;
     int userId;
     int roleId;
