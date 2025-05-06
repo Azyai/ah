@@ -21,9 +21,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.Arrays;
 
 
 @Configuration
@@ -55,8 +59,8 @@ public class SecurityConfiguration {
     PersistentTokenRepository tokenRepository() {
         JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
         jdbcTokenRepository.setDataSource(dataSource);
-        // 第一次true自动创建一个表，我们也可以手动创建
-        jdbcTokenRepository.setCreateTableOnStartup(true);
+        // 第一次true自动创建一个表，我们也可以手动创建(首次需要，其他就不需要了，再次运行就要改为false)
+        jdbcTokenRepository.setCreateTableOnStartup(false);
         return jdbcTokenRepository;
     }
 
@@ -65,6 +69,7 @@ public class SecurityConfiguration {
     SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository tokenRepository) throws Exception {
         http.authorizeHttpRequests(
                         authorize -> authorize
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .anyRequest().authenticated()
                 ).formLogin(form -> {
                     form.loginProcessingUrl("/api/auth/login")
@@ -76,12 +81,34 @@ public class SecurityConfiguration {
                 }).csrf(AbstractHttpConfigurer::disable)
                 .rememberMe(remember -> remember.rememberMeParameter("remember")
                         .tokenRepository(tokenRepository) //这里要将其注入才能自动创建表
-                        .tokenValiditySeconds(3600 * 24 * 7 )); //以秒计算，7天内免登录
-
+                        .tokenValiditySeconds(3600 * 24 * 7 )) //以秒计算，7天内免登录
+                .cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource());
+                });
 
         return http.build();
     }
 
+
+    private CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        // 允许我们携带cookie，因为前端我们是设置了的发送cookie
+        corsConfiguration.setAllowCredentials(true);
+        // 设置允许的请求头
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        // 设置允许请求的方法
+        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+
+        // corsConfiguration.addAllowedOriginPattern("*");
+        // 设置能允许请求的路径 这两个都可以设置单个或全部，只不过下面这个可以设置多个允许地址
+
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173/"));
+        corsConfiguration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // 所有的请求都走我们这个策略
+        source.registerCorsConfiguration("/**",corsConfiguration);
+        return source;
+    }
 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_OK);
