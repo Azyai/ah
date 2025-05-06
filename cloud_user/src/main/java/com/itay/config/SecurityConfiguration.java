@@ -1,18 +1,22 @@
 package com.itay.config;
 
-import jakarta.annotation.Resource;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-
-import javax.sql.DataSource;
+import java.io.IOException;
 
 
 @Configuration
@@ -26,21 +30,43 @@ public class SecurityConfiguration {
                 authorize -> authorize
                         .anyRequest().authenticated()
         ).formLogin(form -> {
-            form.loginProcessingUrl("api/auth/login")
+            form.loginProcessingUrl("/api/auth/login")
                     .usernameParameter("username")
-                    .passwordParameter("password");
-//                    .successHandler(this::onAuthenticationSuccess);
+                    .passwordParameter("password")
+                    .successHandler(this::onAuthenticationSuccess);
         }).logout(logout -> {
-            logout.logoutUrl("api/auth/logout");
+            logout.logoutUrl("/api/auth/logout");
         }).csrf(csrf -> csrf.disable());
 
         return http.build();
     }
 
-//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-//        response.setCharacterEncoding("utf-8");
-//        response.getWriter().write("登录成功!");
-//    }
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("{\"code\":200,\"message\":\"登录成功\"}");
+    }
+
+    // 手动配置用户信息
+    @Bean
+    public UserDetailsService users() {
+        UserDetails user = User.withUsername("user")
+                .password("{noop}user") // {noop}表示不加密
+                .roles("USER")
+                .build();
+
+        UserDetails admin = User.withUsername("admin")
+                .password("{noop}admin")
+                .roles("ADMIN")
+                .build();
+        //可以继续追加其它用户...
+        UserDetails anonymous = User.withUsername("anonymous")
+                .password("{noop}anonymous")
+                .roles("ANONYMOUS")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin, anonymous);
+    }
 
 
 
