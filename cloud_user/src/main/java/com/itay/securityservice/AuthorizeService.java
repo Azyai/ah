@@ -1,6 +1,5 @@
 package com.itay.securityservice;
 
-import cn.hutool.extra.mail.MailException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.code.kaptcha.Producer;
 import com.itay.entity.Role;
@@ -13,6 +12,7 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -53,10 +53,11 @@ public class AuthorizeService implements UserDetailsService {
     @Resource
     UserMapper userMapper;
 
-    public String sendValidateEmail(String email, String sessionId) {
+    public String sendValidateEmail(String email, String sessionId,boolean hasAccount) {
         // 我们这里设置的是60s后才可以重新发送一次验证码，而一次验证码时间过期为3分钟
         // 也就是我们刚刚发送的验证码过期时间低于2分钟，就可以重新发送一次验证码，重复此流程
-        String key = "email:" + sessionId + ":" + email;
+        String key = "email:" + sessionId + ":" + email + ":" + hasAccount;
+        // 必须要加上这个hasAccount来保证注册时的验证码不会用到重置密码上
         if(Boolean.TRUE.equals(template.hasKey(key))){
             //  如果这样包装类可能会存在空指针！因此修改一下,默认情况拦截即0s
             //  Long expire = template.getExpire(key, TimeUnit.SECONDS);
@@ -66,14 +67,18 @@ public class AuthorizeService implements UserDetailsService {
                 return "请求频繁，请稍后再试！";
             }
         }
+        User user = userMapper.findByUsernameOrEmail(email);
 
-        if(userMapper.findByUsernameOrEmail(email) != null){
+        if(hasAccount && user == null){
+            return "没有此邮件地址的账户";
+        }
+
+        if(!hasAccount && user != null){
             return "此邮箱已被其他用户注册";
         }
 
         // 1.先生成对应的验证码:可以使用随机数 或者 开源框架kaptcha
         String code = producer.createText();
-
         // 2.发送验证码到指定邮箱
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
@@ -97,7 +102,6 @@ public class AuthorizeService implements UserDetailsService {
         }
 
         // 4.用户在注册时，再从redis里面取出对应键值对，然后看验证码是否一致
-
     }
 
     PasswordEncoder encoder = new BCryptPasswordEncoder();
