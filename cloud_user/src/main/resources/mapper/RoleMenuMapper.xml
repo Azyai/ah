@@ -5,7 +5,7 @@
     <select id="findAuthoritiesByRoleName" resultType="java.lang.String">
     select distinct m.acl_value
     from role_menu rm
-    left join `role` r on r.id = rm.rile_id
+    left join `role` r on r.id = rm.role_id
     left join `menu` m on m.id = rm.menu_id
     where m.is_del = 0 and r.name in 
        <foreach collection="list" item="roleName" open="(" separator="," close=")">

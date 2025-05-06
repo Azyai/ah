@@ -1,16 +1,18 @@
 package com.itay.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
-public class User implements UserDetails {
+@Data
+public class User implements Serializable, UserDetails {
     private Integer id;
     private String username;
     private String password;
@@ -25,17 +27,30 @@ public class User implements UserDetails {
 
     @TableField(value = "credentialsNonExpired")
     private boolean credentialsNonExpired;
+
     @TableField(exist = false)
     private List<Role> roles;
 
+    @TableField(exist = false)
+    Collection<? extends GrantedAuthority> authorities;
+
+    @TableField(exist = false)
+    private String roleIds;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : getRoles()) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        }
-        return authorities;
+        return this.authorities;
     }
+
+
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//        for (Role role : getRoles()) {
+//            authorities.add(new SimpleGrantedAuthority(role.getName()));
+//        }
+//        return authorities;
+//    }
 
     public Integer getId() {
         return id;
