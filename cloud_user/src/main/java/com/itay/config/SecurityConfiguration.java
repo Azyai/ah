@@ -1,6 +1,7 @@
 package com.itay.config;
 
 
+import com.itay.resp.ResultData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,7 +45,8 @@ public class SecurityConfiguration {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("{\"code\":200,\"message\":\"登录成功\"}");
+        ResultData<String> resultData = ResultData.success("登录成功");
+        response.getWriter().write(String.valueOf(resultData));
     }
 
     // 手动配置用户信息
