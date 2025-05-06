@@ -9,6 +9,23 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: cloud-user
+  mail:
+    host: smtp.qq.com
+    protocol: smtp
+    username: 1115060927@qq.com
+    password: yrxziyahybdsfihj
+    port: 465
+    properties:
+      from: 1115060927@qq.com
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+  data:
+    redis:
+      host: 182.92.222.10
+      port: 6379
+      password: 123456
 
 mybatis-plus:
   configuration:

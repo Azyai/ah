@@ -14,15 +14,15 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 
 
@@ -43,28 +43,41 @@ public class SecurityConfiguration {
 
     }
 
-
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    @Resource
+    DataSource dataSource;
+
+    @Bean
+    PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        // 第一次true自动创建一个表，我们也可以手动创建
+        jdbcTokenRepository.setCreateTableOnStartup(true);
+        return jdbcTokenRepository;
+    }
 
     // 只是编写了配置文件，还没有写登录成功的重定向302
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository tokenRepository) throws Exception {
         http.authorizeHttpRequests(
-                authorize -> authorize
-                        .anyRequest().authenticated()
-        ).formLogin(form -> {
-            form.loginProcessingUrl("/api/auth/login")
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    .successHandler(this::onAuthenticationSuccess);
-        }).logout(logout -> {
-            logout.logoutUrl("/api/auth/logout");
-        }).csrf(csrf -> csrf.disable());
+                        authorize -> authorize
+                                .anyRequest().authenticated()
+                ).formLogin(form -> {
+                    form.loginProcessingUrl("/api/auth/login")
+                            .usernameParameter("username")
+                            .passwordParameter("password")
+                            .successHandler(this::onAuthenticationSuccess);
+                }).logout(logout -> {
+                    logout.logoutUrl("/api/auth/logout");
+                }).csrf(AbstractHttpConfigurer::disable)
+                .rememberMe(remember -> remember.rememberMeParameter("remember")
+                        .tokenRepository(tokenRepository) //这里要将其注入才能自动创建表
+                        .tokenValiditySeconds(3600 * 24 * 7 )); //以秒计算，7天内免登录
+
 
         return http.build();
     }
@@ -76,27 +89,5 @@ public class SecurityConfiguration {
         ResultData<String> resultData = ResultData.success("登录成功");
         response.getWriter().write(String.valueOf(resultData));
     }
-
-    // 手动配置用户信息
-    @Bean
-    public UserDetailsService users() {
-        UserDetails user = User.withUsername("user")
-                .password("{noop}user") // {noop}表示不加密
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.withUsername("admin")
-                .password("{noop}admin")
-                .roles("ADMIN")
-                .build();
-        //可以继续追加其它用户...
-        UserDetails anonymous = User.withUsername("anonymous")
-                .password("{noop}anonymous")
-                .roles("ANONYMOUS")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, admin, anonymous);
-    }
-
 
 }

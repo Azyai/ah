@@ -45,6 +45,8 @@ public class AuthorizeService implements UserDetailsService {
         // 3.获取用户的角色信息
         List<String> roleNames = rbacService.findRolesByUsername(user.getUsername());
 
+        System.out.println(roleNames);
+
         // 4.获取用户的权限信息
         List<String> authorities = rbacService.findAuthoritiesByRoleName(roleNames);
 
