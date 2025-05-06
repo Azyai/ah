@@ -69,10 +69,14 @@ public class AuthorizeService implements UserDetailsService {
         }
         User user = userMapper.findByUsernameOrEmail(email);
 
+        //这里的逻辑很简单
+        // 当我们要修改密码时走这个验证：修改密码传进来的是真，但是没有查出来用户就返回退出
         if(hasAccount && user == null){
             return "没有此邮件地址的账户";
         }
 
+        // 当我们要注册用户时走这个验证：传进来的是假，但是 user却能查出来直接返回
+        // 如果两个都没通过，则正常发送验证码
         if(!hasAccount && user != null){
             return "此邮箱已被其他用户注册";
         }
@@ -181,4 +185,33 @@ public class AuthorizeService implements UserDetailsService {
         return user;
 
     }
+
+
+    public boolean resetPasswordByEmail(String password, String email) {
+        password = encoder.encode(password);
+        return userMapper.resetPasswordByEmail(password, email) > 0;
+    }
+
+    public String validateOnly(String email, String code, String sessionId) {
+        String key = "email:" + sessionId + ":" + email + ":true"; // 必须有这个账户
+        // 如果只填邮箱，又没有验证码因此需要验证,又分很多种情况不能使用Boolean类型
+        if(Boolean.TRUE.equals(template.hasKey(key))){
+            String s = template.opsForValue().get(key);
+            if(s == null) { //验证码可能为空，也就是刚刚好失效了
+                template.delete(key); //验证码使用完毕，需要清除
+                return "验证码失效，请重新请求";
+            }
+
+            if(s.equals(code)){
+                return null;
+            }else {
+                return "验证码错误，请检查后再提交";
+            }
+
+        }else{
+            return "请先请求一封验证码邮件";
+        }
+    }
+
+
 }
