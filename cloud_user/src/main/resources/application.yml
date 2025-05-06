@@ -9,3 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: cloud-user
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true  # 开启驼峰命名映射
