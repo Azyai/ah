@@ -35,6 +35,10 @@ public class User implements Serializable, UserDetails {
     Collection<? extends GrantedAuthority> authorities;
 
     @TableField(exist = false)
+    private UserProfile userProfile;
+
+
+    @TableField(exist = false)
     private String roleIds;
 
     @Override
