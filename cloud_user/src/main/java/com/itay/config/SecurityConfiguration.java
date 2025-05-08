@@ -4,6 +4,7 @@ package com.itay.config;
 import com.itay.filter.JwtAuthenticationFilter;
 import com.itay.handler.AuthExceptionEntryPoint;
 import com.itay.securityservice.AuthorizeService;
+import com.itay.utils.SecurityConstants;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -67,6 +69,13 @@ public class SecurityConfiguration {
 
     @Resource
     private AuthExceptionEntryPoint authExceptionEntryPoint;
+
+
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return web -> web.ignoring().requestMatchers(SecurityConstants.WHITE_LIST);
+//    }
+
 
     // 只是编写了配置文件，还没有写登录成功的重定向302
     @Bean
