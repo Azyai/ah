@@ -1,12 +1,10 @@
 package com.itay.config;
 
 
-import com.itay.resp.ResultData;
+import com.itay.filter.JwtAuthenticationFilter;
+import com.itay.handler.AuthExceptionEntryPoint;
 import com.itay.securityservice.AuthorizeService;
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,10 +13,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,7 +25,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.util.Arrays;
 
 
@@ -64,6 +62,12 @@ public class SecurityConfiguration {
         return jdbcTokenRepository;
     }
 
+    @Resource
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Resource
+    private AuthExceptionEntryPoint authExceptionEntryPoint;
+
     // 只是编写了配置文件，还没有写登录成功的重定向302
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository tokenRepository) throws Exception {
@@ -71,14 +75,10 @@ public class SecurityConfiguration {
                         authorize -> authorize
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .anyRequest().authenticated()
-                ).formLogin(form -> {
-                    form.loginProcessingUrl("/api/auth/login")
-                            .usernameParameter("username")
-                            .passwordParameter("password")
-                            .successHandler(this::onAuthenticationSuccess);
-                }).logout(logout -> {
-                    logout.logoutUrl("/api/auth/logout");
-                }).csrf(AbstractHttpConfigurer::disable)
+                ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authExceptionEntryPoint))
+                .csrf(AbstractHttpConfigurer::disable)
                 .rememberMe(remember -> remember.rememberMeParameter("remember")
                         .tokenRepository(tokenRepository) //这里要将其注入才能自动创建表
                         .tokenValiditySeconds(3600 * 24 * 7 )) //以秒计算，7天内免登录
@@ -110,11 +110,5 @@ public class SecurityConfiguration {
         return source;
     }
 
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json;charset=UTF-8");
-        ResultData<String> resultData = ResultData.success("登录成功");
-        response.getWriter().write(String.valueOf(resultData));
-    }
 
 }

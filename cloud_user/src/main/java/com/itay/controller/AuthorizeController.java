@@ -2,11 +2,21 @@ package com.itay.controller;
 
 import com.itay.resp.ResultData;
 import com.itay.securityservice.AuthorizeService;
+import com.itay.utils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +44,66 @@ public class AuthorizeController {
             return ResultData.fail("400",s);
         }
     }
+
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @PostMapping("/login")
+    public ResultData<String> login(@RequestParam String username, @RequestParam String password) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
+
+            String token = jwtUtils.generateToken(authentication.getName(), authentication.getAuthorities());
+            System.out.println(token);
+
+            return ResultData.success("登录成功");
+        } catch (AuthenticationException e) {
+            return ResultData.fail("401", "用户名或密码错误");
+        }
+    }
+
+
+
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
+
+    @PostMapping("/logout")
+    public ResultData<String> logout(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+
+        if (!StringUtils.hasText(header) || !header.startsWith("Bearer ")) {
+            return ResultData.fail("401", "未提供有效 Token");
+        }
+
+        String token = header.substring(7);
+        if (!jwtUtils.validateToken(token)) {
+            return ResultData.fail("401", "Token 无效");
+        }
+
+        try {
+            String username = jwtUtils.parseUsername(token);
+            jwtUtils.addToBlacklist(token);
+
+            // 👇 新增：删除 Redis 中的权限缓存
+            redisTemplate.delete("user:" + username + ":authorities");
+
+            return ResultData.success("退出成功");
+        } catch (Exception e) {
+            return ResultData.fail("500", "退出失败，请稍后再试");
+        }
+    }
+
+
+
+
+
 
     @PostMapping("/register")
     public ResultData<String> registerUser(@Pattern(regexp = UNAME_REGEXP) @Length(min = 3,max = 18) @RequestParam("username") String username,

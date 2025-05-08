@@ -27,6 +27,9 @@ spring:
       port: 6379
       password: 123456
 
+jwt:
+  secret: ntzvtcNo+hjeo4br7lk5VVYfzxN7fya465deA8+dfqw=
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true  # 开启驼峰命名映射

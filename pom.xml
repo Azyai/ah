@@ -11,6 +11,7 @@
     <modules>
         <module>cloud_user</module>
         <module>cloud-api-commons</module>
+        <module>cloud_prize</module>
     </modules>
 
     <parent>
@@ -51,6 +52,14 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot-starter}</version>
+            </dependency>
+
+
+
+            <dependency>
+                <groupId>io.lettuce</groupId>
+                <artifactId>lettuce-core</artifactId>
+                <version>${lettuce-core.version}</version>
             </dependency>
 
             <dependency>
