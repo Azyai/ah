@@ -82,7 +82,7 @@ public class SecurityConfiguration {
     SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository tokenRepository) throws Exception {
         http.authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers(SecurityConstants.WHITE_LIST).permitAll()
                                 .anyRequest().authenticated()
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -3,6 +3,10 @@ package com.itay.controller;
 import com.itay.resp.ResultData;
 import com.itay.securityservice.AuthorizeService;
 import com.itay.utils.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +24,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+
+@Tag(name="用户系统",description = "用户接口管理模块")
 @Validated  //开启参数验证
 @RestController
 @RequestMapping(value = "/api/auth" )
@@ -32,6 +38,8 @@ public class AuthorizeController {
     @Resource
     AuthorizeService authorizeService;
 
+    //
+    @Operation(description = "发送注册邮件")
     @PostMapping("/valid-register-email")
     public ResultData<String> validateRegisterEmail(@Pattern (regexp = EMAIL_REGEXP)@RequestParam("email") String email,
                                                   jakarta.servlet.http.HttpServletRequest request){
@@ -52,6 +60,7 @@ public class AuthorizeController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Operation(description = "登录账号")
     @PostMapping("/login")
     public ResultData<String> login(@RequestParam String username, @RequestParam String password) {
         try {
@@ -74,7 +83,9 @@ public class AuthorizeController {
     StringRedisTemplate redisTemplate;
 
 
+    @Operation(description = "退出登录，需要携带token")
     @PostMapping("/logout")
+    @Parameters({@Parameter(name = "Authorization", description = "Bearer token", required = true)})
     public ResultData<String> logout(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
 
@@ -105,6 +116,7 @@ public class AuthorizeController {
 
 
 
+    @Operation(description = "注册账号,需要验证邮件编码")
     @PostMapping("/register")
     public ResultData<String> registerUser(@Pattern(regexp = UNAME_REGEXP) @Length(min = 3,max = 18) @RequestParam("username") String username,
                                          @Length(min = 6,max = 18)@RequestParam("password")String password,
@@ -120,6 +132,7 @@ public class AuthorizeController {
         }
     }
 
+    @Operation(description = "重置密码-发送验证码")
     @PostMapping("/valid-reset-email")
     public ResultData<String> validateResetEmail(@Pattern (regexp = EMAIL_REGEXP)@RequestParam("email") String email,
                                                  HttpServletRequest request){
@@ -134,6 +147,7 @@ public class AuthorizeController {
     }
 
 
+    @Operation(description = "重置密码-开始重置-主要是验证 验证码是否正确")
     @PostMapping("/start-reset")
     public ResultData<String> startRest(  @Pattern (regexp = EMAIL_REGEXP)  @RequestParam("email")String email,
                                         @Length(min = 6,max = 6) @RequestParam("code")String code,
@@ -147,6 +161,7 @@ public class AuthorizeController {
         return ResultData.fail("400",s);
     }
 
+    @Operation(description = "重置密码-重置密码接口")
     @PostMapping("/do-reset")
     public ResultData<String> resetPassword(  @Length(min = 6,max = 18)@RequestParam("password")String password,
                                             HttpServletRequest request){

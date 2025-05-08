@@ -55,6 +55,12 @@
             </dependency>
 
 
+            <!--Swagger3:调用方式 http://127.0.0.1:5555/swagger-ui//index.html-->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${swagger3.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.lettuce</groupId>

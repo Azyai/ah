@@ -9,6 +9,12 @@ public class SecurityConstants {
             "/api/auth/do-reset",
             "/api/auth/valid-email",
             "/api/auth/fx",
-            "/api/auth/**"
+            "/api/auth/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v2/**",
+            "/v3/**",
+            "/webjars/**"
     };
 }

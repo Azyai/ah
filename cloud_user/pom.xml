@@ -64,6 +64,14 @@
             <version>0.11.5</version>
         </dependency>
 
+
+        <!--Swagger3:调用方式 http://127.0.0.1:5555/swagger-ui//index.html-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+
+
         <!-- Spring Security OAuth2 -->
         <dependency>
             <groupId>org.springframework.security</groupId>
