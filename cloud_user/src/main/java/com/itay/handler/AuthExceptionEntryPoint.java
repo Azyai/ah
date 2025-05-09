@@ -29,6 +29,8 @@ public class AuthExceptionEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
+        System.out.println("认证异常: "+ authException.getMessage());
+
         // 设置响应内容类型为JSON
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         // 设置响应字符编码为UTF-8

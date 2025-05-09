@@ -2,6 +2,7 @@ package com.itay.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
+//@EqualsAndHashCode(callSuper = false)
 public class User implements Serializable, UserDetails {
     private Integer id;
     private String username;
