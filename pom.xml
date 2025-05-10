@@ -11,7 +11,8 @@
     <modules>
         <module>cloud_user</module>
         <module>cloud-api-commons</module>
-        <module>cloud_prize</module>
+        <module>cloud_price</module>
+        <module>cloud_gateway</module>
     </modules>
 
     <parent>
