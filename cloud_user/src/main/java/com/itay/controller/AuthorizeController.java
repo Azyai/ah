@@ -1,5 +1,6 @@
 package com.itay.controller;
 
+import com.itay.resp.LoginResponse;
 import com.itay.resp.ResultData;
 import com.itay.securityservice.AuthorizeService;
 import com.itay.securityservice.RbacService;
@@ -79,9 +80,9 @@ public class AuthorizeController {
 
     @Operation(description = "登录账号")
     @PostMapping("/login")
-    public ResponseEntity<ResultData<String>> login(
-            @RequestParam String username,
-            @RequestParam String password) {
+    public ResultData<LoginResponse> login(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
@@ -89,17 +90,13 @@ public class AuthorizeController {
 
             String token = jwtUtils.generateToken(authentication.getName(), authentication.getAuthorities());
 
-            // 构建成功响应，将 token 放入响应头
-            ResultData<String> result = ResultData.success("登录成功");
-            return ResponseEntity.ok()
-                    .header("Authorization", "Bearer " + token)
-                    .body(result);
+            LoginResponse response = new LoginResponse(token, "登录成功");
+
+            return ResultData.success(response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ResultData.fail("401", "用户名或密码错误"));
+            return ResultData.fail("401", "用户名或密码错误");
         }
     }
-
 
     @Autowired
     StringRedisTemplate redisTemplate;

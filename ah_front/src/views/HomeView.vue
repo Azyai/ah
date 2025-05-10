@@ -10,6 +10,8 @@
       </el-carousel-item>
     </el-carousel>
 
+    <el-button type="success" @click="sendTestRequest">发送测试请求</el-button>
+
     <!-- 产品介绍模块 -->
     <section class="features-section">
       <div class="container">
@@ -35,6 +37,30 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import {get} from "@/api/axios.ts";
+
+const sendTestRequest = () => {
+  const token = localStorage.getItem("token")
+  if (!token) {
+    alert("请先登录获取 Token")
+    return
+  }
+
+  get("/user/test")
+      .then((response) => {
+        console.log("接口响应:", response)
+        if (response.status === 200 && response.data.code === "200") {
+          alert("请求成功: " + response.data.data)
+        } else {
+          alert("请求失败: " + (response.data.message || "未知错误"))
+        }
+      })
+      .catch((error) => {
+        console.error("请求异常:", error)
+        alert("请求失败，请检查网络或权限")
+      })
+}
+
 
 // 轮播图数据
 const carouselItems = ref([

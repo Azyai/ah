@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
      @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
      public ResultData<String> exception(Exception e){
          System.out.println("#####come in GlobalExceptionHandler");
+         System.out.println(e.toString());
          return ResultData.fail(ReturnCodeEnum.RC500.getCode(),e.getMessage());
      }
 }

@@ -63,12 +63,15 @@ const submitLogin = () => {
   }
   postForm("api/auth/login", loginForm.value)
       .then((response) => {
-        const authHeader = response.headers.get('Authorization'); // 获取完整 header 值
-        const token = authHeader.split(' ')[1]; // 提取 token 部分
-        localStorage.setItem('token', token); // 存储 token
-        console.log('登录成功', token)
-        localStorage.setItem('token', token)
-        router.push('/')
+        console.log(response)
+        if(response.code === "200"){
+          alert('登录成功')
+          localStorage.setItem('token', response.data.token)
+          router.push('/')
+        }else {
+          alert('登录失败，'+ response.data.message)
+          router.push('/')
+        }
       }).catch((error) => {
     console.error('登录失败', error)
     alert('登录失败，请检查用户名和密码')
