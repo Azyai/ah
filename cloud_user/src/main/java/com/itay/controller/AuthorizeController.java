@@ -2,8 +2,10 @@ package com.itay.controller;
 
 import com.itay.resp.LoginResponse;
 import com.itay.resp.ResultData;
+import com.itay.resp.UserInfo;
 import com.itay.securityservice.AuthorizeService;
 import com.itay.securityservice.RbacService;
+import com.itay.service.UserProfileService;
 import com.itay.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -78,6 +80,9 @@ public class AuthorizeController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    UserProfileService userProfileService;
+
     @Operation(description = "登录账号")
     @PostMapping("/login")
     public ResultData<LoginResponse> login(
@@ -89,9 +94,10 @@ public class AuthorizeController {
             );
 
             String token = jwtUtils.generateToken(authentication.getName(), authentication.getAuthorities());
+            UserInfo u = userProfileService.findUserProfileByUserByUserId(authentication.getPrincipal().hashCode());
+            LoginResponse response = new LoginResponse(token, "登录成功",u);
 
-            LoginResponse response = new LoginResponse(token, "登录成功");
-
+            
             return ResultData.success(response);
         } catch (AuthenticationException e) {
             return ResultData.fail("401", "用户名或密码错误");
