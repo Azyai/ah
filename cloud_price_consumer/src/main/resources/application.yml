@@ -1,9 +1,9 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   application:
-    name: cloud-price-provider
+    name: cloud-price-consumer
   cloud:
     nacos:
       discovery: localhost:8848 # 配置nacos地址
