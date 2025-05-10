@@ -79,9 +79,9 @@ public class JwtUtils {
                     .getBody();
 
 
-            System.out.println("Token Subject: " + claims.getSubject());
-            System.out.println("Token Expire: " + claims.getExpiration());
-            System.out.println("Now Time: " + new Date(System.currentTimeMillis()));
+//            System.out.println("Token Subject: " + claims.getSubject());
+//            System.out.println("Token Expire: " + claims.getExpiration());
+//            System.out.println("Now Time: " + new Date(System.currentTimeMillis()));
 
             // 检查是否过期
             if (claims.getExpiration().before(new Date(System.currentTimeMillis()))) {

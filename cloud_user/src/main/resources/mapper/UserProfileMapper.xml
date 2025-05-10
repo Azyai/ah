@@ -22,6 +22,6 @@
          select u.id,u.username,u.email,up.address,up.avatar,up.bio,up.birth_date,up.gender,up.phone,up.real_name
          from `user` u
          left join `user_profile` up on u.id = up.user_id
-         where u.id = #{userId} and u.enabled = 1
+         where u.username = #{userId} or u.email = #{userId} and u.enabled = 1
     </select>
 </mapper>

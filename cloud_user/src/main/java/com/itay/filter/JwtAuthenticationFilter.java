@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (isWhiteListed(path)) {
             filterChain.doFilter(request, response);
-            System.out.println(path + "已经放行");
+//            System.out.println(path + "已经放行");
             return;
         }
 
@@ -65,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("token校验通过");
+//        System.out.println("token校验通过");
 
         String username = jwtUtils.parseUsername(token);
         String authorityStr = redisTemplate.opsForValue().get("user:" + username + ":authorities");
@@ -79,10 +79,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Authentication auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        System.out.println("从Redis获取的权限字符串：" + authorityStr); // 应包含'2099'
-        System.out.println(authorities);
-        System.out.println("用户权限已缓存到 Redis");
-        System.out.println(auth);
+//        System.out.println("从Redis获取的权限字符串：" + authorityStr); // 应包含'2099'
+//        System.out.println(authorities);
+//        System.out.println("用户权限已缓存到 Redis");
+//        System.out.println(auth);
 
         filterChain.doFilter(request, response);
     }

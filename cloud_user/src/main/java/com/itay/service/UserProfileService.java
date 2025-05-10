@@ -6,6 +6,6 @@ import com.itay.resp.UserInfo;
 
 public interface UserProfileService extends IService<UserProfile> {
 
-    UserInfo findUserProfileByUserByUserId(Integer userId);
+    UserInfo findUserProfileByUserByUserNameOreMail(String userId);
 
 }

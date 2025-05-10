@@ -9,6 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserProfileMapper extends BaseMapper<UserProfile> {
 
-    UserInfo findUserProfileByUserByUserId(Integer userId);
+    UserInfo findUserProfileByUserByUserId(String userId);
 
 }

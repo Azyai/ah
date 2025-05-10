@@ -41,6 +41,7 @@
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {postForm} from "@/api/axios.ts";
+import {useUserStore} from "@/stores/counter.ts";
 
 const router = useRouter()
 const dialogVisible = ref(true)
@@ -56,6 +57,8 @@ const loginForm = ref<LoginForm>({
   password: ''
 })
 
+const userStore = useUserStore()
+
 const submitLogin = () => {
   if (!loginForm.value.username || !loginForm.value.password) {
     alert('请填写所有字段')
@@ -67,6 +70,10 @@ const submitLogin = () => {
         if(response.code === "200"){
           alert('登录成功')
           localStorage.setItem('token', response.data.token)
+
+          userStore.userInfo = response.data.userInfo
+          userStore.isAuthenticated = true
+
           router.push('/')
         }else {
           alert('登录失败，'+ response.data.message)

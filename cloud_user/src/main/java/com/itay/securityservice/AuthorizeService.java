@@ -177,13 +177,13 @@ public class AuthorizeService implements UserDetailsService {
         // 5.告诉security角色有那些，角色的格式为：Role_xxx 所以这里需要修改一下
         roleNames = roleNames.stream().map(role -> "ROLE_" + role).toList();
 
-        System.out.println("用户权限列表：" + authorities); // 应该包含'2099'
+//        System.out.println("用户权限列表：" + authorities); // 应该包含'2099'
 
         // 6.告诉security角色和权限:这里也是做了一个转换，因为setAuthorities需要的是GrantedAuthority
         //  而GrantedAuthority实现了Serializable，因此我们使用commaSeparatedStringToAuthorityList方法进行转换
         user.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",",authorities)));
 
-        System.out.println(user + "-----------------");
+//        System.out.println(user + "-----------------");
         return user;
 
     }

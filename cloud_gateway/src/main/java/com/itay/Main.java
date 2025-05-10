@@ -2,6 +2,8 @@ package com.itay;
 
 //TIP 要<b>运行</b>代码，请按 <shortcut actionId="Run"/> 或
 // 点击装订区域中的 <icon src="AllIcons.Actions.Execute"/> 图标。
+// 暂时搁置一下gateway统一鉴权，，，貌似需要oauth2做校验（我手动识别jwt感觉很low，当然也没啥问题）
+// 回头先实现手动jwt校验，再实现oauth2实现认证服务器和资源服务器
 public class Main {
     public static void main(String[] args) {
         //TIP 当文本光标位于高亮显示的文本处时按 <shortcut actionId="ShowIntentionActions"/>

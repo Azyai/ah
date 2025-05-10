@@ -94,7 +94,10 @@ public class AuthorizeController {
             );
 
             String token = jwtUtils.generateToken(authentication.getName(), authentication.getAuthorities());
-            UserInfo u = userProfileService.findUserProfileByUserByUserId(authentication.getPrincipal().hashCode());
+            System.out.println(authentication);
+
+
+            UserInfo u = userProfileService.findUserProfileByUserByUserNameOreMail(username);
             LoginResponse response = new LoginResponse(token, "登录成功",u);
 
             

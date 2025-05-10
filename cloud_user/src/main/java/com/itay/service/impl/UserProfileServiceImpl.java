@@ -17,7 +17,7 @@ public class UserProfileServiceImpl extends ServiceImpl<UserProfileMapper,UserPr
     UserProfileMapper userProfileMapper;
 
     @Override
-    public UserInfo findUserProfileByUserByUserId(Integer userId) {
+    public UserInfo findUserProfileByUserByUserNameOreMail(String userId) {
         UserInfo userInfo = userProfileMapper.findUserProfileByUserByUserId(userId);
 
         return userInfo;

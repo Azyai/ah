@@ -4,8 +4,13 @@ import com.itay.entity.User;
 import com.itay.resp.ResultData;
 import com.itay.resp.UserInfo;
 import com.itay.service.UserProfileService;
+import com.itay.utils.JwtUtils;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,10 +35,24 @@ public class TestGateWayController {
     @Autowired
     UserProfileService userProfileService;
 
+    @Resource
+    JwtUtils jwtUtils;
+
+
     @GetMapping("/getUserInfo")
-    public ResultData<UserInfo> getUserInfo(int id) {
-        UserInfo userInfo =  userProfileService.findUserProfileByUserByUserId(id);
+    public ResultData<UserInfo> getUserInfo(HttpServletRequest request) {
+        String token = extractToken(request);
+        String username = jwtUtils.parseUsername(token);
+        UserInfo userInfo = userProfileService.findUserProfileByUserByUserNameOreMail(username);
         return ResultData.success(userInfo);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
 }

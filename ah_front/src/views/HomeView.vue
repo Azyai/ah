@@ -49,10 +49,10 @@ const sendTestRequest = () => {
   get("/user/test")
       .then((response) => {
         console.log("接口响应:", response)
-        if (response.status === 200 && response.data.code === "200") {
-          alert("请求成功: " + response.data.data)
+        if (response.code === "200") {
+          alert("请求成功: " + response.data)
         } else {
-          alert("请求失败: " + (response.data.message || "未知错误"))
+          alert("请求失败: " + (response.message || "未知错误"))
         }
       })
       .catch((error) => {
