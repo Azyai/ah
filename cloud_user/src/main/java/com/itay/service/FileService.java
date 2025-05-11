@@ -1,6 +1,9 @@
 package com.itay.service;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.itay.entity.SysFile;
+import com.itay.entity.User;
+import com.itay.entity.UserProfile;
 import com.itay.mapper.FileMapper;
 import com.itay.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,10 +28,16 @@ public class FileService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    @Value("${file.access-path}")
-    private String accessPath;
+    @Value("${file.relative-path}")
+    private String relativePath;
 
-    public String uploadFile(MultipartFile file, HttpServletRequest request) throws IOException{
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserProfileService userProfileService;
+
+    public String uploadFile(MultipartFile file, HttpServletRequest request) throws IOException {
         // 解析上传用户
         String token = jwtUtils.extractToken(request);
         String username = jwtUtils.parseUsername(token);
@@ -40,10 +49,9 @@ public class FileService {
 
         // 存储路径处理
         File uploadPath = new File(uploadDir);
-        if(!uploadPath.exists()) uploadPath.mkdirs();
+        if (!uploadPath.exists()) uploadPath.mkdirs();
 
-
-        File dest = new File(uploadPath,storageName);
+        File dest = new File(uploadPath, storageName);
         file.transferTo(dest);
 
         // 保存文件记录
@@ -56,10 +64,17 @@ public class FileService {
         sysFile.setFileSize(file.getSize());
         sysFile.setUploadUser(username);
 
-        fileMapper.insertFile(sysFile);
+        User user = userService.findByUsernameOrEmail(username);
 
-        return accessPath + "/" + storageName;
+        int i = fileMapper.insertFile(sysFile);
+        if (i > 0) {
+            // 只需要更新用户头像字段
+            LambdaUpdateWrapper<UserProfile> lambda = new LambdaUpdateWrapper<>();
+            lambda.set(UserProfile::getAvatar, relativePath + "/" + storageName) // 存储相对路径
+                    .eq(UserProfile::getUserId, user.getId());
+            userProfileService.update(lambda);
+        }
+
+        return relativePath + "/" + storageName; // 返回相对路径
     }
-
-
 }

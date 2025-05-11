@@ -15,6 +15,10 @@ public class SecurityConstants {
             "/swagger-resources/**",
             "/v2/**",
             "/v3/**",
-            "/webjars/**"
+            "/webjars/**",
+            "/error/",
+            "/static/**",
+            // 放行图标
+            "/favicon.ico",
     };
 }

@@ -73,10 +73,10 @@ public class SecurityConfiguration {
     private AuthExceptionEntryPoint authExceptionEntryPoint;
 
 
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return web -> web.ignoring().requestMatchers(SecurityConstants.WHITE_LIST);
-//    }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(SecurityConstants.WHITE_LIST);
+    }
 
 
     // 只是编写了配置文件，还没有写登录成功的重定向302
@@ -102,6 +102,7 @@ public class SecurityConfiguration {
 
 
     private CorsConfigurationSource corsConfigurationSource(){
+
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         // 允许我们携带cookie，因为前端我们是设置了的发送cookie
         corsConfiguration.setAllowCredentials(true);

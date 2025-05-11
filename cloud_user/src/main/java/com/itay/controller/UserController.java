@@ -1,0 +1,104 @@
+package com.itay.controller;
+
+import com.itay.resp.ResultData;
+import com.itay.resp.UserInfo;
+import com.itay.service.FileService;
+import com.itay.service.UserProfileService;
+import com.itay.utils.JwtUtils;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    @PreAuthorize("hasAuthority('2099')") // 只有拥有 '2099' 权限的用户才能访问
+    @GetMapping("/test")
+    public ResultData<String> test() {
+        return ResultData.success("test");
+    }
+
+
+    @GetMapping("/test2")
+    public ResultData<String> test2() {
+        return ResultData.success("test2");
+    }
+
+
+    @Autowired
+    UserProfileService userProfileService;
+
+    @Resource
+    JwtUtils jwtUtils;
+
+
+    @GetMapping("/getUserInfo")
+    public ResultData<UserInfo> getUserInfo(HttpServletRequest request) {
+        String token = extractToken(request);
+        String username = jwtUtils.parseUsername(token);
+        UserInfo userInfo = userProfileService.findUserProfileByUserByUserNameOreMail(username);
+        return ResultData.success(userInfo);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    @Autowired
+    FileService fileService;
+
+    @PostMapping("/uploadAvatar")
+    public ResultData<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException, IOException {
+        String relativePath = fileService.uploadFile(file, request); // 获取相对路径
+        return ResultData.success(relativePath); // 返回相对路径
+    }
+
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    @GetMapping(value = "/getAvatar", produces = MediaType.IMAGE_JPEG_VALUE) // 根据实际图片类型调整
+    public byte[] getAvatar(HttpServletRequest request) throws IOException {
+        // 从请求中解析用户信息
+        String token = jwtUtils.extractToken(request);
+        String username = jwtUtils.parseUsername(token);
+
+        // 获取用户信息
+        UserInfo userInfo = userProfileService.findUserProfileByUserByUserNameOreMail(username);
+        if (userInfo == null || userInfo.getAvatar() == null) {
+            throw new RuntimeException("用户头像不存在");
+        }
+
+        // 获取头像的相对路径
+        String avatarPath = userInfo.getAvatar();
+
+        // 拼接完整的文件路径
+        String fullPath = uploadDir + File.separator + avatarPath;
+        File avatarFile = new File(fullPath);
+
+        // 检查文件是否存在
+        if (!avatarFile.exists()) {
+            throw new RuntimeException("头像文件不存在");
+        }
+
+        // 读取文件并返回字节数组
+        return Files.readAllBytes(avatarFile.toPath());
+    }
+
+
+}
