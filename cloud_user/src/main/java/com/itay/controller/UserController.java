@@ -63,8 +63,14 @@ public class UserController {
     FileService fileService;
 
     @PostMapping("/uploadAvatar")
-    public ResultData<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException, IOException {
-        String relativePath = fileService.uploadFile(file, request); // 获取相对路径
+    public ResultData<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request)  {
+        System.out.println("文件名称" + file.getName());
+        String relativePath = null; // 获取相对路径
+        try {
+            relativePath = fileService.uploadFile(file, request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return ResultData.success(relativePath); // 返回相对路径
     }
 

@@ -16,7 +16,7 @@ public class SecurityConstants {
             "/v2/**",
             "/v3/**",
             "/webjars/**",
-            "/error/",
+            "/error",
             "/static/**",
             // 放行图标
             "/favicon.ico",

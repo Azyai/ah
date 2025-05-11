@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (isWhiteListed(path)) {
             filterChain.doFilter(request, response);
-//            System.out.println(path + "已经放行");
+            System.out.println(path + "已经放行");
             return;
         }
 

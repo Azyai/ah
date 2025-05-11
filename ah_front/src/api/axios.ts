@@ -63,15 +63,21 @@ export function post<T = any>(
     }).then(res => res.data)
 }
 
+// 定义通用请求函数
 export function postForm<T = any>(
     shortURL: string,
-    data?: Record<string, any>
+    data?: Record<string, any> | FormData,
+    config?: { headers?: Record<string, string> }
 ): Promise<T> {
-    return instance.post<T>(shortURL, qs.stringify(data), {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    }).then(res => res.data)
+    // 默认不设置 Content-Type，让浏览器自动识别 multipart/form-data 和 boundary
+    const requestConfig = {
+        headers: config?.headers || {}
+    }
+
+    const isFormData = data instanceof FormData
+    const body = isFormData ? data : qs.stringify(data)
+
+    return instance.post<T>(shortURL, body, requestConfig).then(res => res.data)
 }
 
 export function del<T = any>(shortURL: string): Promise<T> {

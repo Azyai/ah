@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { get } from '@/api/axios'
+import {get, post} from '@/api/axios'
 
 export interface UserInfo {
     id: number
@@ -47,6 +47,9 @@ export const useUserStore = defineStore('user', () => {
     const clearUserInfo = () => {
         userInfo.value = null
         isAuthenticated.value = false
+
+
+
     }
 
     return {

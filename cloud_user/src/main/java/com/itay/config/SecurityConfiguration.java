@@ -114,7 +114,7 @@ public class SecurityConfiguration {
         // corsConfiguration.addAllowedOriginPattern("*");
         // 设置能允许请求的路径 这两个都可以设置单个或全部，只不过下面这个可以设置多个允许地址
 
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173/"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173/","http://127.0.0.1:5173/"));
         corsConfiguration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         // 所有的请求都走我们这个策略

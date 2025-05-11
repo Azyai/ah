@@ -46,7 +46,7 @@ const sendTestRequest = () => {
     return
   }
 
-  get("/user/test")
+  get("/user/getUserInfo")
       .then((response) => {
         console.log("接口响应:", response)
         if (response.code === "200") {
