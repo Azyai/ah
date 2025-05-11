@@ -26,6 +26,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -82,7 +84,10 @@ public class SecurityConfiguration {
     // 只是编写了配置文件，还没有写登录成功的重定向302
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository tokenRepository) throws Exception {
-        http.authorizeHttpRequests(
+        http.cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource());
+                }).
+                authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(SecurityConstants.WHITE_LIST).permitAll()
                                 .anyRequest().authenticated()
@@ -92,10 +97,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .rememberMe(remember -> remember.rememberMeParameter("remember")
                         .tokenRepository(tokenRepository) //这里要将其注入才能自动创建表
-                        .tokenValiditySeconds(3600 * 24 * 7 )) //以秒计算，7天内免登录
-                .cors(cors -> {
-                    cors.configurationSource(corsConfigurationSource());
-                });
+                        .tokenValiditySeconds(3600 * 24 * 7 ) //以秒计算，7天内免登录
+                );
 
         return http.build();
     }
@@ -114,12 +117,27 @@ public class SecurityConfiguration {
         // corsConfiguration.addAllowedOriginPattern("*");
         // 设置能允许请求的路径 这两个都可以设置单个或全部，只不过下面这个可以设置多个允许地址
 
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173/","http://127.0.0.1:5173/"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://127.0.0.1:5173"));
         corsConfiguration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         // 所有的请求都走我们这个策略
         source.registerCorsConfiguration("/**",corsConfiguration);
         return source;
+    }
+
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
     }
 
 

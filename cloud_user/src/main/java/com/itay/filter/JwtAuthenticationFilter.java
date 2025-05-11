@@ -40,9 +40,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-    private boolean isWhiteListed(String path) {
+    private boolean isWhiteListed(String path, HttpServletRequest request) {
         return Arrays.stream(SecurityConstants.WHITE_LIST)
-                .anyMatch(pattern -> antPathMatcher.match(pattern, path));
+                .anyMatch(pattern -> antPathMatcher.match(pattern, path))
+                || "OPTIONS".equals(request.getMethod()); // 添加 OPTIONS 方法检查
     }
 
     @Override
@@ -51,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (isWhiteListed(path)) {
+        if (isWhiteListed(path,request)) {
             filterChain.doFilter(request, response);
             System.out.println(path + "已经放行");
             return;
