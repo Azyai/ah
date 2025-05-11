@@ -22,7 +22,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hutool.version>5.8.22</hutool.version>
-        <lombok.version>1.18.26</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <knife4j.version>4.4.0</knife4j.version>
         <!--引入mybatis-plus自动引入对应版本的mybatis-->
         <mybatisplus-spring-boot3-starter>3.5.12</mybatisplus-spring-boot3-starter>
