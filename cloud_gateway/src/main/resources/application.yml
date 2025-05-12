@@ -1,6 +1,9 @@
 server:
   port: 9527
 
+jwt:
+  secret: ntzvtcNo+hjeo4br7lk5VVYfzxN7fya465deA8+dfqw=
+
 spring:
   data:
     redis:
