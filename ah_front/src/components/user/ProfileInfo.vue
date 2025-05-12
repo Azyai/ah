@@ -78,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed} from 'vue'
+import {ref, computed,watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import {useUserStore} from '@/stores/counter'
 import {postForm, post} from '@/api/axios'
@@ -110,21 +110,41 @@ const rules = ref<FormRules>({
 
 const userStore = useUserStore()
 
-// 表单数据：使用 computed 自动从 store 获取
-const formData = computed(() => {
-  const user = userStore.userInfo
-  return {
-    username: user?.username ?? '',
-    email: user?.email ?? '',
-    realName: user?.realName ?? '',
-    gender: user?.gender ?? 1,
-    birthDate: user?.birthDate ?? '',
-    phone: user?.phone ?? '',
-    address: user?.address ?? '',
-    bio: user?.bio ?? '',
-    avatar: user?.avatar ?? ''
-  }
+// 表单数据：使用 ref 初始化
+const formData = ref({
+  id: userStore.userInfo?.id ?? 0,
+  username: userStore.userInfo?.username ?? '',
+  email: userStore.userInfo?.email ?? '',
+  realName: userStore.userInfo?.realName ?? '',
+  gender: userStore.userInfo?.gender ?? 1,
+  birthDate: userStore.userInfo?.birthDate ?? '',
+  phone: userStore.userInfo?.phone ?? '',
+  address: userStore.userInfo?.address ?? '',
+  bio: userStore.userInfo?.bio ?? '',
+  avatar: userStore.userInfo?.avatar ?? ''
 })
+
+// 监听 userStore.userInfo 的变化，更新 formData
+watch(
+    () => userStore.userInfo,
+    (newUserInfo) => {
+      if (newUserInfo) {
+        formData.value = {
+          id: newUserInfo.id ?? 0,
+          username: newUserInfo.username ?? '',
+          email: newUserInfo.email ?? '',
+          realName: newUserInfo.realName ?? '',
+          gender: newUserInfo.gender ?? 1,
+          birthDate: newUserInfo.birthDate ?? '',
+          phone: newUserInfo.phone ?? '',
+          address: newUserInfo.address ?? '',
+          bio: newUserInfo.bio ?? '',
+          avatar: newUserInfo.avatar ?? ''
+        }
+      }
+    },
+    { immediate: true }
+)
 
 // 提交状态
 const submitting = ref(false)

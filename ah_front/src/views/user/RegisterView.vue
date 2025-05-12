@@ -126,6 +126,13 @@ const sendVerificationCode = async () => {
   }
 
   const res = await postForm("api/auth/valid-register-email",step1Form.value)
+
+  ElNotification({
+    title: 'Success',
+    message: "获取验证码中，请稍后...",
+    type: 'success',
+  })
+
   if(res.code === "200"){
     ElNotification({
       title: 'Success',
