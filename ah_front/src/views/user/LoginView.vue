@@ -29,7 +29,8 @@
           </el-form>
 
           <p class="link-text">
-            还没有账号？<a href="/register">立即注册</a>
+            <router-link to="/forgot-password">忘记密码</router-link>
+            还没有账号？<router-link to="/register">立即注册</router-link>
           </p>
         </div>
       </div>

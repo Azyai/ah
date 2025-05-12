@@ -3,8 +3,13 @@
     <el-dialog v-model="dialogVisible" custom-class="custom-register-dialog" @close="handleClose">
       <div class="dialog-content">
         <div class="dialog-header">
-          <h3>{{ step === 1 ? '注册第一步 - 邮箱验证' : '注册第二步 - 设置账户' }}</h3>
+          <h3>注册新账号</h3>
         </div>
+        <!-- 步骤条 -->
+        <el-steps :active="step" align-center>
+          <el-step title="邮箱验证" />
+          <el-step title="设置账户" />
+        </el-steps>
         <div class="dialog-body">
           <!-- Step 1 -->
           <div v-if="step === 1">
@@ -67,6 +72,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import {postForm} from "@/api/axios.ts";
+import {ElMessage, ElNotification} from "element-plus";
 
 const router = useRouter()
 
@@ -100,18 +107,45 @@ const step2Form = ref<Step2Form>({
   code: ''
 })
 
-// 模拟发送验证码
-const sendVerificationCode = () => {
+const step2FormT = ref({
+  username: '',
+  password: '',
+  email: '',
+  code: ''
+})
+
+// 发送验证码
+const sendVerificationCode = async () => {
   if (!step1Form.value.email) {
-    alert('请输入邮箱')
+    ElMessage({
+      message: '请输入邮箱',
+      type: 'warning',
+      duration: 3000
+    })
     return
   }
-  alert('验证码已发送，请查收邮件')
-  step.value = 2
+
+  const res = await postForm("api/auth/valid-register-email",step1Form.value)
+  if(res.code === "200"){
+    ElNotification({
+      title: 'Success',
+      message: res.data,
+      type: 'success',
+    })
+    step.value = 2
+  }else{
+    ElNotification({
+      title: 'Warning',
+      message: res.data,
+      type: 'warning',
+    })
+  }
+
+
 }
 
 // 提交注册
-const submitRegister = () => {
+const submitRegister = async () => {
   const { username, password, confirmPassword, code } = step2Form.value
   if (!username || !password || !confirmPassword || !code) {
     alert('请填写所有字段')
@@ -123,8 +157,31 @@ const submitRegister = () => {
     return
   }
 
-  console.log('提交注册信息:', step2Form.value)
-  router.push('/login')
+  step2FormT.value.username = step2Form.value.username
+  step2FormT.value.password = step2Form.value.password
+  step2FormT.value.email = step1Form.value.email
+  step2FormT.value.code = step2Form.value.code
+
+  const res = await postForm("api/auth/register",step2FormT.value)
+
+  if (res.code === "200") {
+    ElNotification({
+      title: 'Success',
+      message: res.mgessage,
+      type: 'success',
+    })
+    await router.push('/login')
+
+  } else {
+    ElNotification({
+      title: 'Warning',
+      message: res.message,
+      type: 'warning',
+    })
+
+    await router.push('/register')
+  }
+
 }
 
 // 处理关闭弹窗事件
@@ -204,5 +261,10 @@ const handleClose = () => {
 
 .el-button:hover {
   transform: translateY(-2px);
+}
+
+/* 步骤条样式 */
+.el-steps {
+  margin: 20px 0;
 }
 </style>
