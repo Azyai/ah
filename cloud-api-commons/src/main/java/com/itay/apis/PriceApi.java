@@ -4,7 +4,7 @@ import com.itay.resp.ResultData;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient("cloud-price")
+@FeignClient("cloud-price-provider")
 public interface PriceApi {
 
     @GetMapping(value = "/getServerPort")

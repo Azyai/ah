@@ -12,6 +12,8 @@
         <module>cloud_user</module>
         <module>cloud-api-commons</module>
         <module>cloud_price_provider</module>
+        <module>cloud_gateway</module>
+        <module>cloud_price_consumer</module>
     </modules>
 
 
