@@ -193,6 +193,7 @@ public class AuthorizeController {
         // 如果我们刚刚验证码通过就会存放一条session数据，如果此时浏览器带过来了，那么就允许修改密码
         // 如果没有携带，说明就没有通过校验！直接就调用我们这个修改密码的接口了
         String email = (String) session.getAttribute("reset-password");
+        System.out.println(email + " 重置密码：" + password);
         if (email == null) {
             return ResultData.fail("401", "请先完成邮箱验证");
         } else if (authorizeService.resetPasswordByEmail(password, email)) {

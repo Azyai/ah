@@ -16,6 +16,6 @@ public interface UserMapper extends BaseMapper<User> {
 
 
     @Update("update user set password = #{password} where email = #{email}")
-    int resetPasswordByEmail(String password, String email);
+    int resetPasswordByEmail(@Param("password") String password,@Param("email") String email);
 
 }
