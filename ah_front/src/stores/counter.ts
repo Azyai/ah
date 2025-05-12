@@ -1,6 +1,7 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import {defineStore} from 'pinia'
+import {ref} from 'vue'
 import {get, post} from '@/api/axios'
+import {ElMessage} from "element-plus";
 
 export interface UserInfo {
     id: number
@@ -44,11 +45,26 @@ export const useUserStore = defineStore('user', () => {
     }
 
     // 清除用户信息
-    const clearUserInfo = () => {
-        userInfo.value = null
-        isAuthenticated.value = false
+    const clearUserInfo = async () => {
+        console.log("清除用户token")
+        const res = await post("api/auth/logout")
+        if(res.code === "200"){
+            userInfo.value = null
+            isAuthenticated.value = false
+            localStorage.removeItem("token")
 
+            ElMessage({
+                message: '退出成功，请重新登录',
+                type: 'success',
+                duration: 3000
+            })
 
+        }else {
+            ElMessage({
+                message: '退出失败，请重试',
+                type: 'error'
+            })
+        }
 
     }
 

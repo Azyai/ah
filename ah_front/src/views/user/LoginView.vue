@@ -42,6 +42,7 @@ import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {postForm} from "@/api/axios.ts";
 import {useUserStore} from "@/stores/counter.ts";
+import {ElMessage,ElNotification} from "element-plus";
 
 const router = useRouter()
 const dialogVisible = ref(true)
@@ -68,9 +69,14 @@ const submitLogin = () => {
       .then((response) => {
         console.log(response)
         if(response.code === "200"){
-          alert('登录成功')
-          localStorage.setItem('token', response.data.token)
 
+          ElMessage({
+            message: '登录成功',
+            type: 'success',
+            duration: 3000
+          })
+
+          localStorage.setItem('token', response.data.token)
           userStore.userInfo = response.data.userInfo
           userStore.isAuthenticated = true
 

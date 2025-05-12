@@ -38,11 +38,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {get} from "@/api/axios.ts";
+import {ElMessage} from "element-plus";
 
 const sendTestRequest = () => {
   const token = localStorage.getItem("token")
   if (!token) {
-    alert("请先登录获取 Token")
+    ElMessage({
+      message: '获取测试消息成功',
+      type: 'success',
+      duration: 3000
+    })
     return
   }
 

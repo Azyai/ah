@@ -26,5 +26,8 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
+  },
+  server:{
+    host: "127.0.0.1"
   }
 })
