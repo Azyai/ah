@@ -1,5 +1,7 @@
 package com.itay.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.itay.entity.UserProfile;
 import com.itay.resp.ResultData;
 import com.itay.resp.UserInfo;
 import com.itay.service.FileService;
@@ -63,7 +65,7 @@ public class UserController {
     FileService fileService;
 
     @PostMapping("/uploadAvatar")
-    public ResultData<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request)  {
+    public ResultData<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         System.out.println("文件名称" + file.getName());
         String relativePath = null; // 获取相对路径
         try {
@@ -106,5 +108,22 @@ public class UserController {
         return Files.readAllBytes(avatarFile.toPath());
     }
 
+    @PostMapping("updateUserInfo")
+    public ResultData<String> updateUserInfo(@RequestBody UserInfo userInfo, HttpServletRequest request) {
+        LambdaUpdateWrapper<UserProfile> lambda = new LambdaUpdateWrapper<>();
+        lambda.eq(UserProfile::getUserId, userInfo.getId())
+                .set(UserProfile::getRealName, userInfo.getRealName())
+                .set(UserProfile::getGender, userInfo.getGender())
+                .set(UserProfile::getBirthDate, userInfo.getBirthDate())
+                .set(UserProfile::getPhone, userInfo.getPhone())
+                .set(UserProfile::getAddress, userInfo.getAddress())
+                .set(UserProfile::getAvatar, userInfo.getAvatar())
+                .set(UserProfile::getBio, userInfo.getBio());
+        boolean update = userProfileService.update(lambda);
+        if (!update){
+            return ResultData.fail("更新失败,请联系管理员");
+        }
+        return ResultData.success("更新成功");
+    }
 
 }

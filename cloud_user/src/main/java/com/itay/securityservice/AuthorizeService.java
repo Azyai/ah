@@ -2,11 +2,9 @@ package com.itay.securityservice;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.code.kaptcha.Producer;
-import com.itay.entity.Role;
-import com.itay.entity.RoleMenu;
-import com.itay.entity.User;
-import com.itay.entity.UserRole;
+import com.itay.entity.*;
 import com.itay.mapper.*;
+import com.itay.service.UserProfileService;
 import com.itay.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +51,12 @@ public class AuthorizeService implements UserDetailsService {
 
     @Resource
     UserMapper userMapper;
+
+    @Autowired
+    private UserProfileService userProfileService;
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+
 
     public String sendValidateEmail(String email, String sessionId,boolean hasAccount) {
         // 我们这里设置的是60s后才可以重新发送一次验证码，而一次验证码时间过期为3分钟
@@ -110,6 +115,7 @@ public class AuthorizeService implements UserDetailsService {
 
     PasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    @Transactional(rollbackFor = Exception.class)
     public String validateAndRegister(String username, String password, String email, String code, String sessionId) {
         // session做限流使用的
         String key = "email:" + sessionId + ":" + email + ":false"; // 必须没有这个账户
@@ -131,8 +137,25 @@ public class AuthorizeService implements UserDetailsService {
                 template.delete(key); //验证码使用完毕，需要清除
                 password = encoder.encode(password); //密码加密
 
+                // 注册账号
                 int account = userMapper.createAccount(username, password, email);
-                if(account > 0){
+
+                Integer id = userMapper.findByUsernameOrEmail(username).getId();
+
+                // 设置用户的默认角色，
+                UserRole userRole = new UserRole();
+                userRole.setUserId(id);
+                userRole.setRoleId(2);
+                int insert = userRoleMapper.insert(userRole);
+
+                // 存储默认的用户信息
+                UserProfile userProfile  = new UserProfile();
+                userProfile.setUserId(id);
+                userProfile.setGender(1);
+                boolean save = userProfileService.save(userProfile);
+
+
+                if(account > 0 && save && insert > 0){
                     return null;
                 }else{
                     return "内部错误，请联系管理员";

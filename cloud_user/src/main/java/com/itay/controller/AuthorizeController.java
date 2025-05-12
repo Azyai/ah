@@ -149,6 +149,7 @@ public class AuthorizeController {
                                            HttpServletRequest request) {
         HttpSession session = request.getSession();
         String s = authorizeService.validateAndRegister(username, password, email, code, session.getId());
+
         if (s == null) {
             return ResultData.success("注册成功");
         } else {
