@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtils {
 
+    // ntzvtcNo+hjeo4br7lk5VVYfzxN7fya465deA8+dfqw=
     @Value("${jwt.secret}")
     private  String SECRET_KEY;
     private  long EXPIRATION = 86400000; // 24h

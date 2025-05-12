@@ -5,6 +5,8 @@ jwt:
   secret: ntzvtcNo+hjeo4br7lk5VVYfzxN7fya465deA8+dfqw=
 
 spring:
+  main:
+    web-application-type: reactive
   data:
     redis:
       host: 182.92.222.10
@@ -21,3 +23,5 @@ spring:
           uri: lb://cloud-price-consumer           #匹配后提供服务的路由地址
           predicates:
             - Path=/test/**            # 断言，路径相匹配的进行路由
+          filters:
+            - Auth
