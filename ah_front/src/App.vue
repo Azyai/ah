@@ -18,6 +18,18 @@
 <script setup lang="ts">
 import Header from './components/Header.vue'
 import { RouterView } from 'vue-router'
+import {onMounted} from "vue";
+import {useUserStore} from "@/stores/counter.ts";
+
+const userStore = useUserStore()
+
+onMounted(async () => {
+  const token = localStorage.getItem("token")
+  if (token) {
+    await userStore.fetchUserInfo()
+  }
+})
+
 </script>
 
 <style scoped>

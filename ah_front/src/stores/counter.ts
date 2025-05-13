@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {ref} from 'vue'
-import {get, post} from '@/api/axios'
+import {get, post} from '@/api/axios.ts'
 import {ElMessage} from "element-plus";
 
 export interface UserInfo {

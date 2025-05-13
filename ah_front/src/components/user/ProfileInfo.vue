@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import {ref, computed,watch} from 'vue'
 import {ElMessage} from 'element-plus'
-import {useUserStore} from '@/stores/counter'
+import {useUserStore} from '@/stores/counter.ts'
 import {postForm, post} from '@/api/axios'
 
 import type {FormRules} from 'element-plus'

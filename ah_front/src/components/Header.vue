@@ -30,7 +30,7 @@
                 <el-dropdown-menu>
                   <el-dropdown-item @click="openDrawer('profile')">个人信息设置</el-dropdown-item>
                   <el-dropdown-item @click="openDrawer('lottery')">参与抽奖列表</el-dropdown-item>
-                  <el-dropdown-item @click="openDrawer('middle-list')">中间列表</el-dropdown-item>
+                  <el-dropdown-item @click="openDrawer('winning')">中奖列表</el-dropdown-item>
                   <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </template>
@@ -63,7 +63,7 @@
 <script setup lang="ts">
 import {type Component, ref,onMounted} from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/counter'
+import { useUserStore } from '@/stores/counter.ts'
 import { storeToRefs } from 'pinia'
 import { ArrowDown } from '@element-plus/icons-vue'
 
@@ -119,12 +119,6 @@ const openDrawer = (type: string) => {
   drawerVisible.value = true
 }
 
-onMounted(async () => {
-  const token = localStorage.getItem("token")
-  if (token) {
-    await userStore.fetchUserInfo()
-  }
-})
 
 
 // 获取标题

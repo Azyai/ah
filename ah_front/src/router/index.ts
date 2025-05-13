@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import RegisterView from "@/views/user/RegisterView.vue";
-import LoginView from "@/views/user/LoginView.vue";
-import ForgotPasswordView from "@/views/user/ForgotPasswordView.vue";
+import { guestOnlyGuard } from './guard/authGuard'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,20 +13,21 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: RegisterView
+      component: () => import('@/views/user/RegisterView.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: () => import('@/views/user/LoginView.vue')
     },
     {
       path: "/forgot-password",
       name: "forgot-password",
-      component: ForgotPasswordView
+      component: () => import('@/views/user/ForgotPasswordView.vue')
     },
 
   ],
 })
+router.beforeEach(guestOnlyGuard)
 
 export default router
