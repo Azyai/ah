@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import { guestOnlyGuard } from './guard/authGuard'
+import {useUserStore} from "@/stores/counter.ts";
+import {ElMessage} from "element-plus";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,31 @@ const router = createRouter({
 
   ],
 })
-router.beforeEach(guestOnlyGuard)
+
+router.beforeEach((to,from,next) =>{
+  const userStore = useUserStore()
+  console.log(userStore.loading)
+  if(!userStore.userInfo && localStorage.getItem('token')){
+    console.log("等待获取数据中----")
+  }
+
+  console.log(userStore.isAuthenticated+ " ***")
+  console.log(userStore.userInfo + " ---")
+
+  const routeName = to.name ? String(to.name) : '';
+  console.log(routeName + " to.name")
+  console.log(routeName.startsWith('product') + "  ccc");
+
+  if (['product', 'register', 'forgot-password'].includes(to.name as string)) {
+    console.log("您已登录，阶段一")
+    if (userStore.isAuthenticated && userStore.userInfo) {
+      console.log("您已登录，阶段二")
+      ElMessage.info('您已登录，无需重复操作')
+      return next({name: 'home'})
+    }
+  }
+
+  next()
+})
 
 export default router

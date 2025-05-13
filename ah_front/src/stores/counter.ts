@@ -26,6 +26,23 @@ export const useUserStore = defineStore('user', () => {
         if (loading.value) return
         loading.value = true
 
+        // get('/user/getUserInfo')
+        //     .then((res) => {
+        //         if (res.code === '200') {
+        //             userInfo.value = res.data
+        //             isAuthenticated.value = true
+        //         } else {
+        //             userInfo.value = null
+        //             isAuthenticated.value = false
+        //         }
+        //     }).catch((error) => {
+        //         console.error('获取用户信息失败:', error)
+        //         userInfo.value = null
+        //         isAuthenticated.value = false
+        // }).finally(() => {
+        //     loading.value = false
+        // })
+
         try {
             const res = await get('/user/getUserInfo')
             if (res.code === '200') {

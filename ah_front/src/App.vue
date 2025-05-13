@@ -23,7 +23,7 @@ import {useUserStore} from "@/stores/counter.ts";
 
 const userStore = useUserStore()
 
-onMounted(async () => {
+onMounted( async () => {
   const token = localStorage.getItem("token")
   if (token) {
     await userStore.fetchUserInfo()
