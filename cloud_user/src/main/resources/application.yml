@@ -1,6 +1,9 @@
 server:
   port: 8081
 spring:
+  cloud:
+    nacos:
+      discovery: localhost:8848
   servlet:
     multipart:
       enabled: true

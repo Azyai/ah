@@ -10,7 +10,7 @@ import qs from 'qs'
 // 引入自定义类型
 import type { ResultData } from '@/api/api'
 
-const BASE_URL =  'http://127.0.0.1:8081'
+const BASE_URL =  'http://127.0.0.1:9527'
 
 // 创建 Axios 实例
 const instance: AxiosInstance = axios.create({

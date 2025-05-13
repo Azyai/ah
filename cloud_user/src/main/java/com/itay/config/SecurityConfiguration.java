@@ -84,10 +84,11 @@ public class SecurityConfiguration {
     // 只是编写了配置文件，还没有写登录成功的重定向302
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository tokenRepository) throws Exception {
-        http.cors(cors -> {
-                    cors.configurationSource(corsConfigurationSource());
-                }).
-                authorizeHttpRequests(
+        http
+//                .cors(cors -> {
+//                    cors.configurationSource(corsConfigurationSource());
+//                })
+            .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(SecurityConstants.WHITE_LIST).permitAll()
                                 .anyRequest().authenticated()
@@ -104,41 +105,41 @@ public class SecurityConfiguration {
     }
 
 
-    private CorsConfigurationSource corsConfigurationSource(){
+//    private CorsConfigurationSource corsConfigurationSource(){
+//
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        // 允许我们携带cookie，因为前端我们是设置了的发送cookie
+//        corsConfiguration.setAllowCredentials(true);
+//        // 设置允许的请求头
+//        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+//        // 设置允许请求的方法
+//        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+//
+//        // corsConfiguration.addAllowedOriginPattern("*");
+//        // 设置能允许请求的路径 这两个都可以设置单个或全部，只不过下面这个可以设置多个允许地址
+//
+//        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://127.0.0.1:5173"));
+//        corsConfiguration.setMaxAge(3600L);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        // 所有的请求都走我们这个策略
+//        source.registerCorsConfiguration("/**",corsConfiguration);
+//        return source;
+//    }
 
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        // 允许我们携带cookie，因为前端我们是设置了的发送cookie
-        corsConfiguration.setAllowCredentials(true);
-        // 设置允许的请求头
-        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-        // 设置允许请求的方法
-        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
 
-        // corsConfiguration.addAllowedOriginPattern("*");
-        // 设置能允许请求的路径 这两个都可以设置单个或全部，只不过下面这个可以设置多个允许地址
-
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://127.0.0.1:5173"));
-        corsConfiguration.setMaxAge(3600L);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // 所有的请求都走我们这个策略
-        source.registerCorsConfiguration("/**",corsConfiguration);
-        return source;
-    }
-
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173", "http://127.0.0.1:5173")
-                        .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+//                        .allowedMethods("*")
+//                        .allowedHeaders("*")
+//                        .allowCredentials(true);
+//            }
+//        };
+//    }
 
 
 }
