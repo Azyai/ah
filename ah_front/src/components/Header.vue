@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <!-- Logo -->
-    <img src="@/assets/logo.svg" alt="Logo" class="logo" />
+    <img src="@/assets/icon/cs.svg" alt="Logo" class="logo" />
 
     <!-- 导航菜单 -->
     <el-menu mode="horizontal" :ellipsis="false" background-color="#fff" text-color="#555" active-text-color="#ff4d4f">
