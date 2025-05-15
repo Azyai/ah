@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("activity_restriction")
-public class ActivityRestriction {
+public class ActivityRestriction extends BaseEntity{
     @TableId
     private Integer activityId;
     

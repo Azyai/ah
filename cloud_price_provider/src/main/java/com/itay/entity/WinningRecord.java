@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("winning_record")
-public class WinningRecord {
+public class WinningRecord extends BaseEntity{
     @TableId(type = IdType.AUTO)
     private Long id;
     

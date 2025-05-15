@@ -18,7 +18,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("prize")
-public class Prize {
+public class Prize extends BaseEntity{
     @TableId(type = IdType.AUTO)
     private Integer id;
     

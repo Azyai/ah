@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("activity_prize")
-public class ActivityPrize {
+public class ActivityPrize extends BaseEntity{
     @TableId(type = IdType.AUTO)
     private Integer id;
     

@@ -17,7 +17,7 @@ import java.util.Map;
 @NoArgsConstructor  // 无参构造函数
 @AllArgsConstructor // 有参构造函数
 @TableName("activity")
-public class Activity {
+public class Activity extends BaseEntity{
 
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -48,7 +48,6 @@ public class Activity {
     @Builder.Default
     private Boolean autoClose = false; // 新增：是否自动关闭
 
-    private LocalDateTime createTime;
 
     // 规则配置嵌套类
     @Data

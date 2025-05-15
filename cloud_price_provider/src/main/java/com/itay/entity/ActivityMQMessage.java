@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityMQMessage {
+public class ActivityMQMessage extends BaseEntity{
     private String msgId;
     private MessageType type; // 枚举：COUNTER_UPDATE/PRIZE_SEND等
     

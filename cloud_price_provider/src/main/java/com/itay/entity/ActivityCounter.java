@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityCounter {
+public class ActivityCounter extends BaseEntity{
     private Integer activityId;
     private String redisKey; // activity:participants:count:{activityId}
     private Integer currentCount;
