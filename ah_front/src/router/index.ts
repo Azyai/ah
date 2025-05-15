@@ -42,12 +42,11 @@ router.beforeEach((to,from,next) =>{
 
   const routeName = to.name ? String(to.name) : '';
   console.log(routeName + " to.name")
-  console.log(routeName.startsWith('product') + "  ccc");
 
-  if (['product', 'register', 'forgot-password'].includes(to.name as string)) {
-    console.log("您已登录，阶段一")
+  if (['login', 'register', 'forgot-password'].includes(to.name as string)) {
+
     if (userStore.isAuthenticated && userStore.userInfo) {
-      console.log("您已登录，阶段二")
+
       ElMessage.info('您已登录，无需重复操作')
       return next({name: 'home'})
     }
