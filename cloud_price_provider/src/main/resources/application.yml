@@ -7,3 +7,13 @@ spring:
   cloud:
     nacos:
       discovery: localhost:8848 # 配置nacos地址
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/ah2025?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    username: root
+    password: 123456
+  data:
+    redis:
+      host: 182.92.222.10
+      port: 6379
+      password: 123456
