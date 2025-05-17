@@ -167,3 +167,153 @@ INSERT INTO `activity` (
              0,
              1
          );
+
+
+-- 1. 福袋活动（进行中）
+INSERT INTO `activity` (
+    `name`,
+    `type`,
+    `start_time`,
+    `end_time`,
+    `status`,
+    `rule_config`,
+    `max_participants`,
+    `auto_close`,
+    `is_valid`
+) VALUES (
+             '2025端午福袋',
+             2,
+             '2025-06-10 00:00:00',
+             '2025-06-12 23:59:59',
+             2,
+             '{
+               "background_img": "https://example.com/dragon-boat.jpg",
+               "open_time": "2025-06-12 20:00:00",
+               "prize_list": [11, 12, 13, 14, 15],
+               "daily_limit": 3
+             }',
+             50000,
+             1,
+             1
+         );
+
+-- 2. 立即开奖活动（未开始）
+INSERT INTO `activity` (
+    `name`,
+    `type`,
+    `start_time`,
+    `end_time`,
+    `status`,
+    `rule_config`,
+    `max_participants`,
+    `current_participants`,
+    `auto_close`,
+    `is_valid`
+) VALUES (
+             '新用户注册礼',
+             3,
+             '2025-08-01 00:00:00',
+             '2025-08-31 23:59:59',
+             1,
+             '{
+               "background_img": "https://example.com/welcome.jpg",
+               "prize_id": 16,
+               "probability": 100,
+               "user_type": "new"
+             }',
+             NULL,
+             0,
+             0,
+             1
+         );
+
+-- 3. 大转盘活动（已结束）
+INSERT INTO `activity` (
+    `name`,
+    `type`,
+    `start_time`,
+    `end_time`,
+    `status`,
+    `rule_config`,
+    `max_participants`,
+    `current_participants`,
+    `auto_close`,
+    `is_valid`
+) VALUES (
+             '春节大转盘',
+             1,
+             '2025-01-20 00:00:00',
+             '2025-02-05 23:59:59',
+             3,
+             '{
+               "background_img": "https://example.com/spring-festival.jpg",
+               "animation_speed": 3,
+               "prize_list": [1, 2, 3, 4, 5],
+               "allow_share": true,
+               "share_reward": 1
+             }',
+             200000,
+             187642,
+             1,
+             1
+         );
+
+-- 4. 福袋活动（已删除）
+INSERT INTO `activity` (
+    `name`,
+    `type`,
+    `start_time`,
+    `end_time`,
+    `status`,
+    `rule_config`,
+    `max_participants`,
+    `current_participants`,
+    `auto_close`,
+    `is_valid`
+) VALUES (
+             '测试活动-已删除',
+             2,
+             '2025-03-01 00:00:00',
+             '2025-03-02 23:59:59',
+             3,
+             '{
+               "background_img": "https://example.com/test.jpg",
+               "open_time": "2025-03-02 12:00:00",
+               "prize_list": [99, 100]
+             }',
+             1000,
+             23,
+             0,
+             0
+         );
+
+-- 5. 大转盘活动（无人数限制）
+INSERT INTO `activity` (
+    `name`,
+    `type`,
+    `start_time`,
+    `end_time`,
+    `status`,
+    `rule_config`,
+    `max_participants`,
+    `current_participants`,
+    `auto_close`,
+    `is_valid`
+) VALUES (
+             '周年庆无限转盘',
+             1,
+             '2025-09-15 00:00:00',
+             '2025-09-30 23:59:59',
+             1,
+             '{
+               "background_img": "https://example.com/anniversary.jpg",
+               "animation_speed": 2.5,
+               "prize_list": [20, 21, 22, 23, 24, 25],
+               "allow_share": true,
+               "share_reward": 2
+             }',
+             NULL,
+             0,
+             1,
+             1
+         );
