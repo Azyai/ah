@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+/**
+ * @author ly111
+ */
 @Service
 public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> implements ActivityService {
 

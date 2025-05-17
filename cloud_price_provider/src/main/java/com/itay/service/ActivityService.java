@@ -5,6 +5,9 @@ import com.itay.entity.Activity;
 
 import java.util.List;
 
+/**
+ * @author ly111
+ */
 public interface ActivityService extends IService<Activity> {
 
     List<Activity> getActivityByNameList(String name);
