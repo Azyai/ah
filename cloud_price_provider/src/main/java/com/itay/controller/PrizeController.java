@@ -3,6 +3,7 @@ package com.itay.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.entity.Prize;
 import com.itay.request.NameRequest;
+import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
 import com.itay.resp.ReturnCodeEnum;
 import com.itay.service.PrizeService;
@@ -24,9 +25,9 @@ public class PrizeController {
 
     // 获取奖品表
     @GetMapping("/selectPrize")
-    public ResultData<List<Prize>> selectPrize(NameRequest nameRequest) {
-        List<Prize> prizes = prizeService.selectPrize(nameRequest);
-        if (prizes == null || prizes.isEmpty()) {
+    public ResultData<CommonResponse<Prize>> selectPrize(NameRequest nameRequest) {
+        CommonResponse<Prize> prizes = prizeService.selectPrize(nameRequest);
+        if (prizes.getData() == null || prizes.getData().isEmpty()) {
             return ResultData.fail(ReturnCodeEnum.RC404.getCode(), "没有符合条件的奖品");
         }
         return ResultData.success(prizes);

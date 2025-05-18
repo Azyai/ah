@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.CreateActivityRequest;
 import com.itay.entity.Activity;
 import com.itay.request.NameRequest;
+import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
 import lombok.experimental.Accessors;
@@ -53,12 +54,12 @@ public class ActivityController {
 
     // 按照名称模糊分页查询活动信息列表
     @GetMapping("/selectActivityPageByName")
-    public ResultData<Object> selectActivityPageByName(NameRequest prizeRequest) {
-        List<Activity> activityByNameList = activityService.selectActivityPageByName(prizeRequest);
-        if (activityByNameList.isEmpty()) {
+    public ResultData<CommonResponse<Activity>> selectActivityPageByName(NameRequest prizeRequest) {
+        CommonResponse<Activity> commonResponse = activityService.selectActivityPageByName(prizeRequest);
+        if (commonResponse.getData().isEmpty()) {
             return ResultData.fail("活动不存在");
         }
-        return ResultData.success(activityByNameList);
+        return ResultData.success(commonResponse);
     }
 
 

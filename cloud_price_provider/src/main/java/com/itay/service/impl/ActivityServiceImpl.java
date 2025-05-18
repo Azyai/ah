@@ -9,6 +9,7 @@ import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
 import com.itay.mapper.ActivityMapper;
 import com.itay.request.NameRequest;
+import com.itay.resp.CommonResponse;
 import com.itay.service.ActivityPrizeService;
 import com.itay.service.ActivityService;
 import jakarta.annotation.Resource;
@@ -70,15 +71,18 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> i
     }
 
     @Override
-    public List<Activity> selectActivityPageByName(NameRequest prizeRequest) {
+    public CommonResponse<Activity> selectActivityPageByName(NameRequest prizeRequest) {
         IPage<Activity> page = new Page<>(prizeRequest.getPage(), prizeRequest.getLimit());
         LambdaQueryWrapper<Activity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(Activity::getName, prizeRequest.getName())
                 .eq(Activity::getValid, true);
         page = activityMapper.selectPage(page, lambdaQueryWrapper);
+        CommonResponse<Activity> commonResponse = new CommonResponse<>();
+        commonResponse.setTotal(page.getTotal());
+        commonResponse.setCurrent(page.getCurrent());
+        commonResponse.setData(page.getRecords());
 
-        System.out.println(page.toString());
-        return page.getRecords();
+        return commonResponse;
     }
 
 

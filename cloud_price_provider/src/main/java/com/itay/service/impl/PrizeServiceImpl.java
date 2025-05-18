@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itay.entity.Prize;
 import com.itay.mapper.PrizeMapper;
 import com.itay.request.NameRequest;
+import com.itay.resp.CommonResponse;
 import com.itay.service.PrizeService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -21,14 +22,19 @@ public class PrizeServiceImpl extends ServiceImpl<PrizeMapper, Prize> implements
     PrizeMapper prizeMapper;
 
     @Override
-    public List<Prize> selectPrize(NameRequest nameRequest) {
+    public CommonResponse<Prize> selectPrize(NameRequest nameRequest) {
         IPage<Prize> page = new Page<>(nameRequest.getPage(), nameRequest.getLimit());
         LambdaQueryWrapper<Prize> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(Prize::getName, nameRequest.getName())
                 .eq(Prize::getValid, true);
 
         page = prizeMapper.selectPage(page, lambdaQueryWrapper);
-        return page.getRecords();
+        CommonResponse<Prize> commonResponse = new CommonResponse<>();
+        commonResponse.setTotal(page.getTotal());
+        commonResponse.setCurrent(page.getCurrent());
+        commonResponse.setData(page.getRecords());
+
+        return commonResponse;
     }
 
     @Override

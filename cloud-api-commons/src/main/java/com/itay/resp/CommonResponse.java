@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class CommonResponse<T> {
    List<T> data;
-   Integer total;
-   Integer current;
+   Long total;
+   Long current;
 }

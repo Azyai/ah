@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
 import com.itay.request.NameRequest;
+import com.itay.resp.CommonResponse;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface ActivityService extends IService<Activity> {
 
     boolean removeActivityByIds(List<Integer> ids);
 
-    List<Activity> selectActivityPageByName(NameRequest prizeRequest);
+    CommonResponse<Activity> selectActivityPageByName(NameRequest prizeRequest);
 
     boolean saveActivityWithPrizes(Activity activity, List<ActivityPrize> prizes);
 }
