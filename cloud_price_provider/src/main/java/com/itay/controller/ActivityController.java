@@ -1,6 +1,7 @@
 package com.itay.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.itay.dto.request.PrizeRequest;
 import com.itay.entity.Activity;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
@@ -19,7 +20,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Accessors(chain = true)
 @RestController
-@RequestMapping("/prize/activity")
+@RequestMapping("/draw/activity")
 public class ActivityController {
 
     @Autowired
@@ -47,6 +48,18 @@ public class ActivityController {
         }
         return ResultData.success(activityByNameList);
     }
+
+
+    // 按照名称模糊分页查询活动信息列表
+    @GetMapping("/selectActivityPageByName")
+    public ResultData<Object> selectActivityPageByName(PrizeRequest prizeRequest) {
+        List<Activity> activityByNameList = activityService.selectActivityPageByName(prizeRequest);
+        if (activityByNameList.isEmpty()) {
+            return ResultData.fail("活动不存在");
+        }
+        return ResultData.success(activityByNameList);
+    }
+
 
     // 按照ID修改活动信息
     @PostMapping("/updateActivity")

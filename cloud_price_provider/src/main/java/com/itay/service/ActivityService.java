@@ -1,6 +1,7 @@
 package com.itay.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.itay.dto.request.PrizeRequest;
 import com.itay.entity.Activity;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface ActivityService extends IService<Activity> {
     boolean removeActivityById(Integer id);
 
     boolean removeActivityByIds(List<Integer> ids);
+
+    List<Activity> selectActivityPageByName(PrizeRequest prizeRequest);
 }
