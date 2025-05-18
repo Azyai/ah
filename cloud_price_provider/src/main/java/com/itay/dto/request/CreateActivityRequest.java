@@ -2,6 +2,7 @@ package com.itay.dto.request;
 
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
+import com.itay.entity.ActivityRestriction;
 import lombok.Data;
 
 import java.util.List;
@@ -14,4 +15,5 @@ import java.util.List;
 public class CreateActivityRequest {
     private Activity activity;
     private List<ActivityPrize> prizes;
+    private ActivityRestriction activityRestriction;
 }

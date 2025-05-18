@@ -1,14 +1,13 @@
 package com.itay.entity;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Data
 @Builder
@@ -20,12 +19,17 @@ public class ActivityRestriction extends BaseEntity{
     private Integer activityId;
     
     @NotNull
-    private Integer limitType; // 1总次数 2每日次数 3频率限制
+    @TableField(fill = FieldFill.INSERT)
+    // 1总次数 2每日次数 3频率限制
+    private Integer limitType = 1;
     
     @NotNull
     @Min(1)
-    private Integer limitValue;
-    
+    @TableField(fill = FieldFill.INSERT)
+    // 限制的次数
+    private Integer limitValue = 1;
+
     @Min(1)
-    private Integer intervalSeconds; // 间隔秒数
+    // 间隔秒数
+    private Integer intervalSeconds;
 }
