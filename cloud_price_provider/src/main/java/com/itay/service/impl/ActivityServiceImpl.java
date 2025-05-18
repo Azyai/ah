@@ -1,12 +1,11 @@
 package com.itay.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.itay.dto.request.PrizeRequest;
+import com.itay.dto.request.NameRequest;
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
 import com.itay.mapper.ActivityMapper;
@@ -71,7 +70,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> i
     }
 
     @Override
-    public List<Activity> selectActivityPageByName(PrizeRequest prizeRequest) {
+    public List<Activity> selectActivityPageByName(NameRequest prizeRequest) {
         IPage<Activity> page = new Page<>(prizeRequest.getPage(), prizeRequest.getLimit());
         LambdaQueryWrapper<Activity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(Activity::getName, prizeRequest.getName())

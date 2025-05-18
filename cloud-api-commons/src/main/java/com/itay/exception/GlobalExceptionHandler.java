@@ -4,7 +4,9 @@ package com.itay.exception;
 import com.itay.resp.ResultData;
 import com.itay.resp.ReturnCodeEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,8 +22,20 @@ public class GlobalExceptionHandler {
      @ExceptionHandler(RuntimeException.class)
      @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
      public ResultData<String> exception(Exception e){
-         System.out.println("#####come in GlobalExceptionHandler");
+         System.out.println("#####come in GlobalExceptionHandler#####");
          System.out.println(e.toString());
          return ResultData.fail(ReturnCodeEnum.RC500.getCode(),e.getMessage());
      }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResultData<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .findFirst()
+                .orElse("参数校验失败");
+        return ResultData.fail(errorMessage);
+    }
+
 }

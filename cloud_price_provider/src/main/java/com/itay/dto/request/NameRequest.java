@@ -4,6 +4,6 @@ import com.itay.request.BaseRequest;
 import lombok.Data;
 
 @Data
-public class PrizeRequest extends BaseRequest {
+public class NameRequest extends BaseRequest {
     private String name;
 }

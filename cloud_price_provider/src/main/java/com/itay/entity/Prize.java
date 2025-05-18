@@ -23,13 +23,17 @@ public class Prize extends BaseEntity{
     private Integer id;
     
     @NotBlank // 验证字段不能为空
+    @TableField(value = "`name`")
     private String name;
-    
+
+    // 是否为虚拟奖品 0不是 1是
     @Builder.Default
     private Boolean isVirtual = false;
-    
+
+    // 奖品配置模板
     @TableField(typeHandler = FastjsonTypeHandler.class)
     private Map<String, Object> configTemplate;
-    
+
+    // 描述
     private String description;
 }

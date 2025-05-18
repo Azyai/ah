@@ -2,7 +2,7 @@ package com.itay.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.CreateActivityRequest;
-import com.itay.dto.request.PrizeRequest;
+import com.itay.dto.request.NameRequest;
 import com.itay.entity.Activity;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
@@ -53,7 +53,7 @@ public class ActivityController {
 
     // 按照名称模糊分页查询活动信息列表
     @GetMapping("/selectActivityPageByName")
-    public ResultData<Object> selectActivityPageByName(PrizeRequest prizeRequest) {
+    public ResultData<Object> selectActivityPageByName(NameRequest prizeRequest) {
         List<Activity> activityByNameList = activityService.selectActivityPageByName(prizeRequest);
         if (activityByNameList.isEmpty()) {
             return ResultData.fail("活动不存在");
