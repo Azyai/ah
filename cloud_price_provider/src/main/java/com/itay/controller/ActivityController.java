@@ -1,6 +1,7 @@
 package com.itay.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.itay.dto.request.CreateActivityRequest;
 import com.itay.dto.request.PrizeRequest;
 import com.itay.entity.Activity;
 import com.itay.resp.ResultData;
@@ -91,6 +92,17 @@ public class ActivityController {
             return ResultData.success("删除成功");
         }
         return ResultData.fail("删除失败");
+    }
+
+    @PostMapping("/createActivityWithPrizes")
+    public ResultData<String> createActivityWithPrizes(@RequestBody CreateActivityRequest request) {
+        boolean success = activityService.saveActivityWithPrizes(request.getActivity(), request.getPrizes());
+        if (success) {
+            return ResultData.success("创建成功");
+        } else {
+            return ResultData.fail("创建失败");
+        }
+
     }
 
 
