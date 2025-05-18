@@ -1,15 +1,14 @@
 package com.itay.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.itay.dto.request.NameRequest;
 import com.itay.entity.Prize;
+import com.itay.request.NameRequest;
 import com.itay.resp.ResultData;
 import com.itay.resp.ReturnCodeEnum;
 import com.itay.service.PrizeService;
 import jakarta.validation.Valid;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

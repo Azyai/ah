@@ -1,9 +1,8 @@
 package com.itay.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.itay.dto.request.NameRequest;
 import com.itay.entity.Prize;
-import jakarta.validation.Valid;
+import com.itay.request.NameRequest;
 
 import java.util.List;
 

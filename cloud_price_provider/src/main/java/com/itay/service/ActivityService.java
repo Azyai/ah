@@ -1,9 +1,9 @@
 package com.itay.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.itay.dto.request.NameRequest;
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
+import com.itay.request.NameRequest;
 
 import java.util.List;
 

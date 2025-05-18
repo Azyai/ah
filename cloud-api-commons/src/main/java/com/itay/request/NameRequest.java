@@ -1,6 +1,5 @@
-package com.itay.dto.request;
+package com.itay.request;
 
-import com.itay.request.BaseRequest;
 import lombok.Data;
 
 @Data

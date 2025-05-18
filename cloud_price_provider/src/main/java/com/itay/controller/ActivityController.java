@@ -2,8 +2,8 @@ package com.itay.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.CreateActivityRequest;
-import com.itay.dto.request.NameRequest;
 import com.itay.entity.Activity;
+import com.itay.request.NameRequest;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
 import lombok.experimental.Accessors;
