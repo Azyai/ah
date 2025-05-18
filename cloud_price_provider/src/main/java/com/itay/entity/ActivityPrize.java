@@ -24,30 +24,23 @@ public class ActivityPrize extends BaseEntity{
     private Integer id;
     
     @NotNull
-    // 活动ID
     private Integer activityId;
     
     @NotNull
-    // 奖品ID
     private Integer prizeId;
     
     @NotNull
-    // 奖品数量
     private Integer totalStock;
     
     @Builder.Default
-    // 已使用奖品数量
     private Integer usedStock = 0;
     
     @DecimalMin("0.0000")
     @DecimalMax("1.0000")
-    // 奖品概率
     private BigDecimal probability;
-
-    // 排序
+    
     private Integer showOrder;
     
     @TableField(exist = false)
-    // 奖品详情
     private Prize prizeDetail; // 关联的奖品详情
 }

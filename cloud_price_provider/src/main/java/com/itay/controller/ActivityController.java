@@ -1,7 +1,6 @@
 package com.itay.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.itay.dto.request.CreateActivityRequest;
 import com.itay.entity.Activity;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 
 /**
@@ -25,23 +25,9 @@ public class ActivityController {
     @Autowired
     ActivityService activityService;
 
-    @PostMapping("/createActivityWithPrizes")
-    public ResultData<String> createActivityWithPrizes(@RequestBody CreateActivityRequest request) {
-
-        System.out.println(request.getActivity().toString() + "  " + request.getPrizes().toString());
-
-        boolean success = activityService.saveActivityWithPrizes(request.getActivity(), request.getPrizes());
-        if (success) {
-            return ResultData.success("创建成功");
-        } else {
-            return ResultData.fail("创建失败");
-        }
-
-    }
-
     @GetMapping("/selectActivityById")
     public ResultData<Object> selectActivityById(@RequestParam("id") Integer id) {
-        if (id == null) {
+        if(id == null){
             return ResultData.fail("参数错误");
         }
 
@@ -64,7 +50,7 @@ public class ActivityController {
 
     // 按照ID修改活动信息
     @PostMapping("/updateActivity")
-// 带上@RequestBody，要发送json格式数据，如果不加就是x-www-form-urlencoded格式数据
+    // 带上@RequestBody，要发送json格式数据，如果不加就是x-www-form-urlencoded格式数据
     public ResultData<String> updateActivityById(Activity activity) {
         boolean update = activityService.updateById(activity);
         if (update) {
@@ -84,7 +70,7 @@ public class ActivityController {
 
 
     @PostMapping("deleteActivityByIds")
-// 传入的数据格式为 Content-Type: application/json [1,2,3]
+    // 传入的数据格式为 Content-Type: application/json [1,2,3]
     public ResultData<String> deleteActivityByIds(@RequestBody List<Integer> ids) {
         // 自定义方法进行逻辑删除
         boolean delete = activityService.removeActivityByIds(ids);
@@ -96,7 +82,7 @@ public class ActivityController {
 
 
     @PostMapping("deleteActivityByIds2")
-// 传入的数据格式为 Content-Type: application/x-www-form-urlencoded ids=1,2,3
+    // 传入的数据格式为 Content-Type: application/x-www-form-urlencoded ids=1,2,3
     public ResultData<String> deleteActivityByIds2(@RequestParam("ids") List<Integer> ids) {
         // 自定义方法进行逻辑删除
         boolean delete = activityService.removeActivityByIds(ids);
