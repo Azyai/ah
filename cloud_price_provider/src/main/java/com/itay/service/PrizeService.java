@@ -13,5 +13,5 @@ import java.util.List;
 public interface PrizeService extends IService<Prize> {
     List<Prize> selectPrize(NameRequest nameRequest);
 
-    boolean removePrize(@Valid Prize prize);
+    boolean removePrize(Integer id);
 }

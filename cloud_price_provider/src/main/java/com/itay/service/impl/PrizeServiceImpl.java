@@ -24,7 +24,7 @@ public class PrizeServiceImpl extends ServiceImpl<PrizeMapper, Prize> implements
     public List<Prize> selectPrize(NameRequest nameRequest) {
         IPage<Prize> page = new Page<>(nameRequest.getPage(), nameRequest.getLimit());
         LambdaQueryWrapper<Prize> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Prize::getName, nameRequest.getName())
+        lambdaQueryWrapper.like(Prize::getName, nameRequest.getName())
                 .eq(Prize::getValid, true);
 
         page = prizeMapper.selectPage(page, lambdaQueryWrapper);
@@ -32,9 +32,9 @@ public class PrizeServiceImpl extends ServiceImpl<PrizeMapper, Prize> implements
     }
 
     @Override
-    public boolean removePrize(Prize prize) {
+    public boolean removePrize(Integer id) {
         LambdaUpdateWrapper<Prize> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        lambdaUpdateWrapper.eq(Prize::getId, prize.getId());
+        lambdaUpdateWrapper.eq(Prize::getId, id);
         lambdaUpdateWrapper.set(Prize::getValid, false);
 
         return prizeMapper.update(null, lambdaUpdateWrapper) > 0;

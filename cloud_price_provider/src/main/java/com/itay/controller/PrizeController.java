@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.NameRequest;
 import com.itay.entity.Prize;
 import com.itay.resp.ResultData;
+import com.itay.resp.ReturnCodeEnum;
 import com.itay.service.PrizeService;
 import jakarta.validation.Valid;
 import lombok.experimental.Accessors;
@@ -26,8 +27,8 @@ public class PrizeController {
     @GetMapping("/selectPrize")
     public ResultData<List<Prize>> selectPrize(NameRequest nameRequest) {
         List<Prize> prizes = prizeService.selectPrize(nameRequest);
-        if(prizes.isEmpty()){
-            return ResultData.fail("没有该奖品");
+        if (prizes == null || prizes.isEmpty()) {
+            return ResultData.fail(ReturnCodeEnum.RC404.getCode(), "没有符合条件的奖品");
         }
         return ResultData.success(prizes);
     }
@@ -42,7 +43,7 @@ public class PrizeController {
     }
 
     @PostMapping("/updatePrize")
-    public ResultData<String> updatePrize(@Valid Prize prize){
+    public ResultData<String> updatePrize(@RequestBody @Valid Prize prize){
         if(prizeService.updateById(prize)){
             return ResultData.success("修改奖品成功");
         }
@@ -50,8 +51,8 @@ public class PrizeController {
     }
 
     @PostMapping("/deletePrize")
-    public ResultData<String> deletePrize(@Valid Prize prize){
-        if(prizeService.removePrize(prize)){
+    public ResultData<String> deletePrize(@RequestParam("id") Integer id){
+        if(prizeService.removePrize(id)){
             return ResultData.success("删除奖品成功");
         }
         return ResultData.fail("删除奖品失败");

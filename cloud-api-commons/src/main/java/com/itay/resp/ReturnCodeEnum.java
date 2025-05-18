@@ -71,6 +71,7 @@ public enum ReturnCodeEnum {
         System.out.println(ReturnCodeEnum.getReturnCodeEnumV2("404"));
         System.out.println(ReturnCodeEnum.getReturnCodeEnumV2("404").getCode());
         System.out.println(ReturnCodeEnum.getReturnCodeEnumV2("404").getMessage());
+        System.out.println(ReturnCodeEnum.getReturnCodeEnumV2("500").getMessage());
     }
 
 }
