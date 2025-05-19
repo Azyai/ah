@@ -5,6 +5,11 @@ jwt:
   secret: ntzvtcNo+hjeo4br7lk5VVYfzxN7fya465deA8+dfqw=
 
 spring:
+  config:
+    import:
+      - optional:nacos:application.yml
+      # 显式导入配置，还记得吗，nacos中的规则
+      - optional:nacos:menu-authorities.yaml
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
@@ -20,13 +25,14 @@ spring:
     name: cloud-gateway #以微服务注册进consul或nacos服务列表内
   cloud:
     nacos:
-      discovery: localhost:8848 # 配置nacos地址
+      discovery:
+        server-addr:  localhost:8848
       config:
-        file-extension: yml
+        file-extension: yaml
         group: DEFAULT_GROUP
         namespace: public
         server-addr:  localhost:8848
-        refreshable-data-ids: menu-authorities.yml
+        refreshable-data-ids: menu-authorities.yaml
     gateway:
       globalcors: # 全局的跨域处理
         add-to-simple-url-handler-mapping: true # 解决options请求被拦截问题
