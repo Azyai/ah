@@ -2,6 +2,7 @@ package com.itay.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.CreateActivityRequest;
+import com.itay.dto.response.ActivityResp;
 import com.itay.entity.Activity;
 import com.itay.request.NameRequest;
 import com.itay.resp.CommonResponse;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 
 /**
@@ -28,94 +28,135 @@ public class ActivityController {
     @Autowired
     ActivityService activityService;
 
-    @GetMapping("/selectActivityById")
-    public ResultData<Object> selectActivityById(@RequestParam("id") Integer id) {
-        if(id == null){
-            return ResultData.fail("参数错误");
-        }
+//    @GetMapping("/selectActivityById")
+//    public ResultData<Object> selectActivityById(@RequestParam("id") Integer id) {
+//        if(id == null){
+//            return ResultData.fail("参数错误");
+//        }
+//
+//        Activity activity = activityService.getActivityById(id);
+//        if (activity == null) {
+//            return ResultData.fail("活动不存在");
+//        }
+//        return ResultData.success(activity);
+//    }
+//
+//    // 按照名称模糊查询活动信息列表
+//    @GetMapping("/selectActivityByName")
+//    public ResultData<Object> selectActivityByName(@RequestParam("name") String name) {
+//        List<Activity> activityByNameList = activityService.getActivityByNameList(name);
+//        if (activityByNameList.isEmpty()) {
+//            return ResultData.fail("活动不存在");
+//        }
+//        return ResultData.success(activityByNameList);
+//    }
+//
+//
+//    // 按照名称模糊分页查询活动信息列表
+//    @GetMapping("/selectActivityPageByName")
+//    public ResultData<CommonResponse<Activity>> selectActivityPageByName(NameRequest prizeRequest) {
+//        CommonResponse<Activity> commonResponse = activityService.selectActivityPageByName(prizeRequest);
+//        if (commonResponse.getData().isEmpty()) {
+//            return ResultData.fail("活动不存在");
+//        }
+//        return ResultData.success(commonResponse);
+//    }
+//
+//
+//    // 按照ID修改活动信息
+//    @PostMapping("/updateActivity")
+//    // 带上@RequestBody，要发送json格式数据，如果不加就是x-www-form-urlencoded格式数据
+//    public ResultData<String> updateActivityById(Activity activity) {
+//        boolean update = activityService.updateById(activity);
+//        if (update) {
+//            return ResultData.success("修改成功");
+//        }
+//        return ResultData.fail("修改失败");
+//    }
+//
+//    @PostMapping("/deleteActivity")
+//    public ResultData<String> deleteActivityById(@RequestParam("id") Integer id) {
+//        boolean delete = activityService.removeActivityById(id);
+//        if (delete) {
+//            return ResultData.success("删除成功");
+//        }
+//        return ResultData.fail("删除失败");
+//    }
+//
+//
+//    @PostMapping("deleteActivityByIds")
+//    // 传入的数据格式为 Content-Type: application/json [1,2,3]
+//    public ResultData<String> deleteActivityByIds(@RequestBody List<Integer> ids) {
+//        // 自定义方法进行逻辑删除
+//        boolean delete = activityService.removeActivityByIds(ids);
+//        if (delete) {
+//            return ResultData.success("删除成功");
+//        }
+//        return ResultData.fail("删除失败");
+//    }
+//
+//    @PostMapping("/createActivityWithPrizes")
+//    public ResultData<String> createActivityWithPrizes(@RequestBody CreateActivityRequest request) {
+//        boolean success = activityService.saveActivityWithPrizes(request.getActivity(), request.getPrizes());
+//        if (success) {
+//            return ResultData.success("创建成功");
+//        } else {
+//            return ResultData.fail("创建失败");
+//        }
+//
+//    }
+//
+//
+//    @PostMapping("deleteActivityByIds2")
+//    // 传入的数据格式为 Content-Type: application/x-www-form-urlencoded ids=1,2,3
+//    public ResultData<String> deleteActivityByIds2(@RequestParam("ids") List<Integer> ids) {
+//        // 自定义方法进行逻辑删除
+//        boolean delete = activityService.removeActivityByIds(ids);
+//        if (delete) {
+//            return ResultData.success("删除成功");
+//        }
+//        return ResultData.fail("删除失败");
+//    }
 
-        Activity activity = activityService.getActivityById(id);
-        if (activity == null) {
-            return ResultData.fail("活动不存在");
+    /**
+     * 最终版本的增删改查，之前的增删改查只是基于单表的
+     * 现在需要考虑多表关联，即创建活动信息时，也要创建与之关联的活动奖品、活动限制等
+     */
+
+    // 添加活动信息
+    @PostMapping("/addActivity")
+    public ResultData<String> addActivity(@RequestBody CreateActivityRequest request) {
+        Boolean b = activityService.addActivity(request.getActivity(), request.getPrizes(), request.getActivityRestriction());
+        if (b) {
+            return ResultData.success("添加成功");
         }
-        return ResultData.success(activity);
+        return ResultData.fail("添加失败");
     }
 
-    // 按照名称模糊查询活动信息列表
-    @GetMapping("/selectActivityByName")
-    public ResultData<Object> selectActivityByName(@RequestParam("name") String name) {
-        List<Activity> activityByNameList = activityService.getActivityByNameList(name);
-        if (activityByNameList.isEmpty()) {
-            return ResultData.fail("活动不存在");
+    // 批量删除活动信息:即可单个删除，也可以批量删除
+    @PostMapping("/deleteBatchActivity")
+    public ResultData<String> deleteBatchActivity(@RequestParam("ids") List<Integer> ids) {
+        boolean delete = activityService.deleteBatchActivity(ids);
+        if (delete) {
+            return ResultData.success("删除成功");
         }
-        return ResultData.success(activityByNameList);
+        return ResultData.fail("删除失败");
     }
 
-
-    // 按照名称模糊分页查询活动信息列表
-    @GetMapping("/selectActivityPageByName")
-    public ResultData<CommonResponse<Activity>> selectActivityPageByName(NameRequest prizeRequest) {
-        CommonResponse<Activity> commonResponse = activityService.selectActivityPageByName(prizeRequest);
-        if (commonResponse.getData().isEmpty()) {
-            return ResultData.fail("活动不存在");
-        }
-        return ResultData.success(commonResponse);
-    }
-
-
-    // 按照ID修改活动信息
+    // 修改活动信息
     @PostMapping("/updateActivity")
-    // 带上@RequestBody，要发送json格式数据，如果不加就是x-www-form-urlencoded格式数据
-    public ResultData<String> updateActivityById(Activity activity) {
-        boolean update = activityService.updateById(activity);
+    public ResultData<String> updateActivity(@RequestBody CreateActivityRequest request) {
+        boolean update = activityService.updateActivity(request.getActivity(), request.getPrizes(), request.getActivityRestriction());
         if (update) {
             return ResultData.success("修改成功");
         }
         return ResultData.fail("修改失败");
     }
 
-    @PostMapping("/deleteActivity")
-    public ResultData<String> deleteActivityById(@RequestParam("id") Integer id) {
-        boolean delete = activityService.removeActivityById(id);
-        if (delete) {
-            return ResultData.success("删除成功");
-        }
-        return ResultData.fail("删除失败");
-    }
-
-
-    @PostMapping("deleteActivityByIds")
-    // 传入的数据格式为 Content-Type: application/json [1,2,3]
-    public ResultData<String> deleteActivityByIds(@RequestBody List<Integer> ids) {
-        // 自定义方法进行逻辑删除
-        boolean delete = activityService.removeActivityByIds(ids);
-        if (delete) {
-            return ResultData.success("删除成功");
-        }
-        return ResultData.fail("删除失败");
-    }
-
-    @PostMapping("/createActivityWithPrizes")
-    public ResultData<String> createActivityWithPrizes(@RequestBody CreateActivityRequest request) {
-        boolean success = activityService.saveActivityWithPrizes(request.getActivity(), request.getPrizes());
-        if (success) {
-            return ResultData.success("创建成功");
-        } else {
-            return ResultData.fail("创建失败");
-        }
-
-    }
-
-
-    @PostMapping("deleteActivityByIds2")
-    // 传入的数据格式为 Content-Type: application/x-www-form-urlencoded ids=1,2,3
-    public ResultData<String> deleteActivityByIds2(@RequestParam("ids") List<Integer> ids) {
-        // 自定义方法进行逻辑删除
-        boolean delete = activityService.removeActivityByIds(ids);
-        if (delete) {
-            return ResultData.success("删除成功");
-        }
-        return ResultData.fail("删除失败");
+    @GetMapping("/selectActivity")
+    public ResultData<CommonResponse<ActivityResp>> selectActivity(NameRequest nameRequest) {
+        CommonResponse<ActivityResp> activityRespCommonResponse = activityService.selectActivity(nameRequest.getName(), nameRequest.getPage(), nameRequest.getLimit());
+        return ResultData.success(activityRespCommonResponse);
     }
 
 }

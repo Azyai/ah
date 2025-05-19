@@ -1,8 +1,11 @@
 package com.itay.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.itay.dto.request.CreateActivityRequest;
+import com.itay.dto.response.ActivityResp;
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
+import com.itay.entity.ActivityRestriction;
 import com.itay.request.NameRequest;
 import com.itay.resp.CommonResponse;
 
@@ -13,15 +16,24 @@ import java.util.List;
  */
 public interface ActivityService extends IService<Activity> {
 
-    List<Activity> getActivityByNameList(String name);
+//    List<Activity> getActivityByNameList(String name);
+//
+//    Activity getActivityById(Integer id);
+//
+//    boolean removeActivityById(Integer id);
+//
+//    boolean removeActivityByIds(List<Integer> ids);
+//
+//    CommonResponse<Activity> selectActivityPageByName(NameRequest prizeRequest);
+//
+//    boolean saveActivityWithPrizes(Activity activity, List<ActivityPrize> prizes);
 
-    Activity getActivityById(Integer id);
 
-    boolean removeActivityById(Integer id);
+    Boolean addActivity(Activity activity, List<ActivityPrize> prizes, ActivityRestriction activityRestriction);
 
-    boolean removeActivityByIds(List<Integer> ids);
+    boolean deleteBatchActivity(List<Integer> ids);
 
-    CommonResponse<Activity> selectActivityPageByName(NameRequest prizeRequest);
+    boolean updateActivity(Activity activity, List<ActivityPrize> prizes, ActivityRestriction activityRestriction);
 
-    boolean saveActivityWithPrizes(Activity activity, List<ActivityPrize> prizes);
+    CommonResponse<ActivityResp> selectActivity(String name, Integer page, Integer limit);
 }
