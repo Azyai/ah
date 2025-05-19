@@ -14,7 +14,7 @@ public class TestController {
     @Resource
     private PriceApi priceApi;
 
-    @GetMapping("consumer/getServerPort")
+    @GetMapping("/consumer/getServerPort")
     public ResultData<String> getServerPort() {
         return priceApi.getServerPort();
     }

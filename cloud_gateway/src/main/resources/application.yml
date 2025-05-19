@@ -5,6 +5,10 @@ jwt:
   secret: ntzvtcNo+hjeo4br7lk5VVYfzxN7fya465deA8+dfqw=
 
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
   main:
     web-application-type: reactive
   data:
@@ -17,8 +21,11 @@ spring:
   cloud:
     nacos:
       discovery: localhost:8848 # 配置nacos地址
+      config:
+        file-extension: yml
+        group: DEFAULT_GROUP
+        namespace: public
     gateway:
-
       globalcors: # 全局的跨域处理
         add-to-simple-url-handler-mapping: true # 解决options请求被拦截问题
         corsConfigurations:

@@ -42,6 +42,7 @@
             <artifactId>cloud-api-commons</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <!--web + actuator-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
