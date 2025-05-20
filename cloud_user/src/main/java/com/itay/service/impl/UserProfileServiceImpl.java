@@ -1,8 +1,6 @@
 package com.itay.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.itay.entity.User;
 import com.itay.entity.UserProfile;
 import com.itay.mapper.UserProfileMapper;
 import com.itay.resp.UserInfo;

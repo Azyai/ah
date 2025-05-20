@@ -1,4 +1,4 @@
-package com.itay.entity;
+package com.itay.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityCounter extends BaseEntity{
+public class ActivityCounter extends BaseEntity {
     private Integer activityId;
     private String redisKey; // activity:participants:count:{activityId}
     private Integer currentCount;

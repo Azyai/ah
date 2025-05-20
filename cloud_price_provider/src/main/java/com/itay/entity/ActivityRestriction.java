@@ -1,20 +1,20 @@
 package com.itay.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.itay.pojo.BaseEntity;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("activity_restriction")
-public class ActivityRestriction extends BaseEntity{
+public class ActivityRestriction extends BaseEntity {
     @TableId
     private Integer activityId;
     

@@ -1,4 +1,4 @@
-package com.itay.entity;
+package com.itay.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityMQMessage extends BaseEntity{
+public class ActivityMQMessage extends BaseEntity {
     private String msgId;
     private MessageType type; // 枚举：COUNTER_UPDATE/PRIZE_SEND等
     
