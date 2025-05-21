@@ -10,6 +10,8 @@
       </el-carousel-item>
     </el-carousel>
 
+    <router-view></router-view>
+
     <el-button type="success" @click="sendTestRequest">发送测试请求</el-button>
 
     <!-- 产品介绍模块 -->
