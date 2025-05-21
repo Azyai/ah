@@ -11,3 +11,8 @@ spring:
   cloud:
     nacos:
       discovery: localhost:8848 # 配置nacos地址
+
+rocketmq:
+  name-server: 182.92.222.10:9876     # rocketMq的nameServer地址
+  producer:   # 消费者组别
+    group: price_consumer

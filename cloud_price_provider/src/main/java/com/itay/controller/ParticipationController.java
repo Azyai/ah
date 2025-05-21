@@ -55,4 +55,10 @@ public class ParticipationController {
 
     }
 
+    @GetMapping("/getActivityById")
+    ResultData<Activity> getActivityById(@RequestParam("activityId") Integer activityId){
+        return ResultData.success(activityService.getById(activityId));
+    }
+
+
 }

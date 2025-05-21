@@ -39,7 +39,7 @@
         <spring.cloud.version>2023.0.5</spring.cloud.version>
         <security.springboot.version>3.2.12</security.springboot.version>
         <spring-boot-starter-data-redis>3.2.12</spring-boot-starter-data-redis>
-        <rocketmq.spring.boot.starter>2.3.0</rocketmq.spring.boot.starter>
+        <rocketmq.spring.boot.starter>2.3.1</rocketmq.spring.boot.starter>
         <druid-spring-boot-starter>1.2.18</druid-spring-boot-starter>
         <jedis.version>5.2.0</jedis.version>
         <lettuce-core.version>6.5.5.RELEASE</lettuce-core.version>
@@ -77,6 +77,12 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-oauth2-resource-server</artifactId>
                 <version>6.2.8</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.spring.boot.starter}</version>
             </dependency>
 
             <dependency>

@@ -1,6 +1,5 @@
 package com.itay.service.impl;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itay.entity.Activity;
@@ -36,7 +35,7 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
     @Resource
     RedisTemplate<String,Integer> redisTemplate;
 
-    @Autowired
+    @Resource
     private TaskScheduler taskScheduler;
 
     @Autowired

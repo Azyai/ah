@@ -17,3 +17,11 @@ spring:
       host: 182.92.222.10
       port: 6379
       password: 123456
+
+rocketmq:
+  name-server: 182.92.222.10:9876     # rocketMq的nameServer地址
+  producer:
+    group: prize_group        # 生产者组别
+    send-message-timeout: 3000  # 消息发送的超时时间
+    retry-times-when-send-async-failed: 2  # 异步消息发送失败重试次数
+    max-message-size: 4194304       # 消息的最大长度
