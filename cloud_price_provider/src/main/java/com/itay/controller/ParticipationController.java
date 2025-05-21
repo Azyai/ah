@@ -8,6 +8,7 @@ import com.itay.request.ParticipationRequest;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
 import com.itay.service.ParticipationService;
+import com.itay.service.WinningRecordService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,8 @@ public class ParticipationController {
 
     @Resource
     private WinningRecordMapper winningRecordMapper;
+    @Autowired
+    private WinningRecordService winningRecordService;
 
     @PostMapping("/participate")
     @Transactional
@@ -53,7 +56,6 @@ public class ParticipationController {
             Prize prize = participationService.drawPrize(activity);
             if (prize != null) {
 
-                // 中奖之后要存储中奖信息
                 WinningRecord winningRecord = WinningRecord.builder()
                         .userId(userId)
                         .activityId(activityId)
@@ -61,9 +63,9 @@ public class ParticipationController {
                         .status(1)
                         .build();
 
-                int insert = winningRecordMapper.insert(winningRecord);
-                if (insert < 0) {
-                    throw new RuntimeException("存储中奖信息失败");
+                boolean b = winningRecordService.addAndUpdateActivity(winningRecord);
+                if (!b){
+                    throw new RuntimeException("添加中奖记录失败,更新记录失败！");
                 }
 
                 return ResultData.success("恭喜您中奖了,奖品是：" + prize.getName());
