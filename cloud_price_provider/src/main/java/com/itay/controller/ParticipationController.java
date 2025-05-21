@@ -2,10 +2,13 @@ package com.itay.controller;
 
 import com.itay.entity.Activity;
 import com.itay.entity.Prize;
+import com.itay.entity.WinningRecord;
+import com.itay.mapper.WinningRecordMapper;
 import com.itay.request.ParticipationRequest;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
 import com.itay.service.ParticipationService;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,9 @@ public class ParticipationController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Resource
+    private WinningRecordMapper winningRecordMapper;
 
     @PostMapping("/participate")
     @Transactional
@@ -43,11 +49,25 @@ public class ParticipationController {
         }
 
         // 3. 如果是立即开奖型，直接开奖
-        if(activity.getType() == 1 ||activity.getType() == 3){
+        if (activity.getType() == 1 || activity.getType() == 3) {
             Prize prize = participationService.drawPrize(activity);
-            if(prize != null){
-                return ResultData.success("恭喜您中奖了,奖品是："+ prize.getName());
-            }else {
+            if (prize != null) {
+
+                // 中奖之后要存储中奖信息
+                WinningRecord winningRecord = WinningRecord.builder()
+                        .userId(userId)
+                        .activityId(activityId)
+                        .prizeId(prize.getId())
+                        .status(1)
+                        .build();
+
+                int insert = winningRecordMapper.insert(winningRecord);
+                if (insert < 0) {
+                    throw new RuntimeException("存储中奖信息失败");
+                }
+
+                return ResultData.success("恭喜您中奖了,奖品是：" + prize.getName());
+            } else {
                 return ResultData.success("参与成功，但是未中奖!");
             }
         }
@@ -58,7 +78,7 @@ public class ParticipationController {
     }
 
     @GetMapping("/getActivityById")
-    ResultData<Activity> getActivityById(@RequestParam("activityId") Integer activityId){
+    ResultData<Activity> getActivityById(@RequestParam("activityId") Integer activityId) {
         return ResultData.success(activityService.getById(activityId));
     }
 
