@@ -74,6 +74,10 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthG
                 return unauthorized(exchange, "Invalid token");
             }
 
+            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                    .header("X-User",username)
+                    .build();
+
             // 5. 查询 Redis 用户权限码 List<String>
             String authorityStr = redisTemplate.opsForValue().get("user:" + username + ":authorities");
             if (authorityStr == null || authorityStr.isEmpty()) {
@@ -94,7 +98,7 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthG
             }
 
             // 7. 放行
-            return chain.filter(exchange);
+            return chain.filter(exchange.mutate().request(modifiedRequest).build());
         };
     }
 
