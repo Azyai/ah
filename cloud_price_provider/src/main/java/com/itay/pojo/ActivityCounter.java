@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActivityCounter extends BaseEntity {
-    private Integer activityId;
+    private Integer activityId; // 活动ID
     private String redisKey; // activity:participants:count:{activityId}
-    private Integer currentCount;
-    private Integer maxLimit;
+    private Integer currentCount; // 当前参与人数
+    private Integer maxLimit; // 最大参与人数
     private Boolean isReached; // 是否已达上限
 }

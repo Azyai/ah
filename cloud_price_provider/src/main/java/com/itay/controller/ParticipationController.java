@@ -1,13 +1,13 @@
 package com.itay.controller;
 
+import com.itay.entity.Activity;
+import com.itay.entity.Prize;
 import com.itay.resp.ResultData;
+import com.itay.service.ActivityService;
 import com.itay.service.ParticipationService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/draw/participation")
@@ -16,14 +16,43 @@ public class ParticipationController {
     @Autowired
     private ParticipationService participationService;
 
-    @PostMapping("/participate")
-    public ResultData<String> participate(Integer activityId, @RequestHeader("X-Device-Fingerprint") String deviceFingerprint, HttpServletRequest request) {
+    @Autowired
+    private ActivityService activityService;
 
-        // 从网关传递的认证信息中获取用户ID（假设网关已经添加了X-User-Id请求头）
-        Long userId = Long.parseLong(request.getHeader("X-User-Id"));
-        String ip = request.getRemoteAddr();
+    @PostMapping("/participate")
+    @Transactional
+    public ResultData<String> participate(
+            @RequestParam Long userId,
+            @RequestParam Integer activityId,
+            @RequestParam String ip,
+            @RequestParam String deviceFingerprint
+    ) {
+
+        // 存储参与记录
         boolean success = participationService.addParticipate(userId, activityId, ip, deviceFingerprint);
-        return success ? ResultData.success("参与成功") : ResultData.fail("参与失败，请稍后再试！");
+        if (!success) {
+            return ResultData.fail("参与失败");
+        }
+
+        // 2.获取活动信息
+        Activity activity = activityService.getById(activityId);
+        if (activity == null || !activity.getValid()) {
+            return ResultData.fail("活动不存在");
+        }
+
+        // 3. 如果是立即开奖型，直接开奖
+        if(activity.getType() == 1 ||activity.getType() == 3){
+            Prize prize = participationService.drawPrize(activity);
+            if(prize != null){
+                return ResultData.success("恭喜您中奖了,奖品是："+ prize.getName());
+            }else {
+                return ResultData.success("参与成功，但是未中奖!");
+            }
+        }
+
+        // 4.如果是福袋型，返回成功参与的信息，等待rocketMQ延时消息触发开奖
+        return ResultData.success("参与成功，请等待开奖结果！");
+
     }
 
 }

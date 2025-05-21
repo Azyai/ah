@@ -38,5 +38,6 @@ public class Participation extends BaseEntity {
     private String deviceFingerprint;
     
     @Builder.Default
+    // 是否中奖
     private Boolean isWinning = false;
 }
