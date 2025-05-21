@@ -2,6 +2,7 @@ package com.itay.controller;
 
 import com.itay.entity.Activity;
 import com.itay.entity.Prize;
+import com.itay.request.ParticipationRequest;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
 import com.itay.service.ParticipationService;
@@ -21,12 +22,13 @@ public class ParticipationController {
 
     @PostMapping("/participate")
     @Transactional
-    public ResultData<String> participate(
-            @RequestParam Long userId,
-            @RequestParam Integer activityId,
-            @RequestParam String ip,
-            @RequestParam String deviceFingerprint
-    ) {
+    public ResultData<String> participate(@RequestBody ParticipationRequest participationRequest) {
+        Long userId = participationRequest.getUserId();
+        Integer activityId = participationRequest.getActivityId();
+        String ip = participationRequest.getIp();
+        String deviceFingerprint = participationRequest.getDeviceFingerprint();
+
+        System.out.println("activityId: " + activityId);
 
         // 存储参与记录
         boolean success = participationService.addParticipate(userId, activityId, ip, deviceFingerprint);
