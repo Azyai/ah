@@ -9,6 +9,7 @@ import com.itay.entity.Prize;
 import com.itay.mapper.ActivityMapper;
 import com.itay.mapper.ActivityPrizeMapper;
 import com.itay.mapper.ParticipationMapper;
+import com.itay.mapper.PrizeMapper;
 import com.itay.pojo.ActivityCounter;
 import com.itay.service.ParticipationService;
 import jakarta.annotation.Resource;
@@ -33,7 +34,10 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
     ParticipationMapper participationMapper;
 
     @Resource
-    RedisTemplate<String,Integer> redisTemplate;
+    PrizeMapper prizeMapper;
+
+    @Resource
+    RedisTemplate<String, Integer> redisTemplate;
 
     @Resource
     private TaskScheduler taskScheduler;
@@ -42,18 +46,18 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
     private ActivityPrizeMapper activityPrizeMapper;
 
     @Override
-    public boolean addParticipate(Long userId, Integer activityId, String ip,String deviceFingerprint) {
+    public boolean addParticipate(Long userId, Integer activityId, String ip, String deviceFingerprint) {
         // 1.验证活动有效性
         Activity activity = activityMapper.selectById(activityId);
-        if(activity == null || !activity.getValid()){
+        if (activity == null || !activity.getValid()) {
             throw new RuntimeException("活动不存在或者已经删除");
         }
 
-        if(LocalDateTime.now().isBefore(activity.getStartTime())){
+        if (LocalDateTime.now().isBefore(activity.getStartTime())) {
             throw new RuntimeException("活动尚未开始");
         }
 
-        if(LocalDateTime.now().isAfter(activity.getEndTime())){
+        if (LocalDateTime.now().isAfter(activity.getEndTime())) {
             throw new RuntimeException("活动已经结束");
         }
 
@@ -65,17 +69,17 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
                 .maxLimit(activity.getMaxParticipants())
                 .build();
 
-        if(!updateCounter(counter,activity)){
+        if (!updateCounter(counter, activity)) {
             throw new RuntimeException("活动人数已满");
         }
 
         // 3.判断活动参与限制,如果存在一次参与，则无法参与
-        LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Participation::getUserId,userId)
-                .eq(Participation::getActivityId,activityId);
-        if(participationMapper.selectOne(queryWrapper) != null){
-            throw new RuntimeException("用户已经参与过活动");
-        }
+//        LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(Participation::getUserId,userId)
+//                .eq(Participation::getActivityId,activityId);
+//        if(participationMapper.selectOne(queryWrapper) != null){
+//            throw new RuntimeException("用户已经参与过活动");
+//        }
 
         // 4.保存参与记录
         Participation participation = Participation.builder()
@@ -93,12 +97,12 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
 
     @Override
     @Transactional
-    public boolean updateCounter(ActivityCounter counter, Activity activity){
+    public boolean updateCounter(ActivityCounter counter, Activity activity) {
         // 先存入MySQL，再延迟双删Redis缓存
 
         // 1.先存入MySQL中
         activity.setCurrentParticipants(counter.getCurrentCount() + 1);
-        if(activityMapper.updateById(activity) <= 0){
+        if (activityMapper.updateById(activity) <= 0) {
             throw new RuntimeException("活动更新失败，事务将回滚");
         }
 
@@ -106,9 +110,9 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
         redisTemplate.delete(counter.getRedisKey());
 
         // 3.延迟双删Redis缓存
-        taskScheduler.schedule(()->{
+        taskScheduler.schedule(() -> {
             redisTemplate.delete(counter.getRedisKey());
-        },new Date(System.currentTimeMillis() + 1000)); // 延迟1秒执行
+        }, new Date(System.currentTimeMillis() + 1000)); // 延迟1秒执行
 
         return true;
     }
@@ -119,18 +123,18 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
 
         // 1.先查询Redis
         Integer count = redisTemplate.opsForValue().get(redisKey);
-        if(count != null){
+        if (count != null) {
             return count;
         }
 
         // 2.如果Redis中没有数据，则查询MySQL
         Activity activity = activityMapper.selectById(activityId);
-        if(activity == null){
+        if (activity == null) {
             throw new RuntimeException("活动不存在");
         }
 
         // 3.将MySQL中的数据写入Redis中
-        redisTemplate.opsForValue().set(redisKey,activity.getCurrentParticipants());
+        redisTemplate.opsForValue().set(redisKey, activity.getCurrentParticipants());
         return activity.getCurrentParticipants();
     }
 
@@ -139,12 +143,19 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
         // 1. 获取活动关联的奖品列表
         List<ActivityPrize> prizeList = activityPrizeMapper.selectList(
                 new LambdaQueryWrapper<ActivityPrize>()
-                        .eq(ActivityPrize::getActivityId,activity.getId())
-                        .eq(ActivityPrize::getValid,true)
+                        .eq(ActivityPrize::getActivityId, activity.getId())
+                        .eq(ActivityPrize::getValid, true)
         );
 
+        // 2. 将activityPrize关联的奖品详情填充到ActivityPrize中
+        prizeList.forEach(prize -> {
+            prize.setPrizeDetail(
+                    prizeMapper.selectById(prize.getPrizeId())
+            );
+        });
+
         System.out.println("prizeList: " + prizeList);
-        if(prizeList.isEmpty()){
+        if (prizeList.isEmpty()) {
             throw new RuntimeException("活动没有奖品");
         }
 
@@ -156,18 +167,30 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
         System.out.println("totalProbability: " + totalProbability);
 
         // 3.生产随机数
-        BigDecimal randomValue = BigDecimal.valueOf(Math.random()).multiply(totalProbability);
+        BigDecimal randomValue = BigDecimal.valueOf(Math.random());
 
-        // 4.根据概率选择奖品
-        BigDecimal cumulativeProbability = BigDecimal.ZERO;
+        // 4.根据概率选择奖品，cumulativeProbability表示当前奖品的累计概率
+        // cumulativeProbability表示当前奖品的累计概率
 
-        for (ActivityPrize prize : prizeList) {
-            cumulativeProbability = cumulativeProbability.add(prize.getProbability());
-            System.out.println("cumulativeProbability: " + cumulativeProbability);
-            if (randomValue.compareTo(cumulativeProbability) < 0) {
-                // 奖品被选中，返回中奖奖品
-                return prize.getPrizeDetail();
+        if (randomValue.compareTo(totalProbability) < 0) {
+            BigDecimal cumulativeProbability = BigDecimal.ZERO;
+            for (ActivityPrize prize : prizeList) {
+
+                // 遍历奖品列表，累加每个奖品的概率
+                // 当随机值小于当前累计概率时，返回对应的奖品
+                // 这种方法确保了每个奖品的中奖概率与其设置的概率值成正比
+
+                cumulativeProbability = cumulativeProbability.add(prize.getProbability());
+                System.out.println("cumulativeProbability: " + cumulativeProbability);
+
+                System.out.println("randomValue: " + randomValue);
+                System.out.println(randomValue.compareTo(cumulativeProbability) + " ------");
+                if (randomValue.compareTo(cumulativeProbability) < 0) {
+                    // 奖品被选中，返回中奖奖品
+                    return prize.getPrizeDetail();
+                }
             }
+
         }
 
         return null; // 未中奖
