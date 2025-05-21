@@ -1,11 +1,13 @@
 package com.itay.controller;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.itay.entity.User;
 import com.itay.entity.UserProfile;
 import com.itay.resp.ResultData;
 import com.itay.resp.UserInfo;
 import com.itay.service.FileService;
 import com.itay.service.UserProfileService;
+import com.itay.service.UserService;
 import com.itay.utils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,8 +43,19 @@ public class UserController {
     @Autowired
     UserProfileService userProfileService;
 
+    @Autowired
+    UserService userService;
+
     @Resource
     JwtUtils jwtUtils;
+
+    @GetMapping("/GetUserId")
+    public Long getUserId(@RequestParam("username") String username){
+        LambdaUpdateWrapper<User> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper.eq(User::getUsername, username);
+        User user = userService.getOne(lambdaUpdateWrapper);
+        return Long.valueOf(user.getId());
+    }
 
 
     @GetMapping("/getUserInfo")

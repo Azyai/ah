@@ -18,6 +18,7 @@ public class SecurityConstants {
             "/webjars/**",
             "/error",
             "/static/**",
+            "/user/GetUserId",
             // 放行图标
             "/favicon.ico",
     };
