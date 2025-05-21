@@ -2,8 +2,11 @@ package com.itay.controller;
 
 
 import com.itay.apis.PriceApi;
+import com.itay.apis.UserApi;
 import com.itay.entity.Activity;
+import com.itay.request.ParticipationRequest;
 import com.itay.resp.ResultData;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
@@ -20,23 +23,37 @@ public class ParticipationConsumerController {
     private PriceApi participateApi;
 
     @Autowired
+    private UserApi userApi;
+
+    @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
     @PostMapping("/participate")
     public ResultData<String> participate(
-            @RequestParam Long userId,
-            @RequestParam Integer activityId,
-            @RequestParam String ip,
-            @RequestParam String deviceFingerprint) {
+            ParticipationRequest participationRequest,
+            HttpServletRequest httpServletRequest) {
+
+        // 获取用户ID和IP地址
+        String username = httpServletRequest.getHeader("X-User");
+        Long userId = userApi.getUserId(username);
+        participationRequest.setUserId(userId);
+
+
+        String ip = httpServletRequest.getRemoteAddr();
+        System.out.println("userId: "+ userId);
+        System.out.println("ip: "+ ip);
+        System.out.println("activityId " + participationRequest.getActivityId());
+        System.out.println("Finger: " + participationRequest.getDeviceFingerprint());
+        participationRequest.setIp(ip);
 
         // 1. 调用 Feign 接口存储参与信息
-        ResultData<String> result = participateApi.participate(userId, activityId, ip, deviceFingerprint);
+        ResultData<String> result = participateApi.participate(participationRequest);
         if (!result.getCode().equals("200")) {
             return result; // 如果存储失败，直接返回错误信息
         }
 
         // 2. 获取活动信息
-        ResultData<Activity> activityResult = participateApi.getActivityById(activityId);
+        ResultData<Activity> activityResult = participateApi.getActivityById(participationRequest.getActivityId());
         if (!activityResult.getCode().equals("200") || activityResult.getData() == null) {
             return ResultData.fail("活动不存在");
         }
@@ -49,13 +66,13 @@ public class ParticipationConsumerController {
 
             rocketMQTemplate.syncSend(
                     "fudai-draw-topic",
-                    MessageBuilder.withPayload(activityId).build(),
+                    MessageBuilder.withPayload(participationRequest.getActivityId()).build(),
                     delayTime,
                     RocketMQDelayLevel.getDelayLevel(delayTime)
             );
         }
 
-        return ResultData.success("参与成功");
+        return ResultData.success(result.getData());
     }
 
     private static class RocketMQDelayLevel {
