@@ -243,6 +243,7 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> i
         commonResponse.setData(activityResp);
         commonResponse.setTotal(ipage.getTotal());
         commonResponse.setCurrent(ipage.getCurrent());
+        commonResponse.setSize(ipage.getSize());
         return commonResponse;
     }
 

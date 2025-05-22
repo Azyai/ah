@@ -9,4 +9,5 @@ public class CommonResponse<T> {
    List<T> data;
    Long total;
    Long current;
+   Long size;
 }
