@@ -4,7 +4,10 @@ package com.itay.controller;
 import com.itay.apis.PriceApi;
 import com.itay.apis.UserApi;
 import com.itay.entity.Activity;
+import com.itay.entity.resp.ParticipationResp;
+import com.itay.request.IdRequest;
 import com.itay.request.ParticipationRequest;
+import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -99,6 +102,11 @@ public class ParticipationConsumerController {
     @GetMapping("/getActivityById")
     ResultData<Activity> getActivityById(@RequestParam("activityId") Integer activityId){
         return participateApi.getActivityById(activityId);
+    }
+
+    @PostMapping("/getParticipation")
+    ResultData<CommonResponse<ParticipationResp>> getParticipation(@RequestBody IdRequest idRequest){
+        return participateApi.getParticipation(idRequest);
     }
 
 }

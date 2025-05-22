@@ -1,7 +1,7 @@
 package com.itay.controller;
 
-import com.itay.dto.response.ParticipationResp;
 import com.itay.entity.Activity;
+import com.itay.entity.resp.ParticipationResp;
 import com.itay.entity.Prize;
 import com.itay.entity.WinningRecord;
 import com.itay.request.IdRequest;
@@ -14,8 +14,6 @@ import com.itay.service.WinningRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/draw/participation")
@@ -85,9 +83,9 @@ public class ParticipationController {
         return ResultData.success(activityService.getById(activityId));
     }
 
-    @GetMapping("/getParticipation")
+    @PostMapping("/getParticipation")
     // 查询肯定是分页查询
-    public ResultData<CommonResponse<ParticipationResp>> getParticipation(IdRequest idRequest){
+    public ResultData<CommonResponse<ParticipationResp>> getParticipation(@RequestBody IdRequest idRequest){
         CommonResponse<ParticipationResp> participationResps = participationService.selectParticipationResp(idRequest);
 
         return ResultData.success(participationResps);

@@ -4,7 +4,6 @@ package com.itay.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
-import com.itay.entity.Prize;
 import com.itay.entity.WinningRecord;
 import com.itay.mapper.ActivityMapper;
 import com.itay.mapper.ActivityPrizeMapper;

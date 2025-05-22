@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.itay.dto.response.ParticipationResp;
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
 import com.itay.entity.Participation;
 import com.itay.entity.Prize;
+import com.itay.entity.resp.ParticipationResp;
 import com.itay.mapper.ActivityMapper;
 import com.itay.mapper.ActivityPrizeMapper;
 import com.itay.mapper.ParticipationMapper;
@@ -27,10 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, Participation> implements ParticipationService {
