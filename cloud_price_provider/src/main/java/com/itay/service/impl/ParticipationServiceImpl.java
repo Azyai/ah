@@ -1,7 +1,10 @@
 package com.itay.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.itay.dto.response.ParticipationResp;
 import com.itay.entity.Activity;
 import com.itay.entity.ActivityPrize;
 import com.itay.entity.Participation;
@@ -11,6 +14,8 @@ import com.itay.mapper.ActivityPrizeMapper;
 import com.itay.mapper.ParticipationMapper;
 import com.itay.mapper.PrizeMapper;
 import com.itay.pojo.ActivityCounter;
+import com.itay.request.IdRequest;
+import com.itay.resp.CommonResponse;
 import com.itay.service.ParticipationService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, Participation> implements ParticipationService {
@@ -194,5 +202,39 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
         }
 
         return null; // 未中奖
+    }
+
+    @Override
+    public CommonResponse<ParticipationResp> selectParticipationResp(IdRequest idRequest) {
+        IPage<Participation> page = new Page<>();
+        LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Participation::getActivityId, idRequest.getId())
+                .eq(Participation::getValid, true);
+
+        page = participationMapper.selectPage(page, queryWrapper);
+
+        CommonResponse<ParticipationResp> commonResponse = new CommonResponse<>();
+        commonResponse.setTotal(page.getTotal());
+        commonResponse.setCurrent(page.getCurrent());
+        commonResponse.setSize(page.getSize());
+
+        List<Participation> participationList = page.getRecords();
+        List<ParticipationResp> participationRespList = new ArrayList<>();
+        String userName = participationMapper.selectUserName(participationList.get(0).getUserId());
+
+        for (Participation participation : participationList){
+            String activityName = activityMapper.selectById(participation.getActivityId()).getName();
+
+            participationRespList.add(ParticipationResp.builder()
+                    .id(participation.getId())
+                    .userName(userName)
+                    .activityName(activityName)
+                    .participationTime(participation.getParticipateTime())
+                    .ip(participation.getIp())
+                    .build()
+            );
+        };
+        commonResponse.setData(participationRespList);
+        return commonResponse;
     }
 }
