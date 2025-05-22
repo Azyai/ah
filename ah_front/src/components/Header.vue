@@ -43,7 +43,7 @@
         <el-drawer
             v-model="drawerVisible"
             :title="drawerTitle"
-            size="40%"
+            size="45%"
             destroy-on-close
         >
           <component :is="currentDrawerComponent"/>
