@@ -46,6 +46,10 @@ const router = createRouter({
       name: "ActivityDetailView",
       component: ActivityDetailView,
       props: true,
+    },{
+      path: "/contact",
+      name: "contact",
+      component: () => import('@/views/ContactUsView.vue')
     }
 
   ],
