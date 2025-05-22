@@ -43,7 +43,16 @@
     <section class="about-section">
       <div class="container">
         <h2>关于我们</h2>
-        <p>这是一个基于 Vue 3 和 Element Plus 构建的现代化前端应用。我们专注于提供高质量的产品与服务，助力企业数字化转型。</p>
+        <p>我们是一家专注于智能抽奖活动策划与执行的数字化平台，致力于为企业、品牌及个人提供高效、公平、创意十足的互动营销解决方案。通过多样化的抽奖形式、精准的数据分析及一站式运营支持，我们帮助客户快速提升用户参与度、扩大品牌曝光，并实现高效引流转化。
+
+          ✨ 为什么选择我们？
+          ✅ 极简操作：3分钟创建专属抽奖活动，零技术门槛
+          ✅ 丰富玩法：大转盘、砸金蛋、红包雨等20+趣味模板
+          ✅ 安全可靠：区块链级防作弊机制，结果100%公平可查
+          ✅ 深度赋能：从活动策划到数据复盘，全程陪跑增长
+
+          已服务10,000+企业用户，累计生成500,000+场抽奖活动，我们是您值得信赖的互动营销伙伴！
+        </p>
       </div>
     </section>
 
@@ -99,24 +108,36 @@ const displayedActivities = computed(() => {
 // 产品功能列表
 const features = ref([
   {
-    title: '智能社区',
-    description: '连接用户与平台，构建开放生态体系'
+    title: '操作简单，轻松上手',
+    description: '平台界面简洁直观，用户无需复杂操作即可快速创建抽奖活动，降低使用门槛。'
   },
   {
-    title: '生态系统',
-    description: '整合资源，打造一体化服务平台'
+    title: '多样化抽奖形式',
+    description: '支持多种抽奖方式（如立即开奖、福袋抽奖等）满足不同场景需求，提升趣味性。'
   },
   {
-    title: '开发工具',
-    description: '提供完善的开发者支持与文档说明'
+    title: '安全公平，杜绝作弊',
+    description: '采用智能算法确保抽奖过程公正透明，结果随机可验证，增强用户信任感。'
   },
   {
-    title: '技术文档',
-    description: '详尽的技术资料与API接口说明'
+    title: '高效引流，快速涨粉',
+    description: '通过抽奖活动吸引用户参与并转发分享，帮助品牌快速扩大曝光，提升粉丝增长。'
   },
   {
-    title: '技术支持',
-    description: '7x24小时在线客服与问题响应机制'
+    title: '数据统计，精准分析',
+    description: '提供详细的参与数据及用户行为分析，帮助运营者优化活动策略，提升转化效果。'
+  },
+  {
+    title: '灵活定制，品牌专属',
+    description: '支持自定义活动页面、奖品及规则，完美匹配品牌调性，强化品牌形象。'
+  },
+  {
+    title: '多渠道推广覆盖',
+    description: '一键同步至微信、微博、抖音等主流社交平台，最大化活动传播范围。'
+  },
+  {
+    title: '7×24小时稳定支持',
+    description: '专业服务器保障，高并发承载能力，确保活动全程流畅无卡顿，用户体验更佳。'
   }
 ])
 </script>
@@ -216,11 +237,20 @@ const features = ref([
 .feature-card {
   text-align: center;
   padding: 20px;
+  height: 200px;
 }
 
 .feature-card h3 {
   font-size: 1.2rem;
   margin-bottom: 10px;
+}
+
+
+.feature-card p {
+  text-align: left; /* 文本左对齐 */
+  margin-top: 10px; /* 调整与标题的间距 */
+  line-height: 1.6; /* 行高适中 */
+  color: #666; /* 文字颜色 */
 }
 
 .about-section {
