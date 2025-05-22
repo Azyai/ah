@@ -3,5 +3,8 @@
 <mapper namespace="com.itay.mapper.ParticipationMapper">
 
 
+    <select id="selectUserName" resultType="java.lang.String">
+        select username from user where id = #{userId}
+    </select>
 
 </mapper>
