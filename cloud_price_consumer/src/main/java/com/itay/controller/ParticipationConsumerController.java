@@ -105,7 +105,12 @@ public class ParticipationConsumerController {
     }
 
     @PostMapping("/getParticipation")
-    ResultData<CommonResponse<ParticipationResp>> getParticipation(@RequestBody IdRequest idRequest){
+    ResultData<CommonResponse<ParticipationResp>> getParticipation(@RequestBody IdRequest idRequest,HttpServletRequest httpServletRequest){
+
+        String username = httpServletRequest.getHeader("X-User");
+        Long userId = userApi.getUserId(username);
+        idRequest.setId(userId);
+
         return participateApi.getParticipation(idRequest);
     }
 

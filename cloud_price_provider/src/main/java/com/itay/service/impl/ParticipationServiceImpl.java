@@ -205,6 +205,9 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
     @Override
     public CommonResponse<ParticipationResp> selectParticipationResp(IdRequest idRequest) {
         IPage<Participation> page = new Page<>();
+        page.setCurrent(idRequest.getPage());
+        page.setSize(idRequest.getLimit());
+
         LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Participation::getActivityId, idRequest.getId())
                 .eq(Participation::getValid, true);

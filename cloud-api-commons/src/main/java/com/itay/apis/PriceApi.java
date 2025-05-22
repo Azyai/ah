@@ -31,7 +31,7 @@ public interface PriceApi {
     ResultData<Activity> getActivityById(@RequestParam("activityId")Integer activityId);
 
     @PostMapping("/draw/participation/getParticipation")
-    // 查询肯定是分页查询
+    // 查询肯定是分页查询，可以使用post来查，一会测试一下活动列表，使用名称已查询时在consumer端拆开
     ResultData<CommonResponse<ParticipationResp>> getParticipation(@RequestBody IdRequest idRequest);
 
 }

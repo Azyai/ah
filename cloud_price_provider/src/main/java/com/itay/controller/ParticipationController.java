@@ -86,8 +86,11 @@ public class ParticipationController {
     @PostMapping("/getParticipation")
     // 查询肯定是分页查询
     public ResultData<CommonResponse<ParticipationResp>> getParticipation(@RequestBody IdRequest idRequest){
+        System.out.println("idRequest: " + idRequest);
         CommonResponse<ParticipationResp> participationResps = participationService.selectParticipationResp(idRequest);
-
+        if (participationResps == null){
+            throw new RuntimeException("您当前还没有参与任何活动");
+        }
         return ResultData.success(participationResps);
     }
 
