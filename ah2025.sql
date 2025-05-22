@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 21/05/2025 22:48:26
+ Date: 22/05/2025 22:25:40
 */
 
 SET NAMES utf8mb4;
@@ -43,7 +43,7 @@ CREATE TABLE `activity`  (
 -- ----------------------------
 -- Records of activity
 -- ----------------------------
-INSERT INTO `activity` VALUES (1, '幸运大转盘活动 - 已更新', 1, '2025-05-01 00:00:00', '2025-07-31 23:59:59', 2, '{\"prizeList\": [1, 2, 4], \"allowShare\": false, \"shareReward\": 0, \"backgroundImg\": \"http://example.com/images/lucky_wheel_updated.png\", \"animationSpeed\": 7}', 1500, 195, 0, 1, '2025-05-16 08:43:28', '2025-05-21 17:57:15');
+INSERT INTO `activity` VALUES (1, '幸运大转盘活动 - 已更新', 1, '2025-05-01 00:00:00', '2025-07-31 23:59:59', 2, '{\"prizeList\": [1, 2, 4], \"allowShare\": false, \"shareReward\": 0, \"backgroundImg\": \"http://example.com/images/lucky_wheel_updated.png\", \"animationSpeed\": 7}', 1500, 247, 0, 1, '2025-05-16 08:43:28', '2025-05-22 22:21:17');
 INSERT INTO `activity` VALUES (2, '新用户注册活动', 1, '2025-10-01 00:00:00', '2025-10-31 23:59:59', 2, '{\"user_filter\": {\"first_login\": false, \"register_days\": 30}, \"min_prize_id\": 5, \"prize_guarantee\": true}', 50000, 0, 0, 0, '2025-05-16 08:43:28', '2025-05-19 09:22:13');
 INSERT INTO `activity` VALUES (3, '老用户回归专属礼包', 3, '2025-10-01 00:00:00', '2025-10-31 23:59:59', 2, '{\"user_filter\": {\"first_login\": false, \"register_days\": 30}, \"min_prize_id\": 5, \"prize_guarantee\": true}', 50000, 0, 0, 0, '2025-05-16 08:45:27', '2025-05-17 09:56:52');
 INSERT INTO `activity` VALUES (4, '2025端午福袋', 2, '2025-06-10 00:00:00', '2025-06-12 23:59:59', 2, '{\"open_time\": \"2025-06-12 20:00:00\", \"prize_list\": [11, 12, 13, 14, 15], \"daily_limit\": 3, \"background_img\": \"https://example.com/dragon-boat.jpg\"}', 50000, 0, 1, 0, '2025-05-17 09:44:10', '2025-05-17 09:57:40');
@@ -80,8 +80,8 @@ CREATE TABLE `activity_prize`  (
 -- ----------------------------
 -- Records of activity_prize
 -- ----------------------------
-INSERT INTO `activity_prize` VALUES (1, 1, 1, 200, 0, 0.0500, 1, 1, '2025-05-17 11:41:04', '2025-05-21 15:57:53');
-INSERT INTO `activity_prize` VALUES (2, 1, 2, 300, 0, 0.1500, 2, 1, '2025-05-17 11:41:04', '2025-05-21 15:59:24');
+INSERT INTO `activity_prize` VALUES (1, 1, 1, 200, 1, 0.0500, 1, 1, '2025-05-17 11:41:04', '2025-05-21 23:37:25');
+INSERT INTO `activity_prize` VALUES (2, 1, 2, 300, 8, 0.1500, 2, 1, '2025-05-17 11:41:04', '2025-05-22 22:21:17');
 INSERT INTO `activity_prize` VALUES (3, 9, 3, 200, 0, 0.2000, 3, 1, '2025-05-17 11:41:04', '2025-05-17 11:41:04');
 INSERT INTO `activity_prize` VALUES (4, 10, 1, 100, 0, 0.1000, NULL, 1, '2025-05-19 09:27:03', '2025-05-19 09:27:03');
 INSERT INTO `activity_prize` VALUES (5, 10, 2, 200, 0, 0.3000, NULL, 1, '2025-05-19 09:27:03', '2025-05-19 09:27:03');
@@ -147,7 +147,7 @@ INSERT INTO `menu` VALUES (11, NULL, '测试用', 0, '/test/auth', 10, '2010', 1
 -- ----------------------------
 DROP TABLE IF EXISTS `participation`;
 CREATE TABLE `participation`  (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `activity_id` int UNSIGNED NOT NULL,
   `participate_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -162,83 +162,17 @@ CREATE TABLE `participation`  (
   INDEX `idx_activity`(`activity_id` ASC) USING BTREE,
   INDEX `idx_valid`(`is_valid` ASC) USING BTREE,
   CONSTRAINT `participation_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activity` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 118 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of participation
 -- ----------------------------
-INSERT INTO `participation` VALUES (1, 2, 1, '2025-05-21 15:24:55', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:24:55', '2025-05-21 15:24:55');
-INSERT INTO `participation` VALUES (2, 2, 1, '2025-05-21 15:27:42', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:27:42', '2025-05-21 15:27:42');
-INSERT INTO `participation` VALUES (3, 2, 1, '2025-05-21 15:28:02', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:02', '2025-05-21 15:28:02');
-INSERT INTO `participation` VALUES (4, 2, 1, '2025-05-21 15:28:03', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:03', '2025-05-21 15:28:03');
-INSERT INTO `participation` VALUES (5, 2, 1, '2025-05-21 15:28:22', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:22', '2025-05-21 15:28:22');
-INSERT INTO `participation` VALUES (6, 2, 1, '2025-05-21 15:28:23', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:23', '2025-05-21 15:28:23');
-INSERT INTO `participation` VALUES (7, 2, 1, '2025-05-21 15:28:24', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:24', '2025-05-21 15:28:24');
-INSERT INTO `participation` VALUES (8, 2, 1, '2025-05-21 15:28:25', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:25', '2025-05-21 15:28:25');
-INSERT INTO `participation` VALUES (9, 2, 1, '2025-05-21 15:28:27', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:27', '2025-05-21 15:28:27');
-INSERT INTO `participation` VALUES (10, 2, 1, '2025-05-21 15:28:28', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:28', '2025-05-21 15:28:28');
-INSERT INTO `participation` VALUES (11, 2, 1, '2025-05-21 15:28:29', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:29', '2025-05-21 15:28:29');
-INSERT INTO `participation` VALUES (12, 2, 1, '2025-05-21 15:28:30', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:30', '2025-05-21 15:28:30');
-INSERT INTO `participation` VALUES (13, 2, 1, '2025-05-21 15:28:31', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:28:31', '2025-05-21 15:28:31');
-INSERT INTO `participation` VALUES (14, 2, 1, '2025-05-21 15:32:13', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:13', '2025-05-21 15:32:13');
-INSERT INTO `participation` VALUES (15, 2, 1, '2025-05-21 15:32:15', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:15', '2025-05-21 15:32:15');
-INSERT INTO `participation` VALUES (16, 2, 1, '2025-05-21 15:32:16', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:16', '2025-05-21 15:32:16');
-INSERT INTO `participation` VALUES (17, 2, 1, '2025-05-21 15:32:17', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:17', '2025-05-21 15:32:17');
-INSERT INTO `participation` VALUES (18, 2, 1, '2025-05-21 15:32:19', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:19', '2025-05-21 15:32:19');
-INSERT INTO `participation` VALUES (19, 2, 1, '2025-05-21 15:32:20', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:20', '2025-05-21 15:32:20');
-INSERT INTO `participation` VALUES (20, 2, 1, '2025-05-21 15:32:21', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:21', '2025-05-21 15:32:21');
-INSERT INTO `participation` VALUES (21, 2, 1, '2025-05-21 15:32:22', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:22', '2025-05-21 15:32:22');
-INSERT INTO `participation` VALUES (22, 2, 1, '2025-05-21 15:32:24', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:24', '2025-05-21 15:32:24');
-INSERT INTO `participation` VALUES (23, 2, 1, '2025-05-21 15:32:25', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:25', '2025-05-21 15:32:25');
-INSERT INTO `participation` VALUES (24, 2, 1, '2025-05-21 15:32:27', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:27', '2025-05-21 15:32:27');
-INSERT INTO `participation` VALUES (25, 2, 1, '2025-05-21 15:32:28', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:28', '2025-05-21 15:32:28');
-INSERT INTO `participation` VALUES (26, 2, 1, '2025-05-21 15:32:29', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:29', '2025-05-21 15:32:29');
-INSERT INTO `participation` VALUES (27, 2, 1, '2025-05-21 15:32:31', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:31', '2025-05-21 15:32:31');
-INSERT INTO `participation` VALUES (28, 2, 1, '2025-05-21 15:32:32', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:32', '2025-05-21 15:32:32');
-INSERT INTO `participation` VALUES (29, 2, 1, '2025-05-21 15:32:34', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:34', '2025-05-21 15:32:34');
-INSERT INTO `participation` VALUES (30, 2, 1, '2025-05-21 15:32:45', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:45', '2025-05-21 15:32:45');
-INSERT INTO `participation` VALUES (31, 2, 1, '2025-05-21 15:32:47', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:47', '2025-05-21 15:32:47');
-INSERT INTO `participation` VALUES (32, 2, 1, '2025-05-21 15:32:49', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:49', '2025-05-21 15:32:49');
-INSERT INTO `participation` VALUES (33, 2, 1, '2025-05-21 15:32:53', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:32:53', '2025-05-21 15:32:53');
-INSERT INTO `participation` VALUES (34, 2, 1, '2025-05-21 15:33:30', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:33:30', '2025-05-21 15:33:30');
-INSERT INTO `participation` VALUES (35, 2, 1, '2025-05-21 15:33:31', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:33:31', '2025-05-21 15:33:31');
-INSERT INTO `participation` VALUES (36, 2, 1, '2025-05-21 15:41:02', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:41:02', '2025-05-21 15:41:02');
-INSERT INTO `participation` VALUES (37, 2, 1, '2025-05-21 15:42:38', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:42:38', '2025-05-21 15:42:38');
-INSERT INTO `participation` VALUES (38, 2, 1, '2025-05-21 15:42:42', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:42:42', '2025-05-21 15:42:42');
-INSERT INTO `participation` VALUES (39, 2, 1, '2025-05-21 15:42:44', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:42:44', '2025-05-21 15:42:44');
-INSERT INTO `participation` VALUES (40, 2, 1, '2025-05-21 15:42:46', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:42:46', '2025-05-21 15:42:46');
-INSERT INTO `participation` VALUES (41, 2, 1, '2025-05-21 15:45:02', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:45:02', '2025-05-21 15:45:02');
-INSERT INTO `participation` VALUES (42, 2, 1, '2025-05-21 15:45:29', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:45:29', '2025-05-21 15:45:29');
-INSERT INTO `participation` VALUES (43, 2, 1, '2025-05-21 15:48:55', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:48:55', '2025-05-21 15:48:55');
-INSERT INTO `participation` VALUES (44, 2, 1, '2025-05-21 15:48:59', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:48:59', '2025-05-21 15:48:59');
-INSERT INTO `participation` VALUES (45, 2, 1, '2025-05-21 15:49:01', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:49:01', '2025-05-21 15:49:01');
-INSERT INTO `participation` VALUES (46, 2, 1, '2025-05-21 15:49:03', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:49:03', '2025-05-21 15:49:03');
-INSERT INTO `participation` VALUES (47, 2, 1, '2025-05-21 15:58:29', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:58:29', '2025-05-21 15:58:29');
-INSERT INTO `participation` VALUES (48, 2, 1, '2025-05-21 15:58:35', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:58:35', '2025-05-21 15:58:35');
-INSERT INTO `participation` VALUES (49, 2, 1, '2025-05-21 15:58:39', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:58:39', '2025-05-21 15:58:39');
-INSERT INTO `participation` VALUES (50, 2, 1, '2025-05-21 15:59:51', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:59:51', '2025-05-21 15:59:51');
-INSERT INTO `participation` VALUES (51, 2, 1, '2025-05-21 15:59:54', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 15:59:54', '2025-05-21 15:59:54');
-INSERT INTO `participation` VALUES (52, 2, 1, '2025-05-21 16:01:50', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 16:01:50', '2025-05-21 16:01:50');
-INSERT INTO `participation` VALUES (53, 2, 1, '2025-05-21 16:01:52', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 16:01:52', '2025-05-21 16:01:52');
-INSERT INTO `participation` VALUES (54, 2, 1, '2025-05-21 16:01:54', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 16:01:54', '2025-05-21 16:01:54');
-INSERT INTO `participation` VALUES (55, 2, 1, '2025-05-21 16:01:56', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 16:01:56', '2025-05-21 16:01:56');
-INSERT INTO `participation` VALUES (56, 2, 1, '2025-05-21 16:23:49', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 16:23:49', '2025-05-21 16:23:49');
-INSERT INTO `participation` VALUES (57, 2, 1, '2025-05-21 16:24:06', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 16:24:06', '2025-05-21 16:24:06');
-INSERT INTO `participation` VALUES (58, 2, 1, '2025-05-21 16:24:07', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 16:24:07', '2025-05-21 16:24:07');
-INSERT INTO `participation` VALUES (59, 2, 1, '2025-05-21 17:56:43', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:56:43', '2025-05-21 17:56:43');
-INSERT INTO `participation` VALUES (60, 2, 1, '2025-05-21 17:56:52', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:56:52', '2025-05-21 17:56:52');
-INSERT INTO `participation` VALUES (61, 2, 1, '2025-05-21 17:56:54', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:56:54', '2025-05-21 17:56:54');
-INSERT INTO `participation` VALUES (62, 2, 1, '2025-05-21 17:56:56', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:56:56', '2025-05-21 17:56:56');
-INSERT INTO `participation` VALUES (63, 2, 1, '2025-05-21 17:56:58', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:56:58', '2025-05-21 17:56:58');
-INSERT INTO `participation` VALUES (64, 2, 1, '2025-05-21 17:57:00', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:00', '2025-05-21 17:57:00');
-INSERT INTO `participation` VALUES (65, 2, 1, '2025-05-21 17:57:02', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:02', '2025-05-21 17:57:02');
-INSERT INTO `participation` VALUES (66, 2, 1, '2025-05-21 17:57:03', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:03', '2025-05-21 17:57:03');
-INSERT INTO `participation` VALUES (67, 2, 1, '2025-05-21 17:57:05', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:05', '2025-05-21 17:57:05');
-INSERT INTO `participation` VALUES (68, 2, 1, '2025-05-21 17:57:08', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:08', '2025-05-21 17:57:08');
-INSERT INTO `participation` VALUES (69, 2, 1, '2025-05-21 17:57:10', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:10', '2025-05-21 17:57:10');
-INSERT INTO `participation` VALUES (70, 2, 1, '2025-05-21 17:57:12', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:12', '2025-05-21 17:57:12');
-INSERT INTO `participation` VALUES (71, 2, 1, '2025-05-21 17:57:14', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:14', '2025-05-21 17:57:14');
-INSERT INTO `participation` VALUES (72, 2, 1, '2025-05-21 17:57:15', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-21 17:57:15', '2025-05-21 17:57:15');
+INSERT INTO `participation` VALUES ('272d4920-905d-4cbd-9e45-c7791eee09bf', 2, 1, '2025-05-22 22:21:10', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-22 22:21:10', '2025-05-22 22:21:10');
+INSERT INTO `participation` VALUES ('58aa01fd-6428-4e34-85fe-8c38ac434883', 2, 1, '2025-05-22 22:21:15', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-22 22:21:15', '2025-05-22 22:21:15');
+INSERT INTO `participation` VALUES ('65728316-a204-4feb-85ff-c8a3740c6419', 2, 1, '2025-05-22 22:21:14', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-22 22:21:14', '2025-05-22 22:21:14');
+INSERT INTO `participation` VALUES ('7232c04f-66af-412e-825b-10956810361f', 2, 1, '2025-05-22 22:21:11', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-22 22:21:11', '2025-05-22 22:21:11');
+INSERT INTO `participation` VALUES ('7f5f4e57-5d76-4800-996f-742013e77142', 2, 1, '2025-05-22 22:21:12', '192.168.14.1', 'xxxxx', 0, 1, '2025-05-22 22:21:12', '2025-05-22 22:21:12');
+INSERT INTO `participation` VALUES ('dac2eed1-eb6b-4fc6-8e81-858c8959f33c', 2, 1, '2025-05-22 22:21:17', '192.168.14.1', 'xxxxx', 1, 1, '2025-05-22 22:21:17', '2025-05-22 22:21:17');
 
 -- ----------------------------
 -- Table structure for prize
@@ -326,6 +260,12 @@ CREATE TABLE `sys_file`  (
 -- Records of sys_file
 -- ----------------------------
 INSERT INTO `sys_file` VALUES (1, '4.jpg', 'a6d1c4a9-8d8a-40e3-af0a-1af002c239c5.jpg', '.jpg', 'D:\\Project\\Java2025\\uploads\\a6d1c4a9-8d8a-40e3-af0a-1af002c239c5.jpg', 'image/jpeg', 28903, 'cxk', '2025-05-16 08:39:47');
+INSERT INTO `sys_file` VALUES (2, '63831429467536.png', '17c68bab-67df-4689-8923-d5f45aefe8fd.png', '.png', 'D:\\Project\\Java2025\\uploads\\17c68bab-67df-4689-8923-d5f45aefe8fd.png', 'image/png', 3380934, 'cxk', '2025-05-22 18:31:20');
+INSERT INTO `sys_file` VALUES (3, '63837148923266.png', 'e9101df6-e013-49fb-9dfc-133d4a3b318d.png', '.png', 'D:\\Project\\Java2025\\uploads\\e9101df6-e013-49fb-9dfc-133d4a3b318d.png', 'image/png', 2339247, 'cxk', '2025-05-22 18:31:33');
+INSERT INTO `sys_file` VALUES (4, '63837148923266.png', 'daf803e2-662d-424b-9365-46430bcb6927.png', '.png', 'D:\\Project\\Java2025\\uploads\\daf803e2-662d-424b-9365-46430bcb6927.png', 'image/png', 2339247, 'cxk', '2025-05-22 18:31:38');
+INSERT INTO `sys_file` VALUES (5, '63842383845398.png', '7a9003dd-8cae-4085-8699-1792a4fe8ac3.png', '.png', 'D:\\Project\\Java2025\\uploads\\7a9003dd-8cae-4085-8699-1792a4fe8ac3.png', 'image/png', 1995938, 'cxk', '2025-05-22 18:31:49');
+INSERT INTO `sys_file` VALUES (6, '63848433870832.png', '0e21540d-4bb6-4039-94c9-bd1e7553a434.png', '.png', 'D:\\Project\\Java2025\\uploads\\0e21540d-4bb6-4039-94c9-bd1e7553a434.png', 'image/png', 2007190, 'cxk', '2025-05-22 18:32:02');
+INSERT INTO `sys_file` VALUES (7, '63846012671191.png', '19d39ba2-bf9d-4e78-95fb-fda6377fddeb.png', '.png', 'D:\\Project\\Java2025\\uploads\\19d39ba2-bf9d-4e78-95fb-fda6377fddeb.png', 'image/png', 1812379, 'cxk', '2025-05-22 18:34:14');
 
 -- ----------------------------
 -- Table structure for user
@@ -371,7 +311,7 @@ CREATE TABLE `user_profile`  (
 -- ----------------------------
 -- Records of user_profile
 -- ----------------------------
-INSERT INTO `user_profile` VALUES (2, '姬霓太美', 1, '2025-05-27', '18946175193', '光明路街道十里泉景苑', '/uploads/a6d1c4a9-8d8a-40e3-af0a-1af002c239c5.jpg', '蔡徐坤姬霓太美', '2025-05-16 08:36:25', '2025-05-16 08:40:20');
+INSERT INTO `user_profile` VALUES (2, '姬霓太美', 1, '2025-05-26', '18946175193', '光明路街道十里泉景苑', '/uploads/19d39ba2-bf9d-4e78-95fb-fda6377fddeb.png', '蔡徐坤姬霓太美', '2025-05-16 08:36:25', '2025-05-22 18:34:14');
 INSERT INTO `user_profile` VALUES (3, NULL, 1, NULL, NULL, NULL, NULL, NULL, '2025-05-19 14:35:08', '2025-05-19 14:35:08');
 
 -- ----------------------------
@@ -401,7 +341,7 @@ INSERT INTO `user_role` VALUES (7, 3, 2);
 -- ----------------------------
 DROP TABLE IF EXISTS `winning_record`;
 CREATE TABLE `winning_record`  (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `activity_id` int UNSIGNED NOT NULL,
   `prize_id` int UNSIGNED NOT NULL,
@@ -411,6 +351,7 @@ CREATE TABLE `winning_record`  (
   `is_valid` tinyint NOT NULL DEFAULT 1 COMMENT '1有效 0删除',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `create_time` timestamp NULL DEFAULT NULL,
+  `participation_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_activity`(`activity_id` ASC) USING BTREE,
@@ -422,5 +363,6 @@ CREATE TABLE `winning_record`  (
 -- ----------------------------
 -- Records of winning_record
 -- ----------------------------
+INSERT INTO `winning_record` VALUES ('75a06e24ef2b6c2c537bd92d0552391e', 2, 1, 2, '2025-05-22 22:21:17', 1, NULL, 1, '2025-05-22 22:21:17', '2025-05-22 22:21:17', 'dac2eed1-eb6b-4fc6-8e81-858c8959f33c');
 
 SET FOREIGN_KEY_CHECKS = 1;
