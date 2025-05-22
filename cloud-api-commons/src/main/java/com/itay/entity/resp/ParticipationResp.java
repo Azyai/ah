@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ParticipationResp {
 
-    private Long id;
+    private String id;
     private String userName;
     private String activityName;
 

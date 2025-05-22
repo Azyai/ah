@@ -15,7 +15,9 @@ import com.itay.resp.CommonResponse;
  */
 public interface ParticipationService extends IService<Participation> {
 
-    boolean addParticipate(Long userId,Integer activityId,String ip,String deviceFingerprint);
+    boolean addParticipate(String participationId, Long userId, Integer activityId, String ip, String deviceFingerprint);
+
+    void updateWinningStatus(String participationId, boolean isWinning);
 
     boolean updateCounter(ActivityCounter counter, Activity activity);
 

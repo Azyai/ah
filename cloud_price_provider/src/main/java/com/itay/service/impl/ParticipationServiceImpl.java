@@ -51,54 +51,76 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
     @Autowired
     private ActivityPrizeMapper activityPrizeMapper;
 
+
     @Override
-    public boolean addParticipate(Long userId, Integer activityId, String ip, String deviceFingerprint) {
-        // 1.验证活动有效性
-        Activity activity = activityMapper.selectById(activityId);
-        if (activity == null || !activity.getValid()) {
-            throw new RuntimeException("活动不存在或者已经删除");
-        }
-
-        if (LocalDateTime.now().isBefore(activity.getStartTime())) {
-            throw new RuntimeException("活动尚未开始");
-        }
-
-        if (LocalDateTime.now().isAfter(activity.getEndTime())) {
-            throw new RuntimeException("活动已经结束");
-        }
-
-        // 2. 使用ActivityCounter进行计数控制
-        ActivityCounter counter = new ActivityCounter().builder()
-                .activityId(activityId)
-                .redisKey("activity:participants:count:" + activityId)
-                .currentCount(activity.getCurrentParticipants())
-                .maxLimit(activity.getMaxParticipants())
-                .build();
-
-        if (!updateCounter(counter, activity)) {
-            throw new RuntimeException("活动人数已满");
-        }
-
-        // 3.判断活动参与限制,如果存在一次参与，则无法参与
-//        LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(Participation::getUserId,userId)
-//                .eq(Participation::getActivityId,activityId);
-//        if(participationMapper.selectOne(queryWrapper) != null){
-//            throw new RuntimeException("用户已经参与过活动");
-//        }
-
-        // 4.保存参与记录
+    public boolean addParticipate(String participationId, Long userId, Integer activityId, String ip, String deviceFingerprint) {
         Participation participation = Participation.builder()
+                .id(participationId)
                 .userId(userId)
                 .activityId(activityId)
                 .ip(ip)
                 .deviceFingerprint(deviceFingerprint)
                 .build();
-
-        int insert = participationMapper.insert(participation);
-
-        return insert > 0;
+        return participationMapper.insert(participation) > 0;
     }
+
+    @Override
+    public void updateWinningStatus(String participationId, boolean isWinning) {
+        Participation participation = new Participation();
+        participation.setId(participationId);
+        participation.setIsWinning(isWinning);
+        participationMapper.updateById(participation);
+    }
+
+
+//    @Override
+//    public boolean addParticipate(Long userId, Integer activityId, String ip, String deviceFingerprint) {
+//        // 1.验证活动有效性
+//        Activity activity = activityMapper.selectById(activityId);
+//        if (activity == null || !activity.getValid()) {
+//            throw new RuntimeException("活动不存在或者已经删除");
+//        }
+//
+//        if (LocalDateTime.now().isBefore(activity.getStartTime())) {
+//            throw new RuntimeException("活动尚未开始");
+//        }
+//
+//        if (LocalDateTime.now().isAfter(activity.getEndTime())) {
+//            throw new RuntimeException("活动已经结束");
+//        }
+//
+//        // 2. 使用ActivityCounter进行计数控制
+//        ActivityCounter counter = new ActivityCounter().builder()
+//                .activityId(activityId)
+//                .redisKey("activity:participants:count:" + activityId)
+//                .currentCount(activity.getCurrentParticipants())
+//                .maxLimit(activity.getMaxParticipants())
+//                .build();
+//
+//        if (!updateCounter(counter, activity)) {
+//            throw new RuntimeException("活动人数已满");
+//        }
+//
+//        // 3.判断活动参与限制,如果存在一次参与，则无法参与
+////        LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
+////        queryWrapper.eq(Participation::getUserId,userId)
+////                .eq(Participation::getActivityId,activityId);
+////        if(participationMapper.selectOne(queryWrapper) != null){
+////            throw new RuntimeException("用户已经参与过活动");
+////        }`
+//
+//        // 4.保存参与记录
+//        Participation participation = Participation.builder()
+//                .userId(userId)
+//                .activityId(activityId)
+//                .ip(ip)
+//                .deviceFingerprint(deviceFingerprint)
+//                .build();
+//
+//        int insert = participationMapper.insert(participation);
+//
+//        return insert > 0;
+//    }
 
 
     @Override
@@ -209,7 +231,8 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
         page.setSize(idRequest.getLimit());
 
         LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Participation::getActivityId, idRequest.getId())
+
+        queryWrapper.eq(Participation::getUserId, idRequest.getId())
                 .eq(Participation::getValid, true);
 
         page = participationMapper.selectPage(page, queryWrapper);
@@ -232,6 +255,7 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
                     .activityName(activityName)
                     .participationTime(participation.getParticipateTime())
                     .ip(participation.getIp())
+                    .isWinning(participation.getIsWinning())
                     .build()
             );
         };

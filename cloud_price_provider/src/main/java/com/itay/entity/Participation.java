@@ -18,26 +18,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @TableName("participation")
 public class Participation extends BaseEntity {
-    @TableId(type = IdType.AUTO)
-    private Long id;
-    
+    @TableId(type = IdType.ASSIGN_UUID)
+    private String id;  // 改为 UUID 类型
+
     @NotNull
     private Long userId;
-    
+
     @NotNull
     private Integer activityId;
-    
+
     @Builder.Default
     private LocalDateTime participateTime = LocalDateTime.now();
-    
+
     @NotBlank
-    // IP地址，获取方式为：获取用户请求的IP地址
     private String ip;
 
-    // 设备指纹，获取方式为：获取用户代理字符串，然后调用第三方库生成设备指纹
     private String deviceFingerprint;
-    
+
     @Builder.Default
-    // 是否中奖
     private Boolean isWinning = false;
 }
