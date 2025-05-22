@@ -1,18 +1,30 @@
 <template>
   <div class="home-container">
-    <!-- 轮播图 -->
-    <el-carousel trigger="click" height="400px" :interval="5000">
-      <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
-        <div class="carousel-item">
-          <h1>{{ item.title }}</h1>
-          <p>{{ item.description }}</p>
+    <div class="content-wrapper">
+      <!-- 左侧轮播图 -->
+      <div class="carousel-wrapper">
+        <el-carousel trigger="click" height="400px" :interval="5000">
+          <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
+            <div class="carousel-item">
+              <h1>{{ item.title }}</h1>
+              <p>{{ item.description }}</p>
+            </div>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+
+      <div class="activity-grid">
+        <div
+            v-for="(activity, index) in displayedActivities"
+            :key="activity.id"
+            class="activity-item"
+            @click="navigateToActivityDetail(activity.id)"
+        >
+          <h3>{{ activity.name }}</h3>
+          <p>{{ truncatedDescription(activity.description) }}</p>
         </div>
-      </el-carousel-item>
-    </el-carousel>
-
-    <router-view></router-view>
-
-    <el-button type="success" @click="sendTestRequest">发送测试请求</el-button>
+      </div>
+    </div>
 
     <!-- 产品介绍模块 -->
     <section class="features-section">
@@ -34,39 +46,19 @@
         <p>这是一个基于 Vue 3 和 Element Plus 构建的现代化前端应用。我们专注于提供高质量的产品与服务，助力企业数字化转型。</p>
       </div>
     </section>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import {get} from "@/api/axios.ts";
-import {ElMessage} from "element-plus";
+import { onMounted, ref,computed} from 'vue'
+import { useRouter } from 'vue-router'
+import { useActivityStore } from '@/stores/activity';
+const activityStore = useActivityStore();
+const activities = ref([]);
 
-const sendTestRequest = () => {
-  const token = localStorage.getItem("token")
-  if (!token) {
-    ElMessage({
-      message: '获取测试消息成功',
-      type: 'success',
-      duration: 3000
-    })
-    return
-  }
 
-  get("/user/getUserInfo")
-      .then((response) => {
-        console.log("接口响应:", response)
-        if (response.code === "200") {
-          alert("请求成功: " + response.data)
-        } else {
-          alert("请求失败: " + (response.message || "未知错误"))
-        }
-      })
-      .catch((error) => {
-        console.error("请求异常:", error)
-        alert("请求失败，请检查网络或权限")
-      })
-}
+const router = useRouter()
 
 
 // 轮播图数据
@@ -80,6 +72,29 @@ const carouselItems = ref([
     description: '我们致力于为企业提供最优质的云服务体验'
   }
 ])
+
+const navigateToActivityDetail = (activityId: number) => {
+  router.push({ name: 'ActivityDetailView', params: { id: activityId } });
+};
+
+// 截断描述的方法
+const truncatedDescription = (description: string) => {
+  if (description.length > 32) {
+    return description.slice(0, 32) + '...';
+  }
+  return description;
+};
+
+
+onMounted(async () => {
+  await activityStore.fetchActivities();
+  activities.value = activityStore.activities;
+})
+
+// 计算属性：限制展示的活动数量为前6条
+const displayedActivities = computed(() => {
+  return activities.value.slice(0, 6);
+});
 
 // 产品功能列表
 const features = ref([
@@ -112,7 +127,17 @@ const features = ref([
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f9f9f9; /* 背景色可自定义 */
+  background-color: #f9f9f9;
+}
+
+.content-wrapper {
+  display: flex;
+  margin: 20px;
+}
+
+.carousel-wrapper {
+  flex: 1;
+  margin-right: 20px;
 }
 
 .carousel-item {
@@ -135,16 +160,44 @@ const features = ref([
   font-size: 1.5rem;
 }
 
+.activities-wrapper {
+  flex: 1;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.activity-item {
+  border: 1px solid #ddd;
+  padding: 20px;
+  cursor: pointer;
+  background-color: #fff;
+  display: flex;
+  width: 250px;
+  height: 150px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.activity-item:hover {
+  background-color: #f0f0f0;
+}
+
 .features-section {
   padding: 60px 20px;
   background-color: #ffffff;
 }
 
 .container {
-  width: 100%; /* 确保容器宽度为 100% */
-  max-width: 1200px; /* 可选：最大宽度限制 */
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px; /* 内边距可根据需要调整 */
+  padding: 0 20px;
 }
 
 .section-title {

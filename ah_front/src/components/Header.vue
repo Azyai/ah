@@ -1,42 +1,43 @@
 <template>
   <div class="header">
     <!-- Logo -->
-    <img src="@/assets/icon/cs.svg" alt="Logo" class="logo" />
+    <img src="@/assets/icon/cs.svg" alt="Logo" class="logo"/>
 
     <!-- 导航菜单 -->
     <el-menu mode="horizontal" :ellipsis="false" background-color="#fff" text-color="#555" active-text-color="#ff4d4f">
       <el-menu-item index="1" @click="navigateTo('/')">首页</el-menu-item>
-      <el-menu-item index="2" @click="navigateTo('/product')">产品</el-menu-item>
-      <el-menu-item index="3" @click="navigateTo('/demo')">演示</el-menu-item>
-      <el-menu-item index="4" @click="navigateTo('/price')">价格</el-menu-item>
-      <el-menu-item index="5" @click="navigateTo('/download')">下载</el-menu-item>
-      <el-menu-item index="6" @click="navigateTo('/tutorial')">教程</el-menu-item>
+      <el-menu-item index="2" @click="navigateTo('/product')">活动列表</el-menu-item>
+      <el-menu-item index="3" @click="navigateTo('/demo')">活动论坛</el-menu-item>
+      <el-menu-item index="4" @click="navigateTo('/price')">活动发布</el-menu-item>
+      <el-menu-item index="5" @click="navigateTo('/download')">活动小助手</el-menu-item>
+      <el-menu-item index="6" @click="navigateTo('/tutorial')">联系我们</el-menu-item>
     </el-menu>
 
     <!-- 动态按钮区 -->
     <div class="action-buttons">
       <template v-if="isAuthenticated">
-        <!-- 用户名显示（橙色部分） -->
-        <span class="username" style="font-size: 24px; margin-right: 10px;">
-          {{ userInfo?.username }}
-        </span>
+        <!-- 使用 el-header 和 el-dropdown 实现头像和名称的展示及下拉菜单功能 -->
+        <el-header style="display: flex; align-items: center;">
+          <el-row :gutter="20">
 
-        <div class="flex flex-wrap items-center">
-          <el-dropdown>
-            <el-button type="primary">
-              <el-icon class="el-icon--right"><arrow-down /></el-icon>
-            </el-button>
-            <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="openDrawer('profile')">个人信息设置</el-dropdown-item>
-                  <el-dropdown-item @click="openDrawer('lottery')">参与抽奖列表</el-dropdown-item>
-                  <el-dropdown-item @click="openDrawer('winning')">中奖列表</el-dropdown-item>
-                  <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
-                </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-
+            <el-col :span="6">
+              <el-dropdown size="large" trigger="hover">
+                  <el-avatar
+                      :size="50"
+                      :src="avatarUrl"
+                  />
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="openDrawer('profile')">个人信息设置</el-dropdown-item>
+                    <el-dropdown-item @click="openDrawer('lottery')">参与抽奖列表</el-dropdown-item>
+                    <el-dropdown-item @click="openDrawer('winning')">中奖列表</el-dropdown-item>
+                    <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </el-col>
+          </el-row>
+        </el-header>
 
         <!-- 抽屉组件 -->
         <el-drawer
@@ -45,10 +46,8 @@
             size="40%"
             destroy-on-close
         >
-          <component :is="currentDrawerComponent" />
+          <component :is="currentDrawerComponent"/>
         </el-drawer>
-
-
 
       </template>
 
@@ -57,15 +56,17 @@
         <el-button type="primary" @click="navigateTo('/login')">登录</el-button>
       </template>
     </div>
+
   </div>
 </template>
 
+
 <script setup lang="ts">
-import {type Component, ref,onMounted} from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/counter.ts'
-import { storeToRefs } from 'pinia'
-import { ArrowDown } from '@element-plus/icons-vue'
+import {type Component, ref, onMounted} from 'vue'
+import {useRouter} from 'vue-router'
+import {useUserStore} from '@/stores/counter.ts'
+import {storeToRefs} from 'pinia'
+import {ArrowDown} from '@element-plus/icons-vue'
 
 // 引入各个抽屉内容组件
 import ProfileInfo from './user/ProfileInfo.vue'
@@ -73,12 +74,11 @@ import LotteryList from './user/LotteryList.vue'
 import WinningList from './user/WinningList.vue'
 
 
-
 const router = useRouter()
 const userStore = useUserStore()
 
 // ✅ 使用 storeToRefs 保留响应性
-const { isAuthenticated, userInfo } = storeToRefs(userStore)
+const {isAuthenticated, userInfo} = storeToRefs(userStore)
 
 // 路由跳转方法
 const navigateTo = (path: string) => {
@@ -120,7 +120,6 @@ const openDrawer = (type: string) => {
 }
 
 
-
 // 获取标题
 const getDrawerTitle = (type: string): string => {
   switch (type) {
@@ -134,6 +133,17 @@ const getDrawerTitle = (type: string): string => {
       return ''
   }
 }
+
+import {computed} from 'vue'
+
+// 计算头像URL
+const avatarUrl = computed(() => {
+  if (userStore.userInfo?.avatar) {
+    return "http://localhost:8081/static" + userStore.userInfo?.avatar
+  }
+  return '/default-avatar.png' // 默认头像
+})
+
 </script>
 
 
@@ -159,6 +169,23 @@ const getDrawerTitle = (type: string): string => {
 
 .el-menu {
   border-bottom: none;
+}
+
+.el-row {
+  margin-bottom: 20px;
+}
+
+.el-row:last-child {
+  margin-bottom: 0;
+}
+
+.el-col {
+  border-radius: 4px;
+}
+
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
 }
 
 .el-menu-item.is-active {
@@ -188,9 +215,9 @@ const getDrawerTitle = (type: string): string => {
   color: #ffa500;
 }
 
-/* 增大下拉菜单项字体 */
+/* 下拉菜单项字体 */
 .el-dropdown-menu__item {
-  font-size: 18px !important; /* 根据需要调整 */
+  font-size: 16px; /* 根据需要调整 */
 }
 
 /* 下拉菜单触发器样式 */
@@ -214,4 +241,11 @@ const getDrawerTitle = (type: string): string => {
 .el-tooltip__popper {
   font-size: 14px;
 }
+
+/* 自定义 el-header 样式 */
+.el-header {
+  display: flex;
+  align-items: center;
+}
 </style>
+

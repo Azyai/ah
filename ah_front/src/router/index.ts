@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import {useUserStore} from "@/stores/counter.ts";
 import {ElMessage} from "element-plus";
+import ActivityDetailView from "@/views/ActivityDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +41,12 @@ const router = createRouter({
       name: "forgot-password",
       component: () => import('@/views/user/ForgotPasswordView.vue')
     },
+    {
+      path: "/activity/:id",
+      name: "ActivityDetailView",
+      component: ActivityDetailView,
+      props: true,
+    }
 
   ],
 })
