@@ -20,28 +20,12 @@ export const useUserStore = defineStore('user', () => {
     const isAuthenticated = ref(false)
     const userInfo = ref<UserInfo | null>(null)
     const loading = ref(false)
+    const userGj = ref(true)
 
     // 获取用户信息（也用于验证 token）
-    const fetchUserInfo = async () => {
+    const fetchUserInfo = async (retryCount = 3) => {
         if (loading.value) return
         loading.value = true
-
-        // get('/user/getUserInfo')
-        //     .then((res) => {
-        //         if (res.code === '200') {
-        //             userInfo.value = res.data
-        //             isAuthenticated.value = true
-        //         } else {
-        //             userInfo.value = null
-        //             isAuthenticated.value = false
-        //         }
-        //     }).catch((error) => {
-        //         console.error('获取用户信息失败:', error)
-        //         userInfo.value = null
-        //         isAuthenticated.value = false
-        // }).finally(() => {
-        //     loading.value = false
-        // })
 
         try {
             const res = await get('/user/getUserInfo')
@@ -53,11 +37,17 @@ export const useUserStore = defineStore('user', () => {
                 isAuthenticated.value = false
             }
         } catch (error) {
-            console.error('获取用户信息失败:', error)
-            userInfo.value = null
-            isAuthenticated.value = false
+            if (retryCount > 0) {
+                console.error(`请求失败,剩余重试次数：${retryCount}`);
+                await new Promise((resolve) => setTimeout(resolve, 1000)); // 延迟 1 秒重试
+                await fetchUserInfo(retryCount - 1)
+            }else {
+                console.error('获取用户信息失败:', error)
+                userInfo.value = null
+                isAuthenticated.value = false
+            }
         } finally {
-            loading.value = false
+            userGj.value = false
         }
     }
 
@@ -89,6 +79,7 @@ export const useUserStore = defineStore('user', () => {
         isAuthenticated,
         userInfo,
         loading,
+        userGj,
         fetchUserInfo,
         clearUserInfo
     }

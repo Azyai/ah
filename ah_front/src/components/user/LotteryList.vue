@@ -1,5 +1,10 @@
 <template>
   <div class="participation-container">
+
+    <!-- 骨架屏 -->
+    <el-skeleton :rows="10" animated v-if="loading"/>
+
+    <template v-else>
     <!-- 添加导出按钮 -->
     <el-button @click="exportToExcel">导出到 Excel</el-button>
 
@@ -39,6 +44,8 @@
           @current-change="handleCurrentChange"
       />
     </div>
+    </template>
+
   </div>
 </template>
 
@@ -47,12 +54,16 @@ import { ref, onMounted } from 'vue';
 import { post } from '@/api/axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import type { ComponentSize } from 'element-plus';
+import {type ComponentSize, ElMessage} from 'element-plus';
 
 // 分页数据
 const page = ref(1); // 当前页码
 const limit = ref(30); // 每页条数
 const total = ref(0); // 总条数
+
+
+// 加载状态
+const loading = ref(true);
 
 // 分页组件参数
 const size = ref<ComponentSize>('default');
@@ -63,7 +74,7 @@ const disabled = ref(false); // 禁用分页
 const participationList = ref([]);
 
 // 获取参与活动信息
-const fetchParticipation = async () => {
+const fetchParticipation = async (retryCount = 3) => {
   try {
     const response = await post<{
       code: string;
@@ -83,7 +94,15 @@ const fetchParticipation = async () => {
       console.error('获取数据失败:', response);
     }
   } catch (error) {
-    console.error('请求失败:', error);
+    if(retryCount > 0){
+      console.error(`请求失败,剩余重试次数：${retryCount}`);
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 延迟 1 秒重试
+      fetchParticipation(retryCount - 1);
+    }else {
+      console.error('获取数据失败:', error);
+    }
+  }finally {
+    loading.value = false
   }
 };
 

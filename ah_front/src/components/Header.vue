@@ -15,7 +15,12 @@
 
     <!-- 动态按钮区 -->
     <div class="action-buttons">
-      <template v-if="isAuthenticated">
+
+      <!-- 骨架屏 -->
+      <el-skeleton :rows="2" animated v-if="userGj"/>
+
+      <template v-else>
+        <template v-if="isAuthenticated">
         <!-- 使用 el-header 和 el-dropdown 实现头像和名称的展示及下拉菜单功能 -->
         <el-header style="display: flex; align-items: center;">
           <el-row :gutter="20">
@@ -50,10 +55,10 @@
         </el-drawer>
 
       </template>
-
-      <template v-else>
+        <template v-else>
         <el-button type="success" plain @click="navigateTo('/register')">注册</el-button>
         <el-button type="primary" @click="navigateTo('/login')">登录</el-button>
+      </template>
       </template>
     </div>
 
@@ -78,7 +83,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 // ✅ 使用 storeToRefs 保留响应性
-const {isAuthenticated, userInfo} = storeToRefs(userStore)
+const {isAuthenticated, userInfo,userGj} = storeToRefs(userStore)
 
 // 路由跳转方法
 const navigateTo = (path: string) => {

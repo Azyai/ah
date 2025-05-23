@@ -1,27 +1,37 @@
 <template>
   <div class="participation-container">
+    <!-- 骨架屏 -->
+    <el-skeleton :rows="10" animated v-if="loading"/>
+
+    <template v-else>
     <!-- 添加导出按钮 -->
     <el-button @click="exportToExcel">导出到 Excel</el-button>
 
     <!-- 表格展示数据 -->
     <el-table
-        :data="participationList"
-        show-overflow-tooltip
-        style="width: 100%"
+        :data="WinningList"
+        show-overflow-tooltip    style="width: 100%"
         height="485"
         class="custom-font-size"
     >
       <el-table-column type="index" label="序号" width="80" />
+      <el-table-column prop="userName" label="用户名" />
       <el-table-column prop="activityName" label="活动名称" />
-      <el-table-column prop="participationTime" label="参与时间" />
-      <el-table-column prop="ip" label="IP地址" />
-      <el-table-column prop="isWinning" label="是否中奖">
+      <el-table-column prop="prizeName" label="奖品名称" />
+      <el-table-column prop="winningTime" label="中奖时间" />
+      <el-table-column prop="status" label="状态">
+
         <template #default="scope">
-          <el-tag :type="scope.row.isWinning ? 'success' : 'info'">
-            {{ scope.row.isWinning ? '是' : '否' }}
-          </el-tag>
+          <!-- 状态为1时代表未发放，2为已发放，3为发放失败-->
+          <!--使用el-tag实现-->
+          <el-tag v-if="scope.row.status === 1" type="info">未发放</el-tag>
+          <el-tag v-else-if="scope.row.status === 2" type="success">已发放</el-tag>
+          <el-tag v-else type="danger">发放失败</el-tag>
         </template>
+
       </el-table-column>
+      <el-table-column prop="mqMsgId" label="消息ID" />
+      <el-table-column prop="participationId" label="参与ID" />
     </el-table>
 
     <!-- 分页组件 -->
@@ -39,6 +49,7 @@
           @current-change="handleCurrentChange"
       />
     </div>
+    </template>
   </div>
 </template>
 
@@ -47,7 +58,7 @@ import { ref, onMounted } from 'vue';
 import { post } from '@/api/axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import type { ComponentSize } from 'element-plus';
+import {type ComponentSize, ElMessage} from 'element-plus';
 
 // 分页数据
 const page = ref(1); // 当前页码
@@ -59,11 +70,14 @@ const size = ref<ComponentSize>('default');
 const background = ref(true); // 启用背景色
 const disabled = ref(false); // 禁用分页
 
+// 加载状态
+const loading = ref(true);
+
 // 参与活动列表
-const participationList = ref([]);
+const WinningList = ref([]);
 
 // 获取参与活动信息
-const fetchParticipation = async () => {
+const fetchWinningRecord = async (retryCount = 3) => {
   try {
     const response = await post<{
       code: string;
@@ -71,19 +85,27 @@ const fetchParticipation = async () => {
         list: any[];
         total: number;
       };
-    }>('/draw/participation/getParticipation', {
+    }>('/draw/winningRecord/getWinningRecord', {
       page: page.value,
       limit: limit.value,
     });
 
     if (response.code === '200') {
-      participationList.value = response.data.data;
+      WinningList.value = response.data.data;
       total.value = response.data.total;
     } else {
       console.error('获取数据失败:', response);
     }
   } catch (error) {
-    console.error('请求失败:', error);
+    if(retryCount > 0){
+      console.error(`请求失败,剩余重试次数：${retryCount}`);
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 延迟 1 秒重试
+      fetchWinningRecord(retryCount - 1);
+    }else {
+      console.error('获取数据失败:', error);
+    }
+  }finally {
+    loading.value = false
   }
 };
 
@@ -91,7 +113,7 @@ const fetchParticipation = async () => {
 const handleSizeChange = (newSize: number) => {
   limit.value = newSize;
   page.value = 1; // 重置为第一页
-  fetchParticipation();
+  fetchWinningRecord();
 };
 
 // 分页切换
@@ -102,18 +124,19 @@ const handleCurrentChange = (newPage: number) => {
 
 // 挂载时加载数据
 onMounted(() => {
-  fetchParticipation();
+  fetchWinningRecord();
 });
 
-// 导出到 Excel
 const exportToExcel = () => {
   // 处理数据
-  const data = participationList.value.map(item => ({
-    序号: item.id,
+  const data = WinningList.value.map(item => ({
+    用户名: item.userName,
     活动名称: item.activityName,
-    参与时间: item.participationTime,
-    IP地址: item.ip,
-    是否中奖: item.isWinning ? '是' : '否',
+    奖品名称: item.prizeName,
+    中奖时间: item.winningTime,
+    状态: item.status === 1 ? '已领取' : '未领取',
+    消息ID: item.mqMsgId,
+    参与ID: item.participationId,
   }));
 
   // 使用 xlsx 处理数据
@@ -133,7 +156,7 @@ const exportToExcel = () => {
   });
 
   // 使用 file-saver 保存文件
-  saveAs(blob, 'participation_list.xlsx');
+  saveAs(blob, 'WinningList.xlsx');
 };
 </script>
 
