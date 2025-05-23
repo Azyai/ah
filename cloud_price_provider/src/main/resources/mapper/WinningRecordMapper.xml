@@ -3,5 +3,7 @@
 <mapper namespace="com.itay.mapper.WinningRecordMapper">
 
 
-
+    <select id="selectUserName" resultType="java.lang.String">
+        select username from user  where id = #{userId}
+    </select>
 </mapper>
