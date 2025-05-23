@@ -195,7 +195,7 @@ const beforeAvatarUpload = (file: File) => {
 
 
 // 提交修改
-const handleSubmit = async () => {
+const handleSubmit = async (retryCount = 3) => {
   try {
     submitting.value = true
     const res = await post('/user/updateUserInfo', formData.value)
@@ -205,7 +205,13 @@ const handleSubmit = async () => {
       ElMessage.success('信息更新成功')
     }
   } catch (error) {
-    ElMessage.error('更新失败，请重试')
+    if (retryCount > 0) {
+      // 尝试重新提交
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 延迟 1 秒重试
+      await handleSubmit(retryCount - 1)
+    }else{
+      ElMessage.error('更新失败，请重试')
+    }
   } finally {
     submitting.value = false
   }

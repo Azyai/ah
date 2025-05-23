@@ -97,7 +97,7 @@ const fetchParticipation = async (retryCount = 3) => {
     if(retryCount > 0){
       console.error(`请求失败,剩余重试次数：${retryCount}`);
       await new Promise((resolve) => setTimeout(resolve, 1000)); // 延迟 1 秒重试
-      fetchParticipation(retryCount - 1);
+      await fetchParticipation(retryCount - 1);
     }else {
       console.error('获取数据失败:', error);
     }
