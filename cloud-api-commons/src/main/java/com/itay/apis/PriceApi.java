@@ -2,6 +2,7 @@ package com.itay.apis;
 
 import com.itay.entity.Activity;
 import com.itay.entity.resp.ParticipationResp;
+import com.itay.entity.resp.WinningRecordResp;
 import com.itay.request.IdRequest;
 import com.itay.request.ParticipationRequest;
 import com.itay.resp.CommonResponse;
@@ -34,4 +35,7 @@ public interface PriceApi {
     // 查询肯定是分页查询，可以使用post来查，一会测试一下活动列表，使用名称已查询时在consumer端拆开
     ResultData<CommonResponse<ParticipationResp>> getParticipation(@RequestBody IdRequest idRequest);
 
+
+    @PostMapping("/draw/winningRecord/getWinningRecord")
+    ResultData<CommonResponse<WinningRecordResp>> getWinningRecord(@RequestBody IdRequest idRequest);
 }
