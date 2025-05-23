@@ -10,6 +10,9 @@ import qs from 'qs'
 // 引入自定义类型
 import type { ResultData } from '@/api/api'
 
+// 引入进度条
+import nprogress from "nprogress";
+
 const BASE_URL =  'http://127.0.0.1:9527'
 
 // 创建 Axios 实例
@@ -29,11 +32,13 @@ instance.interceptors.request.use(config => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }
+    nprogress.start()
     return config
 })
 
 // 响应拦截器：不做判断，直接放行
 instance.interceptors.response.use(response => {
+    nprogress.done()
     return response
 }, error => {
     return Promise.reject(error)
