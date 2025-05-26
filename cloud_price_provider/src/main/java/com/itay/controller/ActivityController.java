@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.CreateActivityRequest;
 import com.itay.dto.response.ActivityResp;
 import com.itay.entity.Activity;
+import com.itay.entity.resp.ActivityInfoResp;
 import com.itay.request.NameRequest;
 import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
@@ -68,5 +69,12 @@ public class ActivityController {
         CommonResponse<ActivityResp> activityRespCommonResponse = activityService.selectActivity(nameRequest.getName(), nameRequest.getPage(), nameRequest.getLimit());
         return ResultData.success(activityRespCommonResponse);
     }
+
+    @GetMapping("/selectActivityInfo")
+    public ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(NameRequest nameRequest) {
+        CommonResponse<ActivityInfoResp> activityInfoRespCommonResponse = activityService.selectActivityInfo(nameRequest.getName(), nameRequest.getPage(), nameRequest.getLimit());
+        return ResultData.success(activityInfoRespCommonResponse);
+    }
+
 
 }
