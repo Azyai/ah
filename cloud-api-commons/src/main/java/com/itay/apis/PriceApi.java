@@ -1,9 +1,11 @@
 package com.itay.apis;
 
 import com.itay.entity.Activity;
+import com.itay.entity.resp.ActivityInfoResp;
 import com.itay.entity.resp.ParticipationResp;
 import com.itay.entity.resp.WinningRecordResp;
 import com.itay.request.IdRequest;
+import com.itay.request.NameRequest;
 import com.itay.request.ParticipationRequest;
 import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
@@ -38,4 +40,7 @@ public interface PriceApi {
 
     @PostMapping("/draw/winningRecord/getWinningRecord")
     ResultData<CommonResponse<WinningRecordResp>> getWinningRecord(@RequestBody IdRequest idRequest);
+
+    @PostMapping("/draw/activity/selectActivityInfo")
+    ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(@RequestBody NameRequest nameRequest);
 }

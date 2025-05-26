@@ -70,8 +70,8 @@ public class ActivityController {
         return ResultData.success(activityRespCommonResponse);
     }
 
-    @GetMapping("/selectActivityInfo")
-    public ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(NameRequest nameRequest) {
+    @PostMapping("/selectActivityInfo")
+    public ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(@RequestBody NameRequest nameRequest) {
         CommonResponse<ActivityInfoResp> activityInfoRespCommonResponse = activityService.selectActivityInfo(nameRequest.getName(), nameRequest.getPage(), nameRequest.getLimit());
         return ResultData.success(activityInfoRespCommonResponse);
     }

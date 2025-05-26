@@ -1,0 +1,25 @@
+package com.itay.controller;
+
+import com.itay.apis.PriceApi;
+import com.itay.entity.resp.ActivityInfoResp;
+import com.itay.request.NameRequest;
+import com.itay.resp.CommonResponse;
+import com.itay.resp.ResultData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/draw/activity")
+public class ActivityConsumerController {
+
+    @Autowired
+    PriceApi priceApi;
+
+    @PostMapping("/selectActivityInfo")
+    public ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(@RequestBody NameRequest nameRequest) {
+        ResultData<CommonResponse<ActivityInfoResp>> commonResponseResultData = priceApi.selectActivityInfo(nameRequest);
+        return commonResponseResultData;
+    }
+
+
+}
