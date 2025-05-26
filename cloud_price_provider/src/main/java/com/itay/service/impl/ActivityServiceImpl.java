@@ -204,6 +204,20 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> i
         return response;
     }
 
+    @Override
+    public ActivityInfoResp fetchActivityDetailById(Integer id) {
+        // 1.按照id获取单个活动信息，然后将活动奖品和限制也返回
+        Activity activity = activityMapper.selectById(id);
+
+        return ActivityInfoResp.builder()
+                .activity(activity)
+                .prizes(convertToPrizeResp(activityPrizeMapper.selectList(new LambdaQueryWrapper<ActivityPrize>()
+                        .eq(ActivityPrize::getActivityId, id)
+                        .eq(ActivityPrize::getValid, true))))
+                .restriction(convertToRestrictionResp(activityRestrictionService.getById(id)))
+                .build();
+    }
+
     // 转换奖品信息为Resp格式
     private List<ActivityPrizeResp> convertToPrizeResp(List<ActivityPrize> prizes) {
         return prizes.stream().map(prize -> {

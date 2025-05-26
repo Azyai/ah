@@ -3,7 +3,6 @@ package com.itay.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.CreateActivityRequest;
 import com.itay.dto.response.ActivityResp;
-import com.itay.entity.Activity;
 import com.itay.entity.resp.ActivityInfoResp;
 import com.itay.request.NameRequest;
 import com.itay.resp.CommonResponse;
@@ -74,6 +73,12 @@ public class ActivityController {
     public ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(@RequestBody NameRequest nameRequest) {
         CommonResponse<ActivityInfoResp> activityInfoRespCommonResponse = activityService.selectActivityInfo(nameRequest.getName(), nameRequest.getPage(), nameRequest.getLimit());
         return ResultData.success(activityInfoRespCommonResponse);
+    }
+
+    @GetMapping("/fetchActivityDetailById")
+    public ResultData<ActivityInfoResp> fetchActivityDetailById(@RequestParam("id") Integer id) {
+        ActivityInfoResp activityInfoResp = activityService.fetchActivityDetailById(id);
+        return ResultData.success(activityInfoResp);
     }
 
 
