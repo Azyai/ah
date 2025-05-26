@@ -1,7 +1,7 @@
 // src/stores/activity.ts
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { post } from '@/api/axios';
+import {get, post} from '@/api/axios';
 
 export interface Activity {
     id: number;
@@ -50,12 +50,6 @@ export const useActivityStore = defineStore('activity', () => {
                 limit: size
             });
 
-            // const response = getActivities({
-            //     name: name,
-            //     page: page,
-            //     limit: size
-            // })
-
             console.log(response)
 
             activities.value = response.data.data.map((item: any) => ({
@@ -91,21 +85,51 @@ export const useActivityStore = defineStore('activity', () => {
         if (!forceRefresh) {
             const cachedActivity = activities.value.find(a => a.id === activityId);
             if (cachedActivity) {
-                activityDetail.value = cachedActivity as ActivityDetail;
+                activityDetail.value = cachedActivity as Activity;
                 return;
             }
         }
 
         try {
-            const data = await post('/draw/activity/fetchActivityDetailById', { id: activityId });
-            console.log('data666:' + data)
-            activityDetail.value = data;
+            // 1. 获取活动详情
+            const res = await get('/draw/activity/fetchActivityDetailById', {
+                id: activityId
+            });
 
-            // 更新活动列表中的对应项
+            // 2. 确保数据结构正确
+            const activityData = res.data
+            console.log(activityData)
+
+            // 3. 更新活动详情
+            activityDetail.value = {
+                id: activityData.activity.id,
+                name: activityData.activity.name,
+                description: activityData.activity.description || '',
+                type: activityData.activity.type,
+                startTime: activityData.activity.startTime,
+                endTime: activityData.activity.endTime,
+                status: activityData.activity.status,
+                ruleConfig: activityData.activity.ruleConfig || {},
+                maxParticipants: activityData.activity.maxParticipants,
+                currentParticipants: activityData.activity.currentParticipants,
+                autoClose: activityData.activity.autoClose || false,
+                prizes: activityData.prizes || [],
+                restriction: activityData.restriction || {}
+            };
+
+            // 4. 更新活动列表中的对应项
             const index = activities.value.findIndex(a => a.id === activityId);
             if (index !== -1) {
-                activities.value[index] = { ...activities.value[index], ...data };
+                activities.value[index] = {
+                    ...activities.value[index],
+                    ...activityDetail.value,
+                    // 保持原有的description格式
+                    description: `活动类型: ${getActivityType(activityData.type)} | 
+                             状态: ${getActivityStatus(activityData.status)} | 
+                             参与人数: ${activityData.currentParticipants}/${activityData.maxParticipants || '不限'}`
+                };
             }
+
         } catch (error) {
             console.error('Failed to fetch activity detail:', error);
         }
