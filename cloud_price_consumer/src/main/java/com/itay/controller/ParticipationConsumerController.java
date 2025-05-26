@@ -33,7 +33,7 @@ public class ParticipationConsumerController {
 
     @PostMapping("/participate")
     public ResultData<String> participate(
-            ParticipationRequest participationRequest,
+            @RequestBody ParticipationRequest participationRequest,
             HttpServletRequest httpServletRequest) {
 
         // 获取用户ID和IP地址
