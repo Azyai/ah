@@ -1,9 +1,9 @@
 <template>
   <div class="home-container">
-    <div class="content-wrapper">
+    <div class="content-wrapper" style="width: 538px;height: 400px;">
       <!-- 左侧轮播图 -->
       <div class="carousel-wrapper">
-        <el-carousel trigger="click" height="400px" :interval="5000">
+        <el-carousel trigger="click" :height="'400px'" style="width: 100%;height: 100%" :interval="5000">
           <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
             <div class="carousel-item">
               <h1>{{ item.title }}</h1>
@@ -13,7 +13,8 @@
         </el-carousel>
       </div>
 
-      <div class="activity-grid">
+      <!-- 其他代码保持不变... -->
+      <div class="activity-grid" style="padding-left: 10px">
         <div
             v-for="(activity, index) in displayedActivities"
             :key="activity.id"
@@ -21,9 +22,18 @@
             @click="navigateToActivityDetail(activity.id)"
         >
           <h3>{{ activity.name }}</h3>
-          <p>{{ truncatedDescription(activity.description) }}</p>
+          <p>{{ activity.description }}</p>
+          <div class="activity-meta">
+        <span class="participants">
+          {{ activity.currentParticipants }}/{{ activity.maxParticipants || '∞' }}
+        </span>
+            <span class="status" :class="getStatusClass(activity.status)">
+          {{ getStatusText(activity.status) }}
+        </span>
+          </div>
         </div>
       </div>
+
     </div>
 
     <!-- 产品介绍模块 -->
@@ -64,11 +74,8 @@ import { onMounted, ref,computed} from 'vue'
 import { useRouter } from 'vue-router'
 import { useActivityStore } from '@/stores/activity';
 const activityStore = useActivityStore();
-const activities = ref([]);
-
 
 const router = useRouter()
-
 
 // 轮播图数据
 const carouselItems = ref([
@@ -86,6 +93,11 @@ const navigateToActivityDetail = (activityId: number) => {
   router.push({ name: 'ActivityDetailView', params: { id: activityId } });
 };
 
+// 计算属性：限制展示的活动数量为前6条
+const displayedActivities = computed(() => {
+  return activityStore.activities.slice(0, 6);
+});
+
 // 截断描述的方法
 const truncatedDescription = (description: string) => {
   if (description.length > 32) {
@@ -94,16 +106,20 @@ const truncatedDescription = (description: string) => {
   return description;
 };
 
+const getStatusText = (status: number) => {
+  return ['未开始', '进行中', '已结束', '已关闭'][status] || '未知';
+};
+
+const getStatusClass = (status: number) => {
+  return ['not-started', 'ongoing', 'ended', 'closed'][status] || '';
+};
+
+
 
 onMounted(async () => {
   await activityStore.fetchActivities();
-  activities.value = activityStore.activities;
 })
 
-// 计算属性：限制展示的活动数量为前6条
-const displayedActivities = computed(() => {
-  return activities.value.slice(0, 6);
-});
 
 // 产品功能列表
 const features = ref([
@@ -157,11 +173,25 @@ const features = ref([
 }
 
 .carousel-wrapper {
-  flex: 1;
-  margin-right: 20px;
+  width: 538px !important;
+  height: 400px !important;
+  flex: none; /* 取消flex增长 */
 }
 
+.el-carousel__item {
+  width: 100%;
+  height: 100%;
+}
+.el-carousel {
+  width: 100%;
+  height: 100%;
+}
+
+
 .carousel-item {
+  width: 100%;
+  height: 100%;
+  /* 保持原有其他样式 */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -169,7 +199,6 @@ const features = ref([
   text-align: center;
   color: white;
   background: linear-gradient(135deg, #4ecdc4, #45b7d1);
-  height: 400px;
 }
 
 .carousel-item h1 {

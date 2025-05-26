@@ -50,6 +50,11 @@ const router = createRouter({
       path: "/contact",
       name: "contact",
       component: () => import('@/views/ContactUsView.vue')
+    },
+    {
+      path: "/activities",
+      name: "ActivityListView",
+      component: () => import('@/views/ActivityListView.vue')
     }
 
   ],
