@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { post } from '@/api/axios';
-import {getActivities} from "@/api/activity.ts";
+import {getActivities, getActivityDetail} from "@/api/activity.ts";
 
 export interface Activity {
     id: number;
@@ -86,33 +86,25 @@ export const useActivityStore = defineStore('activity', () => {
         }
     };
 
-    // 获取活动详情
-    const fetchActivityDetail = async (activityId: number) => {
-        try {
-            const response = await post('/draw/activity/selectActivityDetailById', {
-                id: activityId
-            });
+    // 加载活动详情（优化版）
+    const fetchActivityDetail = async (activityId: number, forceRefresh = false) => {
+        // 如果不需要强制刷新且已有缓存数据，则直接返回
+        if (!forceRefresh) {
+            const cachedActivity = activities.value.find(a => a.id === activityId);
+            if (cachedActivity) {
+                activityDetail.value = cachedActivity as ActivityDetail;
+                return;
+            }
+        }
 
-            const item = response.data.data.find((a: any) => a.activity.id === activityId);
-            if (item) {
-                activityDetail.value = {
-                    id: item.activity.id,
-                    name: item.activity.name,
-                    description: `活动类型: ${getActivityType(item.activity.type)} | 
-                                 状态: ${getActivityStatus(item.activity.status)} | 
-                                 时间: ${formatDate(item.activity.startTime)} 至 ${formatDate(item.activity.endTime)} | 
-                                 参与人数: ${item.activity.currentParticipants}/${item.activity.maxParticipants || '不限'}`,
-                    type: item.activity.type,
-                    startTime: item.activity.startTime,
-                    endTime: item.activity.endTime,
-                    status: item.activity.status,
-                    ruleConfig: item.activity.ruleConfig,
-                    maxParticipants: item.activity.maxParticipants,
-                    currentParticipants: item.activity.currentParticipants,
-                    autoClose: item.activity.autoClose,
-                    prizes: item.prizes,
-                    restriction: item.restriction
-                };
+        try {
+            const data = await getActivityDetail(activityId);
+            activityDetail.value = data;
+
+            // 更新活动列表中的对应项
+            const index = activities.value.findIndex(a => a.id === activityId);
+            if (index !== -1) {
+                activities.value[index] = { ...activities.value[index], ...data };
             }
         } catch (error) {
             console.error('Failed to fetch activity detail:', error);

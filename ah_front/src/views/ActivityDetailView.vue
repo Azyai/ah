@@ -72,8 +72,15 @@ import { useActivityStore } from '@/stores/activity';
 const route = useRoute();
 const activityStore = useActivityStore();
 
+// 先从store中查找已有数据
 const activityDetail = computed(() => {
-  return activityStore.activityDetail;
+  const activityId = Number(route.params.id);
+  // 先在详情缓存中查找
+  if (activityStore.activityDetail?.id === activityId) {
+    return activityStore.activityDetail;
+  }
+  // 再从活动列表中查找
+  return activityStore.activities.find(a => a.id === activityId) || null;
 });
 
 const getActivityType = (type: number) => {
@@ -81,11 +88,11 @@ const getActivityType = (type: number) => {
 };
 
 const getStatusText = (status: number) => {
-  return ['未开始', '进行中', '已结束', '已关闭'][status] || '未知';
+  return ['已关闭','未开始', '进行中', '已结束', ][status] || '未知';
 };
 
 const getStatusTagType = (status: number) => {
-  return ['info', 'success', 'danger', 'warning'][status] || '';
+  return ['warning','info', 'success', 'danger', ][status] || '';
 };
 
 const getLimitTypeText = (type: number) => {
@@ -98,7 +105,10 @@ const formatDate = (dateString: string) => {
 
 onMounted(async () => {
   const activityId = Number(route.params.id);
-  await activityStore.fetchActivityDetail(activityId);
+  // 只有当没有缓存数据时才请求接口
+  if (!activityDetail.value) {
+    await activityStore.fetchActivityDetail(activityId);
+  }
 });
 </script>
 

@@ -21,31 +21,33 @@
           :data="activityStore.activities"
           style="width: 100%"
           @row-click="handleRowClick"
+          :header-cell-style="{ 'background-color': '#f5f7fa', 'color': '#606266' }"
+          :cell-style="{ 'padding': '14px' }"
       >
-        <el-table-column prop="name" label="活动名称" width="180" />
-        <el-table-column prop="type" label="活动类型" width="100">
+        <el-table-column prop="name" label="活动名称" min-width="200" />
+        <el-table-column prop="type" label="活动类型" width="120">
           <template #default="{ row }">
             {{ getActivityType(row.type) }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="status" label="状态" width="120">
           <template #default="{ row }">
             <el-tag :type="getStatusTagType(row.status)">
               {{ getStatusText(row.status) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="开始时间" width="180">
+        <el-table-column prop="startTime" label="开始时间" min-width="180">
           <template #default="{ row }">
             {{ formatDate(row.startTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" width="180">
+        <el-table-column prop="endTime" label="结束时间" min-width="180">
           <template #default="{ row }">
             {{ formatDate(row.endTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="currentParticipants" label="参与人数" width="120">
+        <el-table-column prop="currentParticipants" label="参与人数" width="160">
           <template #default="{ row }">
             {{ row.currentParticipants }}/{{ row.maxParticipants || '不限' }}
           </template>
@@ -136,17 +138,26 @@ activityStore.fetchActivities();
 
 <style scoped>
 .activity-list-container {
-  padding: 20px;
+  padding: 30px;
 }
 
 .search-wrapper {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   width: 300px;
 }
 
 .pagination-wrapper {
-  margin-top: 20px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
+}
+
+.el-table {
+  font-size: 14px;
+}
+
+.el-table th,
+.el-table td {
+  text-align: center;
 }
 </style>
