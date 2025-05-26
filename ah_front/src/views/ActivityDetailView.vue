@@ -2,12 +2,10 @@
   <div class="activity-detail-container">
     <el-card v-if="activityDetail">
       <h2>{{ activityDetail.name }}</h2>
-
-      <el-divider />
-
       <!-- 抽奖按钮区域 -->
-      <div class="draw-button-container">
+      <div class="draw-button-container" >
         <el-button
+            style="height: 45px;font-size: 26px;"
             class="draw-button"
             type="primary"
             :disabled="activityDetail.status !== 2"
@@ -20,6 +18,8 @@
           {{ getStatusText(activityDetail.status) }}的活动不可参与
         </p>
       </div>
+
+      <el-divider />
 
       <h3>活动信息</h3>
       <el-descriptions :column="2" border>

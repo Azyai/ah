@@ -80,6 +80,11 @@ router.beforeEach((to,from,next) =>{
       ElMessage.info('您已登录，无需重复操作')
       return next({name: 'home'})
     }
+  }else {
+    if(!userStore.isAuthenticated && !userStore.loading){
+      ElMessage.info('您还未登录，请先登录')
+      return next({name: 'login'})
+    }
   }
 
   next()

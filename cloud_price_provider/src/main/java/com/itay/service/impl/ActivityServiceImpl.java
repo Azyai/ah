@@ -24,9 +24,11 @@ import com.itay.service.ActivityRestrictionService;
 import com.itay.service.ActivityService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +54,30 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> i
 
     @Autowired
     private ActivityRestrictionService activityRestrictionService;
+
+    @Scheduled(cron = "0 * * * * ?") // 每分钟执行一次
+    @Transactional
+    public void autoUpdateActivityStatus(){
+        LocalDateTime now = LocalDateTime.now();
+
+        // 1. 更新应该开始但未开始的活动（状态1-》2）
+        activityMapper.update(null,
+                new LambdaUpdateWrapper<Activity>()
+                        .eq(Activity::getStatus,1)
+                        .le(Activity::getStartTime, now)
+                        .set(Activity::getStatus,2)
+        );
+
+        // 2. 更新应该结束但未结束的活动（状态2-》3）
+        activityMapper.update(null,
+                new LambdaUpdateWrapper<Activity>()
+                        .eq(Activity::getStatus,2)
+                        .le(Activity::getEndTime, now)
+                        .set(Activity::getStatus,3)
+        );
+
+    }
+
 
     @Override
     @Transactional

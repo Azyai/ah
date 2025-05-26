@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -36,6 +37,13 @@ public class ActivityController {
     // 添加活动信息
     @PostMapping("/addActivity")
     public ResultData<String> addActivity(@RequestBody CreateActivityRequest request) {
+        LocalDateTime now = LocalDateTime.now();
+        if(request.getActivity().getStartTime().isBefore(now)){
+            request.getActivity().setStatus(2);
+        }else {
+            request.getActivity().setStatus(1);
+        }
+
         Boolean b = activityService.addActivity(request.getActivity(), request.getPrizes(), request.getActivityRestriction());
         if (b) {
             return ResultData.success("添加成功");

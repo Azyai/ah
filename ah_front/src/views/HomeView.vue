@@ -13,6 +13,11 @@
         </el-carousel>
       </div>
 
+
+      <!-- 骨架屏 -->
+      <el-skeleton :rows="10" animated v-if="loading"/>
+
+      <template  v-else>
       <!-- 其他代码保持不变... -->
       <div class="activity-grid" style="padding-left: 10px">
         <div
@@ -22,17 +27,19 @@
             @click="navigateToActivityDetail(activity.id)"
         >
           <h3>{{ activity.name }}</h3>
-          <p>{{ activity.description }}</p>
+          <p style="white-space: pre-line">{{ activity.description }}</p>
           <div class="activity-meta">
-        <span class="participants">
-          {{ activity.currentParticipants }}/{{ activity.maxParticipants || '∞' }}
-        </span>
+<!--        <span class="participants">-->
+<!--          {{ activity.currentParticipants }}/{{ activity.maxParticipants || '∞' }}-->
+<!--        </span>-->
             <span class="status" :class="getStatusClass(activity.status)">
           {{ getStatusText(activity.status) }}
         </span>
           </div>
         </div>
       </div>
+      </template>
+
 
     </div>
 
@@ -77,6 +84,9 @@ const activityStore = useActivityStore();
 
 const router = useRouter()
 
+// 加载状态
+const loading = ref(true);
+
 // 轮播图数据
 const carouselItems = ref([
   {
@@ -117,7 +127,9 @@ const getStatusClass = (status: number) => {
 
 
 onMounted(async () => {
-  await activityStore.fetchActivities();
+  await activityStore.fetchActivities().finally(()=>{
+        loading.value = false
+      });
 })
 
 

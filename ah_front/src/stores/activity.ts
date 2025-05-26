@@ -55,8 +55,8 @@ export const useActivityStore = defineStore('activity', () => {
             activities.value = response.data.data.map((item: any) => ({
                 id: item.activity.id,
                 name: item.activity.name,
-                description: `活动类型: ${getActivityType(item.activity.type)} | 
-                             状态: ${getActivityStatus(item.activity.status)} | 
+                description: `活动类型: ${getActivityType(item.activity.type)} 
+                             状态: ${getActivityStatus(item.activity.status)}  
                              参与人数: ${item.activity.currentParticipants}/${item.activity.maxParticipants || '不限'}`,
                 type: item.activity.type,
                 startTime: item.activity.startTime,
@@ -124,8 +124,8 @@ export const useActivityStore = defineStore('activity', () => {
                     ...activities.value[index],
                     ...activityDetail.value,
                     // 保持原有的description格式
-                    description: `活动类型: ${getActivityType(activityData.type)} | 
-                             状态: ${getActivityStatus(activityData.status)} | 
+                    description: `活动类型: ${getActivityType(activityData.type)}  
+                             状态: ${getActivityStatus(activityData.status)}  
                              参与人数: ${activityData.currentParticipants}/${activityData.maxParticipants || '不限'}`
                 };
             }
