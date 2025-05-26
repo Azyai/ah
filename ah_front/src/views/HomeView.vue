@@ -1,6 +1,11 @@
 <template>
   <div class="home-container">
+
+    <!-- 骨架屏 -->
+    <el-skeleton :rows="10" animated v-if="loading"/>
+    <template  v-else>
     <div class="content-wrapper" style="width: 538px;height: 400px;">
+
       <!-- 左侧轮播图 -->
       <div class="carousel-wrapper">
         <el-carousel trigger="click" :height="'400px'" style="width: 100%;height: 100%" :interval="5000">
@@ -13,11 +18,6 @@
         </el-carousel>
       </div>
 
-
-      <!-- 骨架屏 -->
-      <el-skeleton :rows="10" animated v-if="loading"/>
-
-      <template  v-else>
       <!-- 其他代码保持不变... -->
       <div class="activity-grid" style="padding-left: 10px">
         <div
@@ -38,10 +38,9 @@
           </div>
         </div>
       </div>
-      </template>
-
-
     </div>
+    </template>
+
 
     <!-- 产品介绍模块 -->
     <section class="features-section">

@@ -8,6 +8,10 @@ spring:
     nacos:
       discovery: localhost:8848 # 配置nacos地址
   datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://101.37.13.81:3306/ah2025?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+#    username: db_user
+#    password: cxk234411!
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/ah2025?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
