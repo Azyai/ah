@@ -2,7 +2,6 @@
   <div class="activity-detail-container">
     <el-card v-if="activityDetail">
       <h2>{{ activityDetail.name }}</h2>
-      <p>{{ activityDetail.description }}</p>
 
       <el-divider />
 

@@ -30,6 +30,8 @@ public class WinningRecordConsumerController {
         Long userId = userApi.getUserId(username);
         idRequest.setId(userId);
 
+        System.out.println(idRequest);
+
         return participateApi.getWinningRecord(idRequest);
     }
 }

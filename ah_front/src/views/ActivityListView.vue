@@ -109,7 +109,7 @@ const handlePageChange = (page: number) => {
 
 // 其他方法保持不变...
 const getActivityType = (type: number) => {
-  return ['未知', '大转盘', '其他'][type] || '未知';
+  return ['大转盘', '立即开奖', '福袋'][type] || '未知';
 };
 
 const getStatusText = (status: number) => {

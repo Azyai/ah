@@ -63,6 +63,9 @@ public class WinningRecordServiceImpl extends ServiceImpl<WinningRecordMapper, W
     @Override
     public CommonResponse<WinningRecordResp> selectWinningRecordResp(IdRequest idRequest) {
         IPage<WinningRecord> page = new Page<>();
+        page.setCurrent(idRequest.getPage());
+        page.setSize(idRequest.getLimit());
+
         LambdaQueryWrapper<WinningRecord> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(WinningRecord::getUserId,idRequest.getId())
                 .eq(WinningRecord::getValid,true);

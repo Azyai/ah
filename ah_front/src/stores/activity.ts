@@ -137,7 +137,7 @@ export const useActivityStore = defineStore('activity', () => {
 
     // 辅助方法
     const getActivityType = (type: number) => {
-        const types = ['未知', '大转盘', '其他'];
+        const types = ['大转盘', '立即开奖', '福袋'];
         return types[type] || types[0];
     };
 

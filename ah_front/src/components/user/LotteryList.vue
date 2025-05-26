@@ -79,7 +79,7 @@ const fetchParticipation = async (retryCount = 3) => {
     const response = await post<{
       code: string;
       data: {
-        list: any[];
+        data: any[];
         total: number;
       };
     }>('/draw/participation/getParticipation', {

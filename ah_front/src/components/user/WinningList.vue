@@ -82,7 +82,7 @@ const fetchWinningRecord = async (retryCount = 3) => {
     const response = await post<{
       code: string;
       data: {
-        list: any[];
+        data: any[];
         total: number;
       };
     }>('/draw/winningRecord/getWinningRecord', {
@@ -92,7 +92,11 @@ const fetchWinningRecord = async (retryCount = 3) => {
 
     if (response.code === '200') {
       WinningList.value = response.data.data;
+
+      console.log(WinningList.value)
+
       total.value = response.data.total;
+
     } else {
       console.error('获取数据失败:', response);
     }
@@ -119,7 +123,7 @@ const handleSizeChange = (newSize: number) => {
 // 分页切换
 const handleCurrentChange = (newPage: number) => {
   page.value = newPage;
-  fetchParticipation();
+  fetchWinningRecord();
 };
 
 // 挂载时加载数据
