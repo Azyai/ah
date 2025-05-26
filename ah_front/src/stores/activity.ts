@@ -2,7 +2,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { post } from '@/api/axios';
-import {getActivities, getActivityDetail} from "@/api/activity.ts";
 
 export interface Activity {
     id: number;
@@ -87,7 +86,7 @@ export const useActivityStore = defineStore('activity', () => {
     };
 
     // 加载活动详情（优化版）
-    const fetchActivityDetail = async (activityId: number, forceRefresh = false) => {
+    const fetchActivityDetailById = async (activityId: number, forceRefresh = false) => {
         // 如果不需要强制刷新且已有缓存数据，则直接返回
         if (!forceRefresh) {
             const cachedActivity = activities.value.find(a => a.id === activityId);
@@ -98,7 +97,8 @@ export const useActivityStore = defineStore('activity', () => {
         }
 
         try {
-            const data = await getActivityDetail(activityId);
+            const data = await post('/draw/activity/fetchActivityDetailById', { id: activityId });
+            console.log('data666:' + data)
             activityDetail.value = data;
 
             // 更新活动列表中的对应项
@@ -134,6 +134,6 @@ export const useActivityStore = defineStore('activity', () => {
         pageSize,
         searchName,
         fetchActivities,
-        fetchActivityDetail
+        fetchActivityDetailById
     };
 });

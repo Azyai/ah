@@ -140,21 +140,24 @@ const handleDraw = async () => {
       return;
     }
 
+    const activityId = Number(route.params.id);
+
     const response = await post('/draw/participation/participate', {
-      activityId: activityDetail.value?.id,
+      activityId: activityId,
       deviceFingerprint: deviceFingerprint.value || getDeviceFingerprint()
     });
 
     if (response.code === '200') {
-
       ElMessage({
         message: response.data || '参与抽奖成功',
         type: 'success',
         duration: 5000
-      })
+      });
+
+      // 关键修改：抽奖成功后重新获取活动详情数据
+      await activityStore.fetchActivityDetailById(activityId,true);
 
       // 可以在这里添加抽奖结果展示逻辑
-
     } else {
       ElMessage.error(response.message || '参与抽奖失败');
     }
@@ -169,7 +172,7 @@ onMounted(async () => {
   const activityId = Number(route.params.id);
   // 只有当没有缓存数据时才请求接口
   if (!activityDetail.value) {
-    await activityStore.fetchActivityDetail(activityId);
+    await activityStore.fetchActivityDetailById(activityId);
   }
 });
 </script>

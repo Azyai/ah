@@ -54,13 +54,30 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
 
     @Override
     public boolean addParticipate(String participationId, Long userId, Integer activityId, String ip, String deviceFingerprint) {
-        Participation participation = Participation.builder()
+       Participation participation = Participation.builder()
                 .id(participationId)
                 .userId(userId)
                 .activityId(activityId)
                 .ip(ip)
                 .deviceFingerprint(deviceFingerprint)
                 .build();
+
+        // 2.更改activity中参与人数，如果活动人数达到上限，则结束活动
+        Activity activity = activityMapper.selectById(activityId);
+        if(activity.getCurrentParticipants() + 1 <= activity.getMaxParticipants()){
+            activity.setCurrentParticipants(activity.getCurrentParticipants() + 1);
+            int update = activityMapper.updateById(activity);
+            if(update < 0){
+                throw new RuntimeException("活动人数更新失败");
+            }
+        }else {
+            activity.setStatus(2);
+            int update = activityMapper.updateById(activity);
+            if(update < 0){
+                throw new RuntimeException("活动状态更新失败");
+            }
+        }
+
         return participationMapper.insert(participation) > 0;
     }
 

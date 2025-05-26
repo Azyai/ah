@@ -47,22 +47,6 @@ public class WinningRecordServiceImpl extends ServiceImpl<WinningRecordMapper, W
             throw new RuntimeException("存储中奖信息失败");
         }
 
-        // 2.更改activity中参与人数，如果活动人数达到上限，则结束活动
-        Activity activity = activityMapper.selectById(winningRecord.getActivityId());
-        if(activity.getCurrentParticipants() + 1 <= activity.getMaxParticipants()){
-            activity.setCurrentParticipants(activity.getCurrentParticipants() + 1);
-            int update = activityMapper.updateById(activity);
-            if(update < 0){
-                throw new RuntimeException("活动人数更新失败");
-            }
-        }else {
-            activity.setStatus(2);
-            int update = activityMapper.updateById(activity);
-            if(update < 0){
-                throw new RuntimeException("活动状态更新失败");
-            }
-        }
-
         // 3.更改activityPrize中的奖品数量，如果所有的奖品数量不够，则结束活动
         ActivityPrize prize = activityPrizeMapper.selectById(winningRecord.getPrizeId());
         if(prize.getUsedStock() + 1 <= prize.getTotalStock()){
