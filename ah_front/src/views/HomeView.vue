@@ -107,11 +107,11 @@ const truncatedDescription = (description: string) => {
 };
 
 const getStatusText = (status: number) => {
-  return ['未开始', '进行中', '已结束', '已关闭'][status] || '未知';
+  return ['已关闭','未开始', '进行中', '已结束', ][status] || '未知';
 };
 
 const getStatusClass = (status: number) => {
-  return ['not-started', 'ongoing', 'ended', 'closed'][status] || '';
+  return ['closed','not-started', 'ongoing', 'ended', ][status] || '';
 };
 
 

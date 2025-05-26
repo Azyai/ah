@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { post } from '@/api/axios';
+import {getActivities} from "@/api/activity.ts";
 
 export interface Activity {
     id: number;
@@ -49,6 +50,14 @@ export const useActivityStore = defineStore('activity', () => {
                 page: page,
                 limit: size
             });
+
+            // const response = getActivities({
+            //     name: name,
+            //     page: page,
+            //     limit: size
+            // })
+
+            console.log(response)
 
             activities.value = response.data.data.map((item: any) => ({
                 id: item.activity.id,
@@ -117,7 +126,7 @@ export const useActivityStore = defineStore('activity', () => {
     };
 
     const getActivityStatus = (status: number) => {
-        const statuses = ['未开始', '进行中', '已结束', '已关闭'];
+        const statuses = ['已关闭','未开始', '进行中', '已结束' ];
         return statuses[status] || statuses[0];
     };
 
