@@ -21,5 +21,10 @@ public class ActivityConsumerController {
         return commonResponseResultData;
     }
 
+    @GetMapping("/fetchActivityDetailById")
+    ResultData<ActivityInfoResp> fetchActivityDetailById(@RequestParam("id") Integer id){
+        return priceApi.fetchActivityDetailById(id);
+    }
+
 
 }

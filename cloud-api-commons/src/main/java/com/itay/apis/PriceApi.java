@@ -43,4 +43,7 @@ public interface PriceApi {
 
     @PostMapping("/draw/activity/selectActivityInfo")
     ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(@RequestBody NameRequest nameRequest);
+
+    @GetMapping("/draw/activity/fetchActivityDetailById")
+    ResultData<ActivityInfoResp> fetchActivityDetailById(@RequestParam("id") Integer id);
 }
