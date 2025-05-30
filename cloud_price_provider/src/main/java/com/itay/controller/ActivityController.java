@@ -3,13 +3,17 @@ package com.itay.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itay.dto.request.CreateActivityRequest;
 import com.itay.dto.response.ActivityResp;
+import com.itay.entity.Activity;
 import com.itay.entity.resp.ActivityInfoResp;
 import com.itay.request.NameRequest;
 import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
 import com.itay.service.ActivityService;
+import com.itay.utils.CronGenerator;
+import com.itay.utils.XxlJobApiUtil;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -29,6 +33,9 @@ public class ActivityController {
     @Autowired
     ActivityService activityService;
 
+    @Autowired
+    private XxlJobApiUtil xxlJobApiUtil;
+
     /**
      * 最终版本的增删改查，之前的增删改查只是基于单表的
      * 现在需要考虑多表关联，即创建活动信息时，也要创建与之关联的活动奖品、活动限制等
@@ -36,16 +43,43 @@ public class ActivityController {
 
     // 添加活动信息
     @PostMapping("/addActivity")
+    @Transactional
     public ResultData<String> addActivity(@RequestBody CreateActivityRequest request) {
         LocalDateTime now = LocalDateTime.now();
-        if(request.getActivity().getStartTime().isBefore(now)){
+        Activity activity = request.getActivity();
+
+        if (request.getActivity().getStartTime().isBefore(now)) {
             request.getActivity().setStatus(2);
-        }else {
+        } else {
             request.getActivity().setStatus(1);
         }
 
         Boolean b = activityService.addActivity(request.getActivity(), request.getPrizes(), request.getActivityRestriction());
         if (b) {
+            // 如果是福袋型活动，注册定时任务
+            if (activity.getType() == 2) {
+                LocalDateTime lotteryTime = activity.getEndTime();
+                String cron = CronGenerator.getCronFromActivityEndTime(lotteryTime);
+
+                System.out.println("活动结束时间：" + lotteryTime + ",cron是：" + cron);
+                boolean fudaiDrawJobHandler = xxlJobApiUtil.registerJob(
+                        "福袋开奖 -活动ID:" + activity.getId(),
+                        cron,
+                        "fudaiDrawJobHandler",
+                        // jobGroup对应数据库表中xxl_job_group表id，即对应appName为xxl-job-executor-sample
+                        1,
+                        // 这里是活动ID，用于在xxl-job-executor-sample中获取
+                        "{\"activityId\":" + activity.getId() + "}"
+                );
+
+                if(fudaiDrawJobHandler){
+                    System.out.println("注册定时任务成功");
+                }else {
+                    System.out.println("注册定时任务失败");
+                }
+
+            }
+
             return ResultData.success("添加成功");
         }
         return ResultData.fail("添加失败");

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RocketMQMessageListener(topic = "fudai-draw-topic", consumerGroup = "fudai-draw-consumer-group")
+@RocketMQMessageListener(topic = "fd-draw-topic", consumerGroup = "fd-draw-consumer-group")
 public class FudaiDrawConsumer implements RocketMQListener<Integer> {
 
     @Autowired
@@ -25,14 +25,15 @@ public class FudaiDrawConsumer implements RocketMQListener<Integer> {
     @Autowired
     private ActivityService activityService;
 
-
-
     @Autowired
     private WinningRecordMapper winningRecordMapper;
 
 
     @Override
     public void onMessage(Integer activityId) {
+
+        System.out.println("执行福袋开奖：" + activityId);
+
         // 1. 获取活动信息
         Activity activity = activityService.getById(activityId);
         if (activity == null || !activity.getValid()) {
