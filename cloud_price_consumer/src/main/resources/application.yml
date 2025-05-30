@@ -1,7 +1,28 @@
 server:
   port: 8083
 
+# xxl-job配置项
+xxl:
+  job:
+    admin:
+      address: http://192.168.117.134:8088/xxl-job-admin
+      accessToken: default_token
+      timeout: 30
+    executor:
+      appname: xxl-job-executor-sample
+      address:
+      ip: 192.168.31.141
+      port: 9999
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+
+
 spring:
+  data:
+    redis:
+      host: 182.92.222.10
+      port: 6379
+      password: 123456
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
