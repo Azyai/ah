@@ -5,6 +5,7 @@ import com.itay.dto.request.CreateActivityRequest;
 import com.itay.dto.response.ActivityResp;
 import com.itay.entity.Activity;
 import com.itay.entity.resp.ActivityInfoResp;
+import com.itay.pojo.ReturnT;
 import com.itay.request.NameRequest;
 import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
@@ -62,7 +63,7 @@ public class ActivityController {
                 String cron = CronGenerator.getCronFromActivityEndTime(lotteryTime);
 
                 System.out.println("活动结束时间：" + lotteryTime + ",cron是：" + cron);
-                boolean fudaiDrawJobHandler = xxlJobApiUtil.registerJob(
+                ReturnT<String> fudaiDrawJobHandler = xxlJobApiUtil.registerJob(
                         "福袋开奖 -活动ID:" + activity.getId(),
                         cron,
                         "fudaiDrawJobHandler",
@@ -72,7 +73,7 @@ public class ActivityController {
                         "{\"activityId\":" + activity.getId() + "}"
                 );
 
-                if(fudaiDrawJobHandler){
+                if(fudaiDrawJobHandler.getCode() == ReturnT.SUCCESS_CODE){
                     System.out.println("注册定时任务成功");
                 }else {
                     System.out.println("注册定时任务失败");

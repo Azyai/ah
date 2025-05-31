@@ -4,7 +4,6 @@ import com.itay.pojo.ReturnT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -61,18 +60,37 @@ public class XxlJobApiUtil {
     /**
      * 注册定时任务
      */
-    public boolean registerJob(String jobDesc, String cron, String executorHandler,
-                               Integer jobGroup, String executorParam) {
+    public ReturnT<String> registerJob(String jobDesc, String cron, String executorHandler,
+                                       Integer jobGroup, String executorParam) {
         Map<String, Object> params = buildCommonParams(jobDesc, cron, executorHandler,
                 jobGroup, executorParam,"XXL");
-        return sendPostRequest(ADMIN_URL + "/add", params);
+
+        ReturnT<String> stringReturnT = sendPostRequest(ADMIN_URL + "/add", params);
+        if(stringReturnT.getCode() == 200){
+            // 获取刚刚创建的任务ID（需要从返回值中解析）
+             int jobId = Integer.parseInt(stringReturnT.getContent());
+
+            System.out.println("jobId: " + jobId);
+            //立即启动任务
+            return startJob(jobId);
+        }
+        return null;
+    }
+
+    /**
+     * 启动定时任务
+     */
+    public ReturnT<String> startJob(int jobId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", jobId);
+        return sendPostRequest(ADMIN_URL + "/start", params);
     }
 
     /**
      * 更新定时任务
      */
-    public boolean updateJob(int jobId, String jobDesc, String cron, String executorHandler,
-                             Integer jobGroup, String executorParam) {
+    public ReturnT<String> updateJob(int jobId, String jobDesc, String cron, String executorHandler,
+                                     Integer jobGroup, String executorParam) {
         Map<String, Object> params = buildCommonParams(jobDesc, cron, executorHandler,
                 jobGroup, executorParam,"XXL");
         params.put("id", jobId);
@@ -82,7 +100,7 @@ public class XxlJobApiUtil {
     /**
      * 删除定时任务
      */
-    public boolean removeJob(int jobId) {
+    public ReturnT<String> removeJob(int jobId) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", jobId);
         return sendPostRequest(ADMIN_URL + "/delete", params);
@@ -91,7 +109,7 @@ public class XxlJobApiUtil {
     /**
      * 暂停定时任务
      */
-    public boolean pauseJob(int jobId) {
+    public ReturnT<String> pauseJob(int jobId) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", jobId);
         return sendPostRequest(ADMIN_URL + "/stop", params);
@@ -100,7 +118,7 @@ public class XxlJobApiUtil {
     /**
      * 恢复定时任务
      */
-    public boolean resumeJob(int jobId) {
+    public ReturnT<String> resumeJob(int jobId) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", jobId);
         return sendPostRequest(ADMIN_URL + "/start", params);
@@ -109,7 +127,7 @@ public class XxlJobApiUtil {
     /**
      * 手动触发任务执行
      */
-    public boolean triggerJob(int jobId) {
+    public ReturnT<String> triggerJob(int jobId) {
         String triggerUrl = "http://192.168.117.134:8088/xxl-job-admin/api/joblog/trigger";
         Map<String, Object> params = new HashMap<>();
         params.put("id", jobId);
@@ -153,7 +171,7 @@ public class XxlJobApiUtil {
     String cookieValue = null;
 
     // 发送POST请求
-    private boolean sendPostRequest(String url, Map<String, Object> body) {
+    private ReturnT<String> sendPostRequest(String url, Map<String, Object> body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -175,10 +193,10 @@ public class XxlJobApiUtil {
                     url, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<ReturnT<String>>() {});
 
             System.out.println(response.getBody());
-            return response.getStatusCode().is2xxSuccessful() && response.getBody().getCode() == 200;
+            return response.getBody();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 }
