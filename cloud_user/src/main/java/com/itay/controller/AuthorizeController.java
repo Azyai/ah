@@ -40,6 +40,13 @@ public class AuthorizeController {
     private final String EMAIL_REGEXP = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}";
 
 
+    // localhost:8081/api/auth/roles
+    // localhost:8081/static/RocketMQ.pdf
+
+     // controller1: 公共的 每个人都能看的  excludePath:public/api/**
+     // controller2: 登录后才能访问的  private/api/**
+
+
     @Resource
     RbacService rbacService;
 
