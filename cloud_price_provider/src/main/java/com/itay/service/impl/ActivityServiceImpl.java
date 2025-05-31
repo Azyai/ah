@@ -55,8 +55,8 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> i
     @Autowired
     private ActivityRestrictionService activityRestrictionService;
 
-    // 每小时执行一次
-    @Scheduled(cron = "0 0 * * * ?")
+    // 还是要每分钟执行一次
+    @Scheduled(cron = "0 * * * * ?")
     @Transactional
     public void autoUpdateActivityStatus(){
         LocalDateTime now = LocalDateTime.now();

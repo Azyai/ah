@@ -83,7 +83,7 @@ public class ActivityController {
 
             return ResultData.success("添加成功");
         }
-        return ResultData.fail("添加失败");
+        return ResultData.fail("401","添加失败");
     }
 
     // 批量删除活动信息:即可单个删除，也可以批量删除
@@ -93,7 +93,7 @@ public class ActivityController {
         if (delete) {
             return ResultData.success("删除成功");
         }
-        return ResultData.fail("删除失败");
+        return ResultData.fail("401","删除失败");
     }
 
     // 修改活动信息
@@ -103,7 +103,7 @@ public class ActivityController {
         if (update) {
             return ResultData.success("修改成功");
         }
-        return ResultData.fail("修改失败");
+        return ResultData.fail("401","修改失败");
     }
 
     @GetMapping("/selectActivity")

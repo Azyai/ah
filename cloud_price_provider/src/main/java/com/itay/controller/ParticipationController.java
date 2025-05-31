@@ -41,16 +41,23 @@ public class ParticipationController {
         // 生成 UUID 作为参与记录的 ID
         String participationId = UUID.randomUUID().toString();
 
-        // 存储参与记录
-        boolean success = participationService.addParticipate(participationId, userId, activityId, ip, deviceFingerprint);
-        if (!success) {
-            return ResultData.fail("参与失败");
-        }
-
         // 获取活动信息
         Activity activity = activityService.getById(activityId);
         if (activity == null || !activity.getValid()) {
             return ResultData.fail("活动不存在");
+        }
+
+        // 判断活动是否为福袋型，如果是福袋型只能参与一次
+        if (activity.getType() == 2) {
+             if (participationService.hasParticipated(userId, activityId)) {
+                 return ResultData.fail("401","您已经参与过该活动，请勿重复参与");
+             }
+        }
+
+        // 存储参与记录
+        boolean success = participationService.addParticipate(participationId, userId, activityId, ip, deviceFingerprint);
+        if (!success) {
+            return ResultData.fail("401","参与失败");
         }
 
         // 如果是立即开奖型，直接开奖

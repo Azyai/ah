@@ -39,7 +39,7 @@ public class PrizeController {
         if(prizeService.save(prize)){
             return ResultData.success("添加奖品成功");
         }
-        return ResultData.fail("添加奖品失败");
+        return ResultData.fail("401","添加奖品失败");
     }
 
     @PostMapping("/updatePrize")
@@ -47,7 +47,7 @@ public class PrizeController {
         if(prizeService.updateById(prize)){
             return ResultData.success("修改奖品成功");
         }
-        return ResultData.fail("修改奖品失败");
+        return ResultData.fail("401","修改奖品失败");
     }
 
     @PostMapping("/deletePrize")
@@ -55,7 +55,7 @@ public class PrizeController {
         if(prizeService.removePrize(id)){
             return ResultData.success("删除奖品成功");
         }
-        return ResultData.fail("删除奖品失败");
+        return ResultData.fail("401","删除奖品失败");
     }
 
 }

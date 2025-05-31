@@ -1,6 +1,7 @@
 package com.itay.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -54,7 +55,7 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
 
     @Override
     public boolean addParticipate(String participationId, Long userId, Integer activityId, String ip, String deviceFingerprint) {
-       Participation participation = Participation.builder()
+        Participation participation = Participation.builder()
                 .id(participationId)
                 .userId(userId)
                 .activityId(activityId)
@@ -64,16 +65,16 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
 
         // 2.更改activity中参与人数，如果活动人数达到上限，则结束活动
         Activity activity = activityMapper.selectById(activityId);
-        if(activity.getCurrentParticipants() + 1 <= activity.getMaxParticipants()){
+        if (activity.getCurrentParticipants() + 1 <= activity.getMaxParticipants()) {
             activity.setCurrentParticipants(activity.getCurrentParticipants() + 1);
             int update = activityMapper.updateById(activity);
-            if(update < 0){
+            if (update < 0) {
                 throw new RuntimeException("活动人数更新失败");
             }
-        }else {
+        } else {
             activity.setStatus(2);
             int update = activityMapper.updateById(activity);
-            if(update < 0){
+            if (update < 0) {
                 throw new RuntimeException("活动状态更新失败");
             }
         }
@@ -119,12 +120,13 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
 //        }
 //
 //        // 3.判断活动参与限制,如果存在一次参与，则无法参与
-////        LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
-////        queryWrapper.eq(Participation::getUserId,userId)
-////                .eq(Participation::getActivityId,activityId);
-////        if(participationMapper.selectOne(queryWrapper) != null){
-////            throw new RuntimeException("用户已经参与过活动");
-////        }`
+
+    /// /        LambdaQueryWrapper<Participation> queryWrapper = new LambdaQueryWrapper<>();
+    /// /        queryWrapper.eq(Participation::getUserId,userId)
+    /// /                .eq(Participation::getActivityId,activityId);
+    /// /        if(participationMapper.selectOne(queryWrapper) != null){
+    /// /            throw new RuntimeException("用户已经参与过活动");
+    /// /        }`
 //
 //        // 4.保存参与记录
 //        Participation participation = Participation.builder()
@@ -138,8 +140,6 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
 //
 //        return insert > 0;
 //    }
-
-
     @Override
     @Transactional
     public boolean updateCounter(ActivityCounter counter, Activity activity) {
@@ -263,7 +263,7 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
         List<ParticipationResp> participationRespList = new ArrayList<>();
         String userName = participationMapper.selectUserName(participationList.get(0).getUserId());
 
-        for (Participation participation : participationList){
+        for (Participation participation : participationList) {
             String activityName = activityMapper.selectById(participation.getActivityId()).getName();
 
             participationRespList.add(ParticipationResp.builder()
@@ -275,8 +275,23 @@ public class ParticipationServiceImpl extends ServiceImpl<ParticipationMapper, P
                     .isWinning(participation.getIsWinning())
                     .build()
             );
-        };
+        }
+        ;
         commonResponse.setData(participationRespList);
         return commonResponse;
+    }
+
+    @Override
+    public boolean hasParticipated(Long userId, Integer activityId) {
+        QueryWrapper<Participation> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("user_id", userId)
+                .eq("activity_id", activityId)
+                .eq("is_valid", true);
+
+        System.out.println(participationMapper.selectCount(queryWrapper));
+
+
+        return participationMapper.selectCount(queryWrapper) > 0;
     }
 }

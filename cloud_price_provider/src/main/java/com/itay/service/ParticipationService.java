@@ -26,4 +26,6 @@ public interface ParticipationService extends IService<Participation> {
     Prize drawPrize(Activity activity);
 
     CommonResponse<ParticipationResp> selectParticipationResp(IdRequest idRequest);
+
+    boolean hasParticipated(Long userId, Integer activityId);
 }
