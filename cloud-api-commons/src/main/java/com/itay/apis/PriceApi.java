@@ -4,12 +4,14 @@ import com.itay.entity.Activity;
 import com.itay.entity.resp.ActivityInfoResp;
 import com.itay.entity.resp.ParticipationResp;
 import com.itay.entity.resp.WinningRecordResp;
+import com.itay.request.CreateActivityRequest;
 import com.itay.request.IdRequest;
 import com.itay.request.NameRequest;
 import com.itay.request.ParticipationRequest;
 import com.itay.resp.CommonResponse;
 import com.itay.resp.ResultData;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,4 +48,9 @@ public interface PriceApi {
 
     @GetMapping("/draw/activity/fetchActivityDetailById")
     ResultData<ActivityInfoResp> fetchActivityDetailById(@RequestParam("id") Integer id);
+
+
+    // 添加活动信息
+    @PostMapping("/draw/activity/addActivity")
+    ResultData<String> addActivity(@RequestBody CreateActivityRequest request);
 }
