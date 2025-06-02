@@ -8,7 +8,7 @@
       <el-menu-item index="1" @click="navigateTo('/')">首页</el-menu-item>
       <el-menu-item index="2" @click="navigateTo('/activities')">活动列表</el-menu-item>
       <el-menu-item index="3" @click="navigateTo('/demo')">活动论坛</el-menu-item>
-      <el-menu-item index="4" @click="navigateTo('/price')">活动发布</el-menu-item>
+      <el-menu-item index="4" @click="navigateTo('/launch')">活动发布</el-menu-item>
       <el-menu-item index="5" @click="navigateTo('/download')">活动小助手</el-menu-item>
       <el-menu-item index="6" @click="navigateTo('/contact')">联系我们</el-menu-item>
     </el-menu>

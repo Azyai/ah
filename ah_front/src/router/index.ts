@@ -56,7 +56,7 @@ const router = createRouter({
       name: "ActivityListView",
       component: () => import('@/views/ActivityListView.vue')
     },{
-      path: "launch",
+      path: "/launch",
       name: "LaunchView",
       component: () => import('@/views/LaunchView.vue')
     }

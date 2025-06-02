@@ -103,7 +103,7 @@ const activityDetail = computed(() => {
 });
 
 const getActivityType = (type: number) => {
-  return ['未知', '大转盘', '其他'][type] || '未知';
+  return ['未知', '大转盘', '福袋','立即开奖'][type] || '未知';
 };
 
 const getStatusText = (status: number) => {
