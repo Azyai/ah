@@ -39,7 +39,7 @@ const activity = ref({
 
 // 奖品列表
 const prizes = ref([{
-  prizeId: 0,
+  prizeId: null,
   totalStock: 0,
   probability: '0.0000'
 }])
@@ -83,6 +83,71 @@ onMounted(() => {
 
 // 提交表单
 const submitForm = async () => {
+
+  // 1. 校验活动基本信息
+  if (!activity.value.name.trim()) {
+    ElMessage.error('请输入活动名称')
+    return
+  }
+
+  if (!activity.value.startTime) {
+    ElMessage.error('请选择开始时间')
+    return
+  }
+
+  if (!activity.value.endTime) {
+    ElMessage.error('请选择结束时间')
+    return
+  }
+
+  // 2. 大转盘配置校验（仅当 type === '1'）
+  if (activity.value.type === '1') {
+    if (!activity.value.ruleConfig.backgroundImg.trim()) {
+      ElMessage.error('请输入背景图片链接')
+      return
+    }
+  }
+
+  // 奖品设置校验
+  for (let i = 0; i < prizes.value.length; i++) {
+    const prize = prizes.value[i]
+
+    if (prize.prizeId === null || prize.prizeId === undefined || prize.prizeId === 0) {
+      ElMessage.error(`请为第 ${i + 1} 个奖品选择奖品`)
+      return
+    }
+
+    if (prize.totalStock <= 0) {
+      ElMessage.error(`第 ${i + 1} 个奖品库存必须大于 0`)
+      return
+    }
+
+    const probabilityNum = parseFloat(prize.probability)
+    if (isNaN(probabilityNum) || probabilityNum < 0 || probabilityNum > 1) {
+      ElMessage.error(`第 ${i + 1} 个奖品中奖概率必须在 0 到 1 之间`)
+      return
+    }
+  }
+
+  // 4. 活动限制校验
+  if (!activityRestriction.value.limitType) {
+    ElMessage.error('请选择限制类型')
+    return
+  }
+
+  if (activityRestriction.value.limitValue < 1) {
+    ElMessage.error('限制次数必须大于等于 1')
+    return
+  }
+
+  if (
+      activityRestriction.value.limitType === '3' &&
+      activityRestriction.value.intervalSeconds < 1
+  ) {
+    ElMessage.error('间隔秒数必须大于等于 1')
+    return
+  }
+
   const requestData = {
     activity: activity.value,
     prizes: prizes.value,
@@ -257,8 +322,8 @@ const removePrize = (index: number) => {
 
               <el-row :gutter="20">
                 <el-col :span="8">
-                  <el-form-item label="奖品ID">
-                    <el-select v-model="prize.prizeId" placeholder="请选择奖品">
+                  <el-form-item label="奖品名称">
+                    <el-select placeholder="请选择奖品" v-model="prize.prizeId">
                       <el-option
                           v-for="option in prizeOptions"
                           :key="option.id"
