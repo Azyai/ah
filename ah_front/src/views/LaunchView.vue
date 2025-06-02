@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { postForm,post } from '@/api/axios'
-import type { ResultData } from '@/api/api'
+import {ref, onMounted} from 'vue'
+import {postForm, post} from '@/api/axios'
+import type {CommonResponse, ResultData} from '@/api/api'
 import {
   ElForm,
   ElFormItem,
@@ -16,6 +16,7 @@ import {
   ElCol,
   ElMessage
 } from 'element-plus'
+import type {Prize} from "@/stores/activity.ts";
 
 // 活动数据模型
 const activity = ref({
@@ -52,6 +53,33 @@ const activityRestriction = ref({
 
 // 表单引用
 const formRef = ref()
+
+// 奖品列表数据
+const prizeOptions = ref<Array<{ id: number, name: string }>>([])
+
+// 获取奖品列表
+const fetchPrizeList = async () => {
+  try {
+    const response = await post<ResultData<CommonResponse<Prize>>>('/draw/prize/selectPrize', {
+      page: 1,
+      limit: 10000,
+      name: '',
+    })
+    if (response.data && response.code === '200') {
+      prizeOptions.value = response.data.data.map(prize => ({
+        id: prize.id,
+        name: prize.name
+      }))
+    }
+  } catch (error) {
+    console.error('获取奖品列表失败:', error)
+  }
+}
+
+// 在组件初始化时调用 fetchPrizeList
+onMounted(() => {
+  fetchPrizeList()
+})
 
 // 提交表单
 const submitForm = async () => {
@@ -98,16 +126,16 @@ const removePrize = (index: number) => {
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="活动名称">
-              <el-input v-model="activity.name" />
+              <el-input v-model="activity.name"/>
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
             <el-form-item label="活动类型">
               <el-select v-model="activity.type" placeholder="请选择活动类型">
-                <el-option label="大转盘" value="1" />
-                <el-option label="福袋" value="2" />
-                <el-option label="立即开奖" value="3" />
+                <el-option label="大转盘" value="1"/>
+                <el-option label="福袋" value="2"/>
+                <el-option label="立即开奖" value="3"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -138,7 +166,7 @@ const removePrize = (index: number) => {
         </el-row>
 
         <!-- 大转盘配置 -->
-        <el-card v-if="activity.type === 1" class="config-card">
+        <el-card v-if="activity.type === '1'" class="config-card">
           <template #header>
             <div class="card-header">
               <span>大转盘配置</span>
@@ -148,7 +176,7 @@ const removePrize = (index: number) => {
           <el-row :gutter="20">
             <el-col :span="24">
               <el-form-item label="背景图片链接">
-                <el-input v-model="activity.ruleConfig.backgroundImg" />
+                <el-input v-model="activity.ruleConfig.backgroundImg"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -156,7 +184,7 @@ const removePrize = (index: number) => {
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="动画速度等级">
-                <el-input-number v-model="activity.ruleConfig.animationSpeed" :min="1" :max="10" />
+                <el-input-number v-model="activity.ruleConfig.animationSpeed" :min="1" :max="10"/>
               </el-form-item>
             </el-col>
 
@@ -175,13 +203,13 @@ const removePrize = (index: number) => {
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="允许分享增加机会">
-                <el-checkbox v-model="activity.ruleConfig.allowShare" />
+                <el-checkbox v-model="activity.ruleConfig.allowShare"/>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
               <el-form-item label="分享奖励次数">
-                <el-input-number v-model="activity.ruleConfig.shareReward" :min="1" />
+                <el-input-number v-model="activity.ruleConfig.shareReward" :min="1"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -198,13 +226,13 @@ const removePrize = (index: number) => {
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="最大参与人数">
-                <el-input-number v-model="activity.maxParticipants" :min="1" style="width: 100%" />
+                <el-input-number v-model="activity.maxParticipants" :min="1" style="width: 100%"/>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
               <el-form-item label="是否自动关闭">
-                <el-checkbox v-model="activity.autoClose" />
+                <el-checkbox v-model="activity.autoClose"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -230,19 +258,27 @@ const removePrize = (index: number) => {
               <el-row :gutter="20">
                 <el-col :span="8">
                   <el-form-item label="奖品ID">
-                    <el-input-number v-model="prize.prizeId" :min="0" style="width: 100%" />
+                    <el-select v-model="prize.prizeId" placeholder="请选择奖品">
+                      <el-option
+                          v-for="option in prizeOptions"
+                          :key="option.id"
+                          :label="option.name"
+                          :value="option.id"
+                      />
+                    </el-select>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="库存数量">
-                    <el-input-number v-model="prize.totalStock" :min="0" style="width: 100%" />
+                    <el-input-number v-model="prize.totalStock" :min="0" style="width: 100%"/>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="中奖概率(0-1)">
-                    <el-input-number v-model.number="prize.probability" :step="0.0001" :min="0" :max="1" style="width: 100%" />
+                    <el-input-number v-model.number="prize.probability" :step="0.0001" :min="0" :max="1"
+                                     style="width: 100%"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -264,22 +300,22 @@ const removePrize = (index: number) => {
             <el-col :span="8">
               <el-form-item label="限制类型">
                 <el-select v-model="activityRestriction.limitType" placeholder="请选择限制类型">
-                  <el-option label="总次数限制" value="1" />
-                  <el-option label="每日次数限制" value="2" />
-                  <el-option label="频率限制" value="3" />
+                  <el-option label="总次数限制" value="1"/>
+                  <el-option label="每日次数限制" value="2"/>
+                  <el-option label="频率限制" value="3"/>
                 </el-select>
               </el-form-item>
             </el-col>
 
             <el-col :span="8">
               <el-form-item label="限制次数">
-                <el-input-number v-model="activityRestriction.limitValue" :min="1" style="width: 100%" />
+                <el-input-number v-model="activityRestriction.limitValue" :min="1" style="width: 100%"/>
               </el-form-item>
             </el-col>
 
-            <el-col :span="8" v-if="activityRestriction.limitType === 3">
+            <el-col :span="8" v-if="activityRestriction.limitType === '3'">
               <el-form-item label="间隔秒数">
-                <el-input-number v-model="activityRestriction.intervalSeconds" :min="1" style="width: 100%" />
+                <el-input-number v-model="activityRestriction.intervalSeconds" :min="1" style="width: 100%"/>
               </el-form-item>
             </el-col>
           </el-row>
