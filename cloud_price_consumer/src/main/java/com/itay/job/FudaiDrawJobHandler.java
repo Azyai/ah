@@ -24,7 +24,7 @@ public class FudaiDrawJobHandler {
         System.out.println("自动执行定时任务进行开奖，activityId是：" + activityId);
 
         // 发送抽奖消息到mq，执行开奖操作
-        rocketMQTemplate.convertAndSend("fudai-draw-topic", activityId);
+        rocketMQTemplate.convertAndSend("fd-draw-topic", activityId);
 
     }
 }

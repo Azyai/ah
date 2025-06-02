@@ -2,6 +2,7 @@ package com.itay.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itay.pojo.BaseEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,9 +32,11 @@ public class Activity extends BaseEntity {
     private Integer type; // 1大转盘 2福袋 3立即开奖
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 匹配数据库格式
     private LocalDateTime startTime;
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 匹配数据库格式
     private LocalDateTime endTime;
 
     @Builder.Default

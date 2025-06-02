@@ -158,8 +158,8 @@ public class XxlJobApiUtil {
 
         params.put("executorRouteStrategy", "FIRST"); // 路由策略
         params.put("executorBlockStrategy", "SERIAL_EXECUTION"); // 阻塞策略
-        params.put("executorTimeout", "30"); // 超时时间
-        params.put("executorFailRetryCount", "2"); // 失败重试次数
+        params.put("executorTimeout", "60"); // 超时时间
+        params.put("executorFailRetryCount", "3"); // 失败重试次数
         params.put("glueRemark", "GLUE代码初始化");
         params.put("glueSource", "");
         params.put("childJobId", ""); // 子任务ID，默认空

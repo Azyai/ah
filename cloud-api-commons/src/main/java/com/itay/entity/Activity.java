@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,8 +29,10 @@ public class Activity extends BaseEntity {
 
     private Integer type; // 1大转盘 2福袋 3立即开奖
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 匹配数据库格式
     private LocalDateTime startTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 匹配数据库格式
     private LocalDateTime endTime;
 
     @Builder.Default
