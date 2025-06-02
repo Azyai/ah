@@ -166,7 +166,7 @@ const submitForm = async () => {
 
 // 添加新奖品
 const addPrize = () => {
-  prizes.value.push({prizeId: 0, totalStock: 0, probability: '0.0000'})
+  prizes.value.push({prizeId: null, totalStock: 0, probability: '0.0000'})
 }
 
 // 删除奖品
