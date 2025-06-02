@@ -24,8 +24,8 @@ public class PrizeController {
     PrizeService prizeService;
 
     // 获取奖品表
-    @GetMapping("/selectPrize")
-    public ResultData<CommonResponse<Prize>> selectPrize(NameRequest nameRequest) {
+    @PostMapping("/selectPrize")
+    public ResultData<CommonResponse<Prize>> selectPrize(@RequestBody NameRequest nameRequest) {
         CommonResponse<Prize> prizes = prizeService.selectPrize(nameRequest);
         if (prizes.getData() == null || prizes.getData().isEmpty()) {
             return ResultData.fail(ReturnCodeEnum.RC404.getCode(), "没有符合条件的奖品");

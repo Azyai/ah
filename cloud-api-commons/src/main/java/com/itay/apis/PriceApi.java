@@ -1,6 +1,7 @@
 package com.itay.apis;
 
 import com.itay.entity.Activity;
+import com.itay.entity.Prize;
 import com.itay.entity.resp.ActivityInfoResp;
 import com.itay.entity.resp.ParticipationResp;
 import com.itay.entity.resp.WinningRecordResp;
@@ -45,6 +46,9 @@ public interface PriceApi {
 
     @PostMapping("/draw/activity/selectActivityInfo")
     ResultData<CommonResponse<ActivityInfoResp>> selectActivityInfo(@RequestBody NameRequest nameRequest);
+
+    @PostMapping("/draw/prize/selectPrize")
+    ResultData<CommonResponse<Prize>> selectPrize(@RequestBody NameRequest nameRequest);
 
     @GetMapping("/draw/activity/fetchActivityDetailById")
     ResultData<ActivityInfoResp> fetchActivityDetailById(@RequestParam("id") Integer id);
