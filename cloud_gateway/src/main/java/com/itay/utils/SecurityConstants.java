@@ -20,5 +20,6 @@ public class SecurityConstants {
             "/static/**",
             // 放行图标
             "/favicon.ico",
+            "/draw/activity/selectActivityInfo"
     };
 }
