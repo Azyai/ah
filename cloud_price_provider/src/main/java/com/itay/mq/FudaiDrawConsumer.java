@@ -1,10 +1,8 @@
 package com.itay.mq;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.itay.entity.Activity;
-import com.itay.entity.Participation;
-import com.itay.entity.Prize;
-import com.itay.entity.WinningRecord;
+import com.itay.entity.*;
+import com.itay.mapper.ActivityPrizeMapper;
 import com.itay.mapper.WinningRecordMapper;
 import com.itay.service.ActivityService;
 import com.itay.service.ParticipationService;
@@ -12,6 +10,7 @@ import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,8 +27,12 @@ public class FudaiDrawConsumer implements RocketMQListener<Integer> {
     @Autowired
     private WinningRecordMapper winningRecordMapper;
 
+    @Autowired
+    private ActivityPrizeMapper activityPrizeMapper;
+
 
     @Override
+    @Transactional
     public void onMessage(Integer activityId) {
 
         System.out.println("执行福袋开奖：" + activityId);
@@ -61,6 +64,25 @@ public class FudaiDrawConsumer implements RocketMQListener<Integer> {
                 if (insert > 0) {
                     participation.setIsWinning(true);
                     participationService.updateById(participation);
+
+                    System.out.println("奖品id：" + wr.getPrizeId());
+
+                    // 更改activityPrize中的奖品数量
+                    ActivityPrize actPrize = activityPrizeMapper.selectById(wr.getActivityId());
+
+                    System.out.println("actPrize: " + actPrize);
+                    System.out.println("奖品数量总数：" + actPrize.getTotalStock());
+                    System.out.println("奖品数量使用更新前：" + actPrize.getUsedStock());
+
+                    if(actPrize.getUsedStock() + 1 <= actPrize.getTotalStock()){
+                        System.out.println("奖品数量使用更新成功");
+                        actPrize.setUsedStock(actPrize.getUsedStock() + 1);
+                        int update = activityPrizeMapper.updateById(actPrize);
+                        if(update < 0){
+                            throw new RuntimeException("奖品数量更新失败");
+                        }
+                    }
+
                 }
             }
         }

@@ -176,7 +176,7 @@ public class XxlJobApiUtil {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         if (cookieValue == null) {
-            cookieValue = loginAndGetCookie("admin", "cxk234411!");
+            cookieValue = loginAndGetCookie("admin", "Ay234411");
         }
         headers.set("Cookie", cookieValue);
 

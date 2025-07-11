@@ -35,9 +35,9 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
   data:
     redis:
-      host: 182.92.222.10
+      host: 47.92.230.236
       port: 6379
-      password: 123456
+      password: Ay234411
 
 jwt:
   secret: ntzvtcNo+hjeo4br7lk5VVYfzxN7fya465deA8+dfqw=

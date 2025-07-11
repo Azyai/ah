@@ -5,13 +5,14 @@ server:
 xxl:
   job:
     admin:
+      # 在服务未上线之前需要写本地虚拟机地址，这样才能双向访问
       address: http://192.168.117.134:8088/xxl-job-admin
       accessToken: default_token
       timeout: 60
     executor:
       appname: xxl-job-executor-sample
       address:
-      ip: 192.168.31.141
+      ip:
       port: 9999
       logpath: /data/applogs/xxl-job/jobhandler
       logretentiondays: 30
@@ -33,12 +34,12 @@ spring:
     password: 123456
   data:
     redis:
-      host: 182.92.222.10
+      host: 47.92.230.236
       port: 6379
-      password: 123456
+      password: Ay234411
 
 rocketmq:
-  name-server: 182.92.222.10:9876     # rocketMq的nameServer地址
+  name-server: 47.92.230.236:9876     # rocketMq的nameServer地址
   producer:
     group: prize_group        # 生产者组别
     send-message-timeout: 3000  # 消息发送的超时时间

@@ -18,9 +18,9 @@ spring:
     web-application-type: reactive
   data:
     redis:
-      host: 182.92.222.10
+      host: 47.92.230.236
       port: 6379
-      password: 123456
+      password: Ay234411
   application:
     name: cloud-gateway #以微服务注册进consul或nacos服务列表内
   cloud:
