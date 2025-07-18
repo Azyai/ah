@@ -5,14 +5,14 @@ server:
 xxl:
   job:
     admin:
-      address: http://192.168.117.134:8088/xxl-job-admin
+      address: http://192.168.150.101:8088/xxl-job-admin
       # 进行测试
       accessToken: default_token
       timeout: 60
     executor:
       appname: xxl-job-executor-sample
       address:
-      ip:
+      ip: 192.168.150.1
       port: 9998
       logpath: /data/applogs/xxl-job/jobhandler
       logretentiondays: 30

@@ -48,7 +48,11 @@ public class WinningRecordServiceImpl extends ServiceImpl<WinningRecordMapper, W
         }
 
         // 3.更改activityPrize中的奖品数量，如果所有的奖品数量不够，则结束活动
-        ActivityPrize prize = activityPrizeMapper.selectById(winningRecord.getPrizeId());
+        LambdaQueryWrapper<ActivityPrize> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ActivityPrize::getActivityId,winningRecord.getActivityId())
+                .eq(ActivityPrize::getPrizeId,winningRecord.getPrizeId());
+        ActivityPrize prize = activityPrizeMapper.selectOne(lambdaQueryWrapper);
+
         if(prize.getUsedStock() + 1 <= prize.getTotalStock()){
             prize.setUsedStock(prize.getUsedStock() + 1);
             int update = activityPrizeMapper.updateById(prize);

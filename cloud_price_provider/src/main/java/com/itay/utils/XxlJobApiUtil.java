@@ -15,15 +15,15 @@ import java.util.Map;
 @Component
 public class XxlJobApiUtil {
 
-    private static final String ADMIN_URL = "http://192.168.117.134:8088/xxl-job-admin/jobinfo";
-    private static final String LOGIN_URL = "http://192.168.117.134:8088/xxl-job-admin/toLogin";
+    private static final String ADMIN_URL = "http://192.168.150.101:8088/xxl-job-admin/jobinfo";
+    private static final String LOGIN_URL = "http://192.168.150.101:8088/xxl-job-admin/toLogin";
 
     // 使用access_token需要修改源码，这里没有使用，所以使用登录吧。。。
     private static final String ACCESS_TOKEN = "default_token";
 
 
     public String loginAndGetCookie(String username, String password) {
-        String loginUrl = "http://192.168.117.134:8088/xxl-job-admin/login";
+        String loginUrl = "http://192.168.150.101:8088/xxl-job-admin/login";
 
         LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("userName", username);
@@ -128,7 +128,7 @@ public class XxlJobApiUtil {
      * 手动触发任务执行
      */
     public ReturnT<String> triggerJob(int jobId) {
-        String triggerUrl = "http://192.168.117.134:8088/xxl-job-admin/api/joblog/trigger";
+        String triggerUrl = "http://192.168.150.101:8088/xxl-job-admin/api/joblog/trigger";
         Map<String, Object> params = new HashMap<>();
         params.put("id", jobId);
         return sendPostRequest(triggerUrl, params);

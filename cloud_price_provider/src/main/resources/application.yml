@@ -6,13 +6,13 @@ xxl:
   job:
     admin:
       # 在服务未上线之前需要写本地虚拟机地址，这样才能双向访问
-      address: http://192.168.117.134:8088/xxl-job-admin
+      address: http://192.168.150.101:8088/xxl-job-admin
       accessToken: default_token
       timeout: 60
     executor:
       appname: xxl-job-executor-sample
       address:
-      ip:
+      ip: 192.168.150.1
       port: 9999
       logpath: /data/applogs/xxl-job/jobhandler
       logretentiondays: 30
@@ -29,9 +29,9 @@ spring:
 #    username: db_user
 #    password: cxk234411!
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/ah2025?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://47.92.230.236:3306/ah2025?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
-    password: 123456
+    password: Ay234411
   data:
     redis:
       host: 47.92.230.236

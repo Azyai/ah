@@ -15,9 +15,9 @@ spring:
 #    password: cxk234411!
 #    driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/ah2025?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://47.92.230.236:3306/ah2025?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
     username: root
-    password: 123456
+    password: Ay234411
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: cloud-user

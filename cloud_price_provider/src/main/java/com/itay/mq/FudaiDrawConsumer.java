@@ -68,7 +68,11 @@ public class FudaiDrawConsumer implements RocketMQListener<Integer> {
                     System.out.println("奖品id：" + wr.getPrizeId());
 
                     // 更改activityPrize中的奖品数量
-                    ActivityPrize actPrize = activityPrizeMapper.selectById(wr.getActivityId());
+                    // 3.更改activityPrize中的奖品数量，如果所有的奖品数量不够，则结束活动
+                    LambdaQueryWrapper<ActivityPrize> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+                    lambdaQueryWrapper.eq(ActivityPrize::getActivityId,wr.getActivityId())
+                            .eq(ActivityPrize::getPrizeId,wr.getPrizeId());
+                    ActivityPrize actPrize = activityPrizeMapper.selectOne(lambdaQueryWrapper);
 
                     System.out.println("actPrize: " + actPrize);
                     System.out.println("奖品数量总数：" + actPrize.getTotalStock());
