@@ -133,17 +133,19 @@ const sendVerificationCode = async () => {
     type: 'success',
   })
 
+  console.log(res)
+
   if(res.code === "200"){
     ElNotification({
       title: 'Success',
-      message: res.data,
+      message: res.message,
       type: 'success',
     })
     step.value = 2
   }else{
     ElNotification({
       title: 'Warning',
-      message: res.data,
+      message: res.message,
       type: 'warning',
     })
   }
